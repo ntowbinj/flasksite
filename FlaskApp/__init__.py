@@ -1,5 +1,4 @@
 from flask import Flask, render_template, jsonify, request
-from reddit.redditscrape import * 
 import shortestpath
 import urllib2, urllib, httplib
 import musichelp
