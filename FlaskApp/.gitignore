@@ -1,0 +1,9 @@
+*.swp
+*.json
+*.txt
+/neo4j*
+/try.py
+/dump.txt
+/static/js/MIDI.js
+/flask
+/reddit

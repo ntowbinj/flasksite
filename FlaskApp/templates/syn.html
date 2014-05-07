@@ -1,0 +1,40 @@
+{% extends "template.html" %}
+{% block external %}
+    {% for d in dependencies %}
+        <script src="{{ url_for('static', filename=d) }}"></script>
+    {% endfor %}
+{% endblock %}
+{% block content %}
+    <h1 class="title">Synonym Path Finder</h1>
+    <ul class="instructions">
+        <li>Enter two (correctly spelled) English adjectives, click "get synonym path"</li>
+        <li>Try paths between antonyms--e.g., "similar" to "opposite" (without quotes)</li>
+        <li>A few favorites antonym pairs: <a class="example" href="">tiresome -> restorative</a>, <a class="example" href="">tall -> short</a>, <a class="example" href="">positive -> negative</a>, <a class="example" href="">similar -> opposite</a></li>
+        <li>Synonyms taken from OpenOffice's <a href="https://www.openoffice.org/lingucomponent/thesaurus.html">thesaurus</a> (they don't all make sense)</li>
+    </ul>
+
+    <div id="synform">
+        <div>
+            <label for"submit">&nbsp; </label>
+            <button id="submit">get synonym path</button>
+        </div>
+        <div>
+            <label for="origin">from:</label>
+            <input id="origin" type="text" value="similar">
+        </div>
+        <div>
+            <label for="destination">to:</label>
+            <input id="destination" type="text" value="opposite">
+        </div>
+        <div style="clear:both;"></div>
+        <p id="message"></p>
+    </div>
+    <div id="synresult">
+        <h2> path </h2>
+        <ol start="0" id="synresultul"></ol>
+    </div>
+    <div id="avoids">
+        <h2>words to avoid<span id="remainder"></span></h2>
+        <ul id="avoidlist"></ul>
+    </div>
+{% endblock %}

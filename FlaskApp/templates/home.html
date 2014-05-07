@@ -1,0 +1,16 @@
+{% extends "template.html" %}
+{% block content %}
+    <button id="start">start</button>
+    <button id="stop">stop</button>
+    <br>
+    <div id='lowerVoiceIntervals'>
+        {% for intv in intervs|dictsort %}
+            <p><input type="checkbox" checked="" value={{ intv[0] }}>{{ intv[1] }}</p>
+        {% endfor %}
+    </div>
+    <div id='upperVoiceIntervals'>
+        {% for intv in intervs|dictsort %}
+            <p><input type="checkbox" checked="" value={{ intv[0] }}>{{ intv[1] }}</p>
+        {% endfor %}
+    </div>
+{% endblock %}
