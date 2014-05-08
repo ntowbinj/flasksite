@@ -1,16 +1,37 @@
 {% extends "template.html" %}
+    {% block external %}
+        <link href="{{ url_for('static', filename='css/ear.css') }}" rel="stylesheet">
+    {% endblock %}
 {% block content %}
-    <button id="start">start</button>
-    <button id="stop">stop</button>
+    <button class="blueButton" id="start">start</button>
+    <button class="blueButton" id="stop">stop</button>
     <br>
-    <div id='lowerVoiceIntervals'>
-        {% for intv in intervs|dictsort %}
-            <p><input type="checkbox" checked="" value={{ intv[0] }}>{{ intv[1] }}</p>
-        {% endfor %}
-    </div>
-    <div id='upperVoiceIntervals'>
-        {% for intv in intervs|dictsort %}
-            <p><input type="checkbox" checked="" value={{ intv[0] }}>{{ intv[1] }}</p>
-        {% endfor %}
+    <div id='cpanel'>
+        <div id='intvLists'>
+            <div id='intervalLabels'>
+                {% for intv in intervs|dictsort %}
+                    <p><a class="stayBlue" href="">{{ intv[1] }}</a></p>
+                {% endfor %}
+            </div>
+            <div id='lowerVoiceIntervals'>
+                {% for intv in intervs|dictsort %}
+                    <p><input type="checkbox" checked="" value={{ intv[0] }}></p>
+                {% endfor %}
+            </div>
+            <div id='upperVoiceIntervals'>
+                {% for intv in intervs|dictsort %}
+                    <p><input type="checkbox" checked="" value={{ intv[0] }}></p>
+                {% endfor %}
+            </div>
+            <div id='minSep'>
+                {% for intv in intervs|dictsort %}
+                    <p><input type="checkbox" checked="" value={{ intv[0] }}></p>
+                {% endfor %}
+            </div>
+        </div>
+        <div id='time'>
+            <input id='duration' type='range' min='.3' max='5' value='1' step='.1'>
+            <input id='between' type='range' min='.3' max='5' value='1' step='.1'>
+        </div>
     </div>
 {% endblock %}

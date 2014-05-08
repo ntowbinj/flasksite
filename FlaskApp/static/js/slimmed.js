@@ -89,6 +89,39 @@ function noteName(i){
             break;
     }
 }
+
+var dom;
+
+var view = {
+    updateMinSep: function(){
+        dom.minSep.find("input").each(function(){
+            if($(this).prop("value") == config.sep){
+                $(this).prop("checked", true);
+            }
+            else{
+                $(this).prop("checked", false);
+            }
+        })
+    }
+}
+
+var controller = {
+    setStaticButtons: function(){
+        dom.intervalLabels.find("a").each(function(){
+            $(this).click(function(e){
+                e.preventDefault();
+            });
+        });
+        dom.minSep.find("input").each(function(){
+            $(this).click(function(){
+                config.sep = $(this).prop("value");
+                view.updateMinSep(); 
+            });
+        });
+        $("#cpanel").mouseup(function(){config.fetch();});
+    }
+};
+
            
 var config = {
     notes: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
@@ -106,15 +139,23 @@ var config = {
     }()),
     topInterval: this.bottomInterval,
     fetch: function (){
-        config.bottomInterval = [];
-        $("#lowerVoiceIntervals").find("input").each(function(){
-                    if($(this).prop("checked")){
-                        intv = parseInt($(this).prop("value"));
-                        config.bottomInterval.push(intv);
-                        config.bottomInterval.push(-1*intv);
-                    }
-                });
-        alert(config.bottomInterval);
+    var getIntvs = function(intvList){
+        intvList.length = 0;
+        this.find("input").each(function(){
+            if($(this).prop("checked")){
+                intv = parseInt($(this).prop("value"));
+                intvList.push(intv);
+                intvList.push(-1*intv);
+            }
+        });
+    };
+    getIntvs.call(dom.lowerVoiceIntervals, config.bottomInterval);
+    getIntvs.call(dom.upperVoiceIntervals, config.topInterval);
+    var numeric = function(a, b){return a-b};
+    config.bottomInterval = config.bottomInterval.sort(numeric);
+    config.topInterval = config.topInterval.sort(numeric);
+    config.duration = dom.duration.prop("value");
+    config.between = dom.between.prop("value");
     }
 }
 Array.prototype.bindexOfClosest = function (targ, side){ //binary search for index containing largest element *less* than target or symmetric case
@@ -154,11 +195,21 @@ Array.prototype.bindexOfClosest = function (targ, side){ //binary search for ind
 }
 
 function startNotes(){
-    var range = config.upperBound - config.lowerBound;
+    /*var range = config.upperBound - config.lowerBound;
     var l = Math.floor(Math.random()*range/2) + config.lowerBound;
     var u = Math.floor(Math.random()*range/2) + config.lowerBound + range/2;
     console.log(l);
-    return [l, u];
+    return [l, u];*/
+    var range = config.upperBound - config.lowerBound;
+    var bottRange = range - config.sep;
+    if(range > 0){
+        var l = Math.floor(Math.random()*bottRange) + config.lowerBound;
+        var u = l+config.sep;
+        return [l, u];
+    }
+    else{
+        alert("BAD");
+    }
 }
 
 function candidates(currL, currU){ //assume bottomInterval and topInterval are already sorted
@@ -178,16 +229,22 @@ function candidates(currL, currU){ //assume bottomInterval and topInterval are a
     }
     var rightward = new Array();
     var gap = currU - currL;
+    //console.log("gap: " + gap);
     var ret = new Array();
     var count = 0;
     for(var i = optionsL.length-1; i>=0; i--){ // largest leftward leap to largest rightward
-        var remaining = Math.min(gap - optionsL[i], config.sep);
+        //var remaining = gap - optionsL[i] - config.sep; // remaining space after leap (if leap left/positive, is less) 
+        var remaining = gap - optionsL[i] - config.sep + 1;
         var limit = optionsU.bindexOfClosest(-remaining, 1); // positive 1 for closest but greater than since left is negative
-        rightward = optionsU.slice(limit, optionsU.length).concat(rightward);
-        optionsU = optionsU.slice(0, limit);
-        for(var j = 0; j<rightward.length; j++){
-            ret[count] = new Array(optionsL[i], rightward[j]);
-            count++;
+        //console.log("limitdex: " + limit);
+        if(typeof limit != 'undefined'){
+            //console.log("limit: " + optionsU[limit]);
+            rightward = optionsU.slice(limit, optionsU.length).concat(rightward);
+            optionsU = optionsU.slice(0, limit);
+            for(var j = 0; j<rightward.length; j++){
+                ret[count] = new Array(optionsL[i], rightward[j]);
+                count++;
+            }
         }
     }
     return ret;
@@ -196,12 +253,13 @@ function candidates(currL, currU){ //assume bottomInterval and topInterval are a
 config.lowerBound = 40;
 config.duration = 1;
 config.upperBound = 60;
+config.sep = 8;
 config.bottomInterval = [-4, -3, 3, 4];
 config.topInterval = [-5, -4, -3, -2, -1, 2, 3, 4, 5];
 var result = candidates(5, 10);
 console.log(result);
 config.play = true;            
-config.between = 5000;
+config.between = 3;
 
 
 var player = {
@@ -230,7 +288,7 @@ var player = {
                 var index = Math.floor(Math.random()*nextOptions.length);
                 noteL += nextOptions[index][0];
                 noteU += nextOptions[index][1];
-                this.timeOut = setTimeout(function(){that.play(noteL, noteU, true)}, config.between);
+                this.timeOut = setTimeout(function(){that.play(noteL, noteU, true)}, config.between*1000);
 
             }
         }
@@ -249,29 +307,40 @@ var player = {
 }
 
 function midiSetup(){
-	MIDI.loader = new widgets.Loader;
-	MIDI.loadPlugin({
-	    instrument: "acoustic_grand_piano",
-            soundfontUrl: "/static/js/MIDI.js/soundfont/",
-            callback: function() {
-                MIDI.loader.stop();	
-                document.getElementById("start").onclick = function(){
-                    config.fetch();
-                    player.stop();
-                    player.stopped = false;
-                    var start = startNotes();
-                    console.log(start);
-                    player.play(start[0], start[1], true); 
-                };
-                document.getElementById("stop").onclick = function(){
-                    player.stop();
-                    //MIDI.stopAllNotes();
-                    //for(var i = 0; i<player.notesOn.length; i++){
-                    //    MIDI.noteOff(0, player.notesOn[i], 0);
-                    //}
-                };
-            }
-	});
+    dom = {
+        lowerVoiceIntervals: $("#lowerVoiceIntervals"),
+        upperVoiceIntervals: $("#upperVoiceIntervals"),
+        intervalLabels: $("#intervalLabels"),
+        minSep: $("#minSep"),
+        duration: $("#duration"),
+        between: $("#between")
+    };
+    controller.setStaticButtons();
+    view.updateMinSep();
+    $(window).bind("beforeunload", function(){player.stop();});
+    MIDI.loader = new widgets.Loader;
+    MIDI.loadPlugin({
+        instrument: "acoustic_grand_piano",
+        soundfontUrl: "/static/js/MIDI.js/soundfont/",
+        callback: function() {
+            MIDI.loader.stop();	
+            document.getElementById("start").onclick = function(){
+                config.fetch();
+                player.stop();
+                player.stopped = false;
+                var start = startNotes();
+                console.log(start);
+                player.play(start[0], start[1], true); 
+            };
+            document.getElementById("stop").onclick = function(){
+                player.stop();
+                //MIDI.stopAllNotes();
+                //for(var i = 0; i<player.notesOn.length; i++){
+                //    MIDI.noteOff(0, player.notesOn[i], 0);
+                //}
+            };
+        }
+    });
         
 };
 
