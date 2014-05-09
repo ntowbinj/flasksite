@@ -335,6 +335,8 @@ var player = {
         else{wait = between*1000;}
         if(elapsed > wait){
             this.stop();
+            clearTimeout(this.timeOut);
+            this.impending();
         }
         else{
             var remaining = wait - elapsed;
