@@ -118,7 +118,22 @@ var controller = {
                 view.updateMinSep(); 
             });
         });
-        $("#cpanel").mouseup(function(){config.fetch();});
+        $("#start").click(function(){
+            config.fetch();
+            player.stop();
+            player.stopped = false;
+            var start = startNotes();
+            console.log(start);
+            player.play(start[0], start[1], true); 
+        });
+        $("#stop").click(function(){
+            player.stop();
+        });
+        $("#intvLists").click(function(){config.fetchIntvs();});
+        $("#time").click(function(){
+            config.fetchTime();
+            if(!player.stopped){player.correctEvent();}
+        });
     }
 };
 
@@ -138,24 +153,30 @@ var config = {
         return ret;
     }()),
     topInterval: this.bottomInterval,
-    fetch: function (){
-    var getIntvs = function(intvList){
-        intvList.length = 0;
-        this.find("input").each(function(){
-            if($(this).prop("checked")){
-                intv = parseInt($(this).prop("value"));
-                intvList.push(intv);
-                intvList.push(-1*intv);
-            }
-        });
-    };
-    getIntvs.call(dom.lowerVoiceIntervals, config.bottomInterval);
-    getIntvs.call(dom.upperVoiceIntervals, config.topInterval);
-    var numeric = function(a, b){return a-b};
-    config.bottomInterval = config.bottomInterval.sort(numeric);
-    config.topInterval = config.topInterval.sort(numeric);
-    config.duration = dom.duration.prop("value");
-    config.between = dom.between.prop("value");
+    fetch: function(){
+        config.fetchIntvs();
+        config.fetchTime();
+    },
+    fetchTime: function(){
+        config.duration = dom.duration.prop("value");
+        config.between = dom.between.prop("value");
+    },
+    fetchIntvs: function (){
+        var getIntvs = function(intvList){
+            intvList.length = 0;
+            this.find("input").each(function(){
+                if($(this).prop("checked")){
+                    intv = parseInt($(this).prop("value"));
+                    intvList.push(intv);
+                    intvList.push(-1*intv);
+                }
+            });
+        };
+        getIntvs.call(dom.lowerVoiceIntervals, config.bottomInterval);
+        getIntvs.call(dom.upperVoiceIntervals, config.topInterval);
+        var numeric = function(a, b){return a-b};
+        config.bottomInterval = config.bottomInterval.sort(numeric);
+        config.topInterval = config.topInterval.sort(numeric);
     }
 }
 Array.prototype.bindexOfClosest = function (targ, side){ //binary search for index containing largest element *less* than target or symmetric case
@@ -265,6 +286,7 @@ config.between = 3;
 var player = {
     play: function(noteL, noteU, on){
         console.log(noteL + " " + noteU);
+        console.log("on: " + on);
         MIDI.setVolume(0, 127);
         if(this.stopped){
             return;
@@ -277,7 +299,7 @@ var player = {
                 this.notesOn = [noteL, noteU];
                 var that = this;
                 //console.log("l and u: " + noteL + " " + noteU);
-                this.timeOut = setTimeout(function(){that.play(noteL, noteU, false)}, config.duration*1000);
+                this.setEvent(function(){that.play(noteL, noteU, false);}, config.duration*1000);
             }
             else {
                 MIDI.noteOff(0, noteL, 0);
@@ -288,7 +310,7 @@ var player = {
                 var index = Math.floor(Math.random()*nextOptions.length);
                 noteL += nextOptions[index][0];
                 noteU += nextOptions[index][1];
-                this.timeOut = setTimeout(function(){that.play(noteL, noteU, true)}, config.between*1000);
+                this.setEvent(function(){that.play(noteL, noteU, true);}, config.between*1000);
 
             }
         }
@@ -301,8 +323,28 @@ var player = {
         }
         this.notesOn = [];
     },
+    setEvent: function(impending, when){
+        this.time = new Date().getTime();
+        this.impending = impending;
+        this.timeOut = setTimeout(this.impending, when);
+    },
+    correctEvent: function(){
+        var elapsed = new Date().getTime() - this.time;
+        var wait;
+        if(this.notesOn.length){wait = duration*1000;}
+        else{wait = between*1000;}
+        if(elapsed > wait){
+            this.stop();
+        }
+        else{
+            var remaining = wait - elapsed;
+            clearTimeout(this.timeOut);
+            this.setEvent(this.impending, remaining);
+        }
+    },
     notesOn: [],
     timeOut: undefined,
+    impending: function(){},
     stopped: false,
 }
 
@@ -324,21 +366,6 @@ function midiSetup(){
         soundfontUrl: "/static/js/MIDI.js/soundfont/",
         callback: function() {
             MIDI.loader.stop();	
-            document.getElementById("start").onclick = function(){
-                config.fetch();
-                player.stop();
-                player.stopped = false;
-                var start = startNotes();
-                console.log(start);
-                player.play(start[0], start[1], true); 
-            };
-            document.getElementById("stop").onclick = function(){
-                player.stop();
-                //MIDI.stopAllNotes();
-                //for(var i = 0; i<player.notesOn.length; i++){
-                //    MIDI.noteOff(0, player.notesOn[i], 0);
-                //}
-            };
         }
     });
         
