@@ -328,6 +328,7 @@ var player = {
         this.notesOn = [];
     },
     setEvent: function(impending, when){
+        clearTimeout(this.timeOut);
         this.time = new Date().getTime();
         this.impending = impending;
         this.timeOut = setTimeout(this.impending, when);
@@ -339,13 +340,11 @@ var player = {
         else{wait = config.between*1000;}
         if(elapsed > wait){
             //this.stop();
-            clearTimeout(this.timeOut);
             //this.impending();
             this.setEvent(this.impending, 0);
         }
         else{
             var remaining = wait - elapsed;
-            clearTimeout(this.timeOut);
             this.setEvent(this.impending, remaining);
         }
     },
