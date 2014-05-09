@@ -130,11 +130,13 @@ var controller = {
             player.stop();
         });
         $("#intvLists").click(function(){config.fetchIntvs();});
-        $("#time").click(function(){
-            if(!player.stopped){
-                config.fetchTime();
-                player.correctEvent();
-            }
+        $.each(["#duration", "#between"], function(index, value){
+            $(value).click(function(){
+                if(!player.stopped){
+                    config.fetchTime();
+                    player.correctEvent();
+                }
+            });
         });
     }
 };

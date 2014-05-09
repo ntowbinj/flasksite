@@ -1,37 +1,44 @@
 {% extends "template.html" %}
     {% block external %}
         <link href="{{ url_for('static', filename='css/ear.css') }}" rel="stylesheet">
+        <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
+        <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
     {% endblock %}
 {% block content %}
-    <button class="blueButton" id="start">start</button>
-    <button class="blueButton" id="stop">stop</button>
-    <br>
     <div id='cpanel'>
+        <div id='time'>
+            <button class="blueButton" id="start">start</button>
+            <button class="blueButton" id="stop">stop</button>
+            <p class="label">note duration:</p>
+            <input id='duration' type='range' min='.3' max='5' value='1' step='.1'>
+            <p class="label">silence between:</p>
+            <input id='between' type='range' min='.3' max='5' value='1' step='.1'>
+        </div>
         <div id='intvLists'>
             <div id='intervalLabels'>
+                <p class="label">&nbsp;</p>
                 {% for intv in intervs|dictsort %}
                     <p><a class="stayBlue" href="">{{ intv[1] }}</a></p>
                 {% endfor %}
             </div>
             <div id='lowerVoiceIntervals'>
+                <p class="label">bott:</p>
                 {% for intv in intervs|dictsort %}
                     <p><input type="checkbox" checked="" value={{ intv[0] }}></p>
                 {% endfor %}
             </div>
             <div id='upperVoiceIntervals'>
+                <p class="label">top:</p>
                 {% for intv in intervs|dictsort %}
                     <p><input type="checkbox" checked="" value={{ intv[0] }}></p>
                 {% endfor %}
             </div>
             <div id='minSep'>
+                <p class="label">sep:</p>
                 {% for intv in intervs|dictsort %}
                     <p><input type="checkbox" checked="" value={{ intv[0] }}></p>
                 {% endfor %}
             </div>
-        </div>
-        <div id='time'>
-            <input id='duration' type='range' min='.3' max='5' value='1' step='.1'>
-            <input id='between' type='range' min='.3' max='5' value='1' step='.1'>
         </div>
     </div>
 {% endblock %}

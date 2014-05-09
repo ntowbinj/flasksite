@@ -1,9 +1,41 @@
+#cpanel div
+{
+    margin-right: 20px;
+}
 #intvLists div
 {
     float: left;
+    width: auto;
 }
 #intvLists p
 {
-    margin: 7px;
+    margin-top: 7px;
+    margin-bottom: 7px;
+    //margin-top: 0;
     height: 20px;
 }
+p:first-child
+{
+    margin-top: 0;
+}
+#time
+{
+    float: left;
+}
+#time input
+{
+    display: block;
+    margin-left: 0;
+    margin-bottom:0;
+}
+#time button
+{
+    margin-right: 10px;
+}
+#time p
+{
+    margin-top: 18px;
+    margin-left: 4px;
+    width: auto;
+}
+

@@ -1,14 +1,14 @@
 <!doctype html>
 <html>
     <head>
-        {% block external %}
-        {% endblock %}
         <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
         {% for d in dependencies %}
             <script src="{{ url_for('static', filename=d) }}"></script>
         {% endfor %}
         <link href="{{ url_for('static', filename='css/reset.css') }}" rel="stylesheet">
         <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+        {% block external %}
+        {% endblock %}
     <script type="text/javascript">
         window.onload = function() {
             {% for func in onloads %}
