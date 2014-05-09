@@ -336,9 +336,10 @@ var player = {
         if(this.notesOn.length){wait = config.duration*1000;}
         else{wait = config.between*1000;}
         if(elapsed > wait){
-            this.stop();
+            //this.stop();
             clearTimeout(this.timeOut);
-            this.impending();
+            //this.impending();
+            this.setEvent(this.impending, 0);
         }
         else{
             var remaining = wait - elapsed;
