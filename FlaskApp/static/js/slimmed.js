@@ -131,8 +131,10 @@ var controller = {
         });
         $("#intvLists").click(function(){config.fetchIntvs();});
         $("#time").click(function(){
-            config.fetchTime();
-            if(!player.stopped){player.correctEvent();}
+            if(!player.stopped){
+                config.fetchTime();
+                player.correctEvent();
+            }
         });
     }
 };
@@ -331,8 +333,8 @@ var player = {
     correctEvent: function(){
         var elapsed = new Date().getTime() - this.time;
         var wait;
-        if(this.notesOn.length){wait = duration*1000;}
-        else{wait = between*1000;}
+        if(this.notesOn.length){wait = config.duration*1000;}
+        else{wait = config.between*1000;}
         if(elapsed > wait){
             this.stop();
             clearTimeout(this.timeOut);
@@ -347,7 +349,7 @@ var player = {
     notesOn: [],
     timeOut: undefined,
     impending: function(){},
-    stopped: false,
+    stopped: true,
 }
 
 function midiSetup(){
