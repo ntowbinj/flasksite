@@ -1,11 +1,17 @@
 #cpanel div
 {
+    float: left;
     margin-right: 20px;
 }
 #intvLists div
 {
     float: left;
     width: auto;
+}
+#minNote, #maxNote
+{
+    width: 40px;
+    text-align: left;
 }
 #intvLists p
 {
@@ -38,4 +44,28 @@ p:first-child
     margin-left: 4px;
     width: auto;
 }
+#slider-range
+{
+    width: 4px;
+    height: 200px;
+    //color: black;
+}
+#slider-range a
+{
+    left: -7px;
+    width: 16px;
+    height: 10px;
+}
+a.ui-slider-handle.ui-state-hover
+{
+    //background: black;
+    background-image: none;
+}
+div.ui-slider-range.ui-widget-header
+{
+    background: blue;
+    background-image: none;
+    //background-image: url("../images/blue.jpg");
+}
+
 

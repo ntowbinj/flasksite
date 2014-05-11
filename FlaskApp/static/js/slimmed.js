@@ -49,50 +49,59 @@ function intvName(i){
 
 function noteName(i){
     i = i%12;
+    var note;
     switch(i)
     {
         case 0:
-            return 'C';
+            note =  'C';
             break;
         case 1:
-            return 'C#';
+            note =  'C#';
             break;
         case 2:
-            return 'D';
+            note =  'D';
             break;
         case 3:
-            return 'Eb';
+            note =  'Eb';
             break;
         case 4:
-            return 'E';
+            note =  'E';
             break;
         case 5:
-            return 'F';
+            note =  'F';
             break;
         case 6:
-            return 'F#';
+            note =  'F#';
             break;
         case 7:
-            return 'G';
+            note =  'G';
             break;
         case 8:
-            return 'Ab';
+            note =  'Ab';
             break;
         case 9:
-            return 'A';
+            note =  'A';
             break;
         case 10:
-            return 'Bb';
+            note =  'Bb';
             break;
         case 11:
-            return 'B';
+            note =  'B';
             break;
     }
+    return note;
 }
 
 var dom;
 
+var cons = {
+    labelRight: 60
+}
+
 var view = {
+    init: function(){
+        this.setLabels();
+    },
     updateMinSep: function(){
         dom.minSep.find("input").each(function(){
             if($(this).prop("value") == config.sep){
@@ -102,11 +111,36 @@ var view = {
                 $(this).prop("checked", false);
             }
         })
+    },
+    setLabels: function(wait){
+        var delay = function() {
+            $.each(["minNote", "maxNote"], function(index, value){
+                dom[value].html($("#slider-range").slider("values", index));
+                dom[value].position({
+                    my: 'right+' + cons.labelRight + ' center',
+                    at: 'center center',
+                    of: $("#slider-range a:eq(" + index  + ")")
+                });
+            });
+        };
+        setTimeout(delay, wait);
     }
 }
 
 var controller = {
     setStaticButtons: function(){
+        $("#slider-range").slider({
+            orientation: "vertical",
+            range: true,
+            min: 0,
+            max: 100,
+            values: [config.lowerBound, config.upperBound],
+            slide: function(event, ui) {
+                config.lowerBound = ui.values[0];
+                config.upperBound = ui.values[1];
+                view.setLabels(5);
+            }
+        });
         dom.intervalLabels.find("a").each(function(){
             $(this).click(function(e){
                 e.preventDefault();
@@ -220,11 +254,6 @@ Array.prototype.bindexOfClosest = function (targ, side){ //binary search for ind
 }
 
 function startNotes(){
-    /*var range = config.upperBound - config.lowerBound;
-    var l = Math.floor(Math.random()*range/2) + config.lowerBound;
-    var u = Math.floor(Math.random()*range/2) + config.lowerBound + range/2;
-    console.log(l);
-    return [l, u];*/
     var range = config.upperBound - config.lowerBound;
     var bottRange = range - config.sep;
     if(range > 0){
@@ -361,9 +390,14 @@ function midiSetup(){
         intervalLabels: $("#intervalLabels"),
         minSep: $("#minSep"),
         duration: $("#duration"),
-        between: $("#between")
+        between: $("#between"),
+        minNote: $("#minNote"),
+        maxNote: $("#maxNote"),
+        minOct: $("#minOct"),
+        maxOct: $("#maxOct")
     };
     controller.setStaticButtons();
+    view.init();
     view.updateMinSep();
     $(window).bind("beforeunload", function(){player.stop();});
     MIDI.loader = new widgets.Loader;

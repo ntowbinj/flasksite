@@ -22,7 +22,7 @@
                 {% endfor %}
             </div>
             <div id='lowerVoiceIntervals'>
-                <p class="label">bott:</p>
+                <p class="label">bot:</p>
                 {% for intv in intervs|dictsort %}
                     <p><input type="checkbox" checked="" value={{ intv[0] }}></p>
                 {% endfor %}
@@ -39,6 +39,13 @@
                     <p><input type="checkbox" checked="" value={{ intv[0] }}></p>
                 {% endfor %}
             </div>
+        </div>
+        <div id='bounds'>
+            <div id="slider-range"></div>
+            <div id="minNote"></div>
+            <div id="minOct"></div>
+            <div id="maxNote"></div>
+            <div id="maxOct"></div>
         </div>
     </div>
 {% endblock %}
