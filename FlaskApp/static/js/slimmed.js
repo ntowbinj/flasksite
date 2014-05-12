@@ -103,7 +103,7 @@ var view = {
         this.setLabels();
     },
     message: function(){
-        alert(model.message);
+        dom.message.html(model.message);
     },
     updateMinSep: function(){
         dom.minSep.find("input").each(function(){
@@ -154,6 +154,7 @@ var controller = {
         });
         dom.minSep.find("input").each(function(){
             $(this).click(function(){
+                if(!player.stopped) model.disturbance = true;
                 model.sep = $(this).prop("value");
                 view.updateMinSep(); 
             });
@@ -371,7 +372,7 @@ var player = {
                     noteL += nextOptions[index][0];
                     noteU += nextOptions[index][1];
                 }
-                model.disturbance = false;
+                if(!player.stopped) model.disturbance = false;
                 this.setEvent(function(){that.play(noteL, noteU, true);}, model.between*1000);
             }
         }
@@ -422,7 +423,8 @@ function midiSetup(){
         minNote: $("#minNote"),
         maxNote: $("#maxNote"),
         minOct: $("#minOct"),
-        maxOct: $("#maxOct")
+        maxOct: $("#maxOct"),
+        message: $("#message")
     };
     controller.setStaticButtons();
     view.init();
