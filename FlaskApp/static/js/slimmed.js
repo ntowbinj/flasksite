@@ -102,8 +102,8 @@ var view = {
     init: function(){
         this.setLabels();
     },
-    message: function(){
-        dom.message.html(model.message);
+    message: function(m){
+        dom.message.html(m);
     },
     updateMinSep: function(){
         dom.minSep.find("input").each(function(){
@@ -325,6 +325,7 @@ model.between = 3;
 
 var player = {
     play: function(noteL, noteU, on){
+        view.message("");
         console.log(noteL + " " + noteU);
         console.log("on: " + on);
         MIDI.setVolume(0, 127);
@@ -348,10 +349,8 @@ var player = {
                 var that = this;
                 var nextOptions = candidates(noteL, noteU);
                 if(!nextOptions.length){
-                    alert("empty");
                     var fail = true;
                     if(model.disturbance){
-                        alert("disturbance");
                         var newStart = startNotes();
                         if(newStart){
                             fail = false;
@@ -361,9 +360,7 @@ var player = {
                     }
                     if(fail){
                         this.stop();
-                        model.message = "BDD";
-                        alert("NNN");
-                        view.message();
+                        view.message("error: this configuration is too limiting. Try allowing smaller intervals or a larger range.");
                         return;
                     }
                 }
