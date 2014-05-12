@@ -8,10 +8,11 @@
     float: left;
     width: auto;
 }
-#minNote, #maxNote
+#maxNote, #minNote{font-size: 90%;}
+.noteName
 {
-    width: 40px;
-    text-align: left;
+    display: inline-block;
+    min-width: 20px;
 }
 #intvLists p
 {

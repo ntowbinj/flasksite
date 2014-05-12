@@ -95,21 +95,22 @@ function noteName(i){
 var dom;
 
 var cons = {
-    labelRight: 60
+    labelRight: 40
 }
 
 var view = {
     init: function(){
         this.setLabels();
     },
+    message: function(){
+        alert(model.message);
+    },
     updateMinSep: function(){
         dom.minSep.find("input").each(function(){
-            if($(this).prop("value") == config.sep){
+            if($(this).prop("value") == model.sep){
                 $(this).prop("checked", true);
             }
-            else{
-                $(this).prop("checked", false);
-            }
+            else $(this).prop("checked", false);
         })
     },
     setLabels: function(wait){
@@ -138,10 +139,11 @@ var controller = {
             range: true,
             min: 0,
             max: 100,
-            values: [config.lowerBound, config.upperBound],
+            values: [model.lowerBound, model.upperBound],
             slide: function(event, ui) {
-                config.lowerBound = ui.values[0];
-                config.upperBound = ui.values[1];
+                model.disturbance = true;
+                model.lowerBound = ui.values[0];
+                model.upperBound = ui.values[1];
                 view.setLabels(5);
             }
         });
@@ -152,12 +154,12 @@ var controller = {
         });
         dom.minSep.find("input").each(function(){
             $(this).click(function(){
-                config.sep = $(this).prop("value");
+                model.sep = $(this).prop("value");
                 view.updateMinSep(); 
             });
         });
         $("#start").click(function(){
-            config.fetch();
+            model.fetch();
             player.stop();
             player.stopped = false;
             var start = startNotes();
@@ -167,11 +169,11 @@ var controller = {
         $("#stop").click(function(){
             player.stop();
         });
-        $("#intvLists").click(function(){config.fetchIntvs();});
+        $("#intvLists").click(function(){model.fetchIntvs();});
         $.each(["#duration", "#between"], function(index, value){
             $(value).click(function(){
                 if(!player.stopped){
-                    config.fetchTime();
+                    model.fetchTime();
                     player.correctEvent();
                 }
             });
@@ -180,7 +182,9 @@ var controller = {
 };
 
            
-var config = {
+var model = {
+    disturbance: false,
+    message: "",
     notes: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
     lowerBound: 0,
     upperBound: 0,
@@ -196,12 +200,12 @@ var config = {
     }()),
     topInterval: this.bottomInterval,
     fetch: function(){
-        config.fetchIntvs();
-        config.fetchTime();
+        model.fetchIntvs();
+        model.fetchTime();
     },
     fetchTime: function(){
-        config.duration = dom.duration.prop("value");
-        config.between = dom.between.prop("value");
+        model.duration = dom.duration.prop("value");
+        model.between = dom.between.prop("value");
     },
     fetchIntvs: function (){
         var getIntvs = function(intvList){
@@ -214,11 +218,11 @@ var config = {
                 }
             });
         };
-        getIntvs.call(dom.lowerVoiceIntervals, config.bottomInterval);
-        getIntvs.call(dom.upperVoiceIntervals, config.topInterval);
+        getIntvs.call(dom.lowerVoiceIntervals, model.bottomInterval);
+        getIntvs.call(dom.upperVoiceIntervals, model.topInterval);
         var numeric = function(a, b){return a-b};
-        config.bottomInterval = config.bottomInterval.sort(numeric);
-        config.topInterval = config.topInterval.sort(numeric);
+        model.bottomInterval = model.bottomInterval.sort(numeric);
+        model.topInterval = model.topInterval.sort(numeric);
     }
 }
 Array.prototype.bindexOfClosest = function (targ, side){ //binary search for index containing largest element *less* than target or symmetric case
@@ -250,39 +254,40 @@ Array.prototype.bindexOfClosest = function (targ, side){ //binary search for ind
         else if(this[i] < targ){
             mindex = i+1;
         }
-        else{
-            maxdex = i-1;
-        }
+        else maxdex = i-1;
     }
     return undefined;
 }
 
 function startNotes(){
-    var range = config.upperBound - config.lowerBound;
-    var bottRange = range - config.sep;
-    if(range > 0){
-        var l = Math.floor(Math.random()*bottRange) + config.lowerBound;
-        var u = l+config.sep;
-        return [l, u];
+    var range = model.upperBound - model.lowerBound;
+    var bottRange = range - model.sep;
+    if(bottRange > 0){
+        var l = Math.floor(Math.random()*bottRange) + model.lowerBound;
+        var u = l+model.sep;
+        if(candidates(l, u).length) return [l, u]; //attempt random start notes
+        else{ // if that fails, try room maximizing deterministic option
+            l = model.lowerBound;
+            u = model.lowerBound + model.sep;
+            if(candidates(l, u).length){return [l, u];}
+        }
     }
-    else{
-        alert("BAD");
-    }
+    else return undefined;
 }
 
 function candidates(currL, currU){ //assume bottomInterval and topInterval are already sorted
     var optionsL = new Array();
     var optionsU = new Array();
-    for(var i = 0; i<config.bottomInterval.length; i++){
-        var result = currL + config.bottomInterval[i];
-        if(result >= config.lowerBound && result <= config.upperBound){
-            optionsL.push(config.bottomInterval[i]);
+    for(var i = 0; i<model.bottomInterval.length; i++){
+        var result = currL + model.bottomInterval[i];
+        if(result >= model.lowerBound && result <= model.upperBound){
+            optionsL.push(model.bottomInterval[i]);
         }
     }
-    for(var i = 0; i<config.topInterval.length; i++){
-        var result = currU + config.topInterval[i];
-        if(result >= config.lowerBound && result <= config.upperBound){
-            optionsU.push(config.topInterval[i]);
+    for(var i = 0; i<model.topInterval.length; i++){
+        var result = currU + model.topInterval[i];
+        if(result >= model.lowerBound && result <= model.upperBound){
+            optionsU.push(model.topInterval[i]);
         }
     }
     var rightward = new Array();
@@ -291,8 +296,8 @@ function candidates(currL, currU){ //assume bottomInterval and topInterval are a
     var ret = new Array();
     var count = 0;
     for(var i = optionsL.length-1; i>=0; i--){ // largest leftward leap to largest rightward
-        //var remaining = gap - optionsL[i] - config.sep; // remaining space after leap (if leap left/positive, is less) 
-        var remaining = gap - optionsL[i] - config.sep + 1;
+        //var remaining = gap - optionsL[i] - model.sep; // remaining space after leap (if leap left/positive, is less) 
+        var remaining = gap - optionsL[i] - model.sep + 1;
         var limit = optionsU.bindexOfClosest(-remaining, 1); // positive 1 for closest but greater than since left is negative
         //console.log("limitdex: " + limit);
         if(typeof limit != 'undefined'){
@@ -308,16 +313,13 @@ function candidates(currL, currU){ //assume bottomInterval and topInterval are a
     return ret;
 }
 
-config.lowerBound = 40;
-config.duration = 1;
-config.upperBound = 60;
-config.sep = 8;
-config.bottomInterval = [-4, -3, 3, 4];
-config.topInterval = [-5, -4, -3, -2, -1, 2, 3, 4, 5];
-var result = candidates(5, 10);
-console.log(result);
-config.play = true;            
-config.between = 3;
+model.lowerBound = 40;
+model.duration = 1;
+model.upperBound = 60;
+model.sep = 8;
+model.bottomInterval = [-4, -3, 3, 4];
+model.topInterval = [-5, -4, -3, -2, -1, 2, 3, 4, 5];
+model.between = 3;
 
 
 var player = {
@@ -336,7 +338,7 @@ var player = {
                 this.notesOn = [noteL, noteU];
                 var that = this;
                 //console.log("l and u: " + noteL + " " + noteU);
-                this.setEvent(function(){that.play(noteL, noteU, false);}, config.duration*1000);
+                this.setEvent(function(){that.play(noteL, noteU, false);}, model.duration*1000);
             }
             else {
                 MIDI.noteOff(0, noteL, 0);
@@ -344,11 +346,33 @@ var player = {
                 this.noteOn = [];
                 var that = this;
                 var nextOptions = candidates(noteL, noteU);
-                var index = Math.floor(Math.random()*nextOptions.length);
-                noteL += nextOptions[index][0];
-                noteU += nextOptions[index][1];
-                this.setEvent(function(){that.play(noteL, noteU, true);}, config.between*1000);
-
+                if(!nextOptions.length){
+                    alert("empty");
+                    var fail = true;
+                    if(model.disturbance){
+                        alert("disturbance");
+                        var newStart = startNotes();
+                        if(newStart){
+                            fail = false;
+                            noteL = newStart[0];
+                            noteU = newStart[1];
+                        }
+                    }
+                    if(fail){
+                        this.stop();
+                        model.message = "BDD";
+                        alert("NNN");
+                        view.message();
+                        return;
+                    }
+                }
+                else{
+                    var index = Math.floor(Math.random()*nextOptions.length);
+                    noteL += nextOptions[index][0];
+                    noteU += nextOptions[index][1];
+                }
+                model.disturbance = false;
+                this.setEvent(function(){that.play(noteL, noteU, true);}, model.between*1000);
             }
         }
     },
@@ -369,8 +393,8 @@ var player = {
     correctEvent: function(){
         var elapsed = new Date().getTime() - this.time;
         var wait;
-        if(this.notesOn.length){wait = config.duration*1000;}
-        else{wait = config.between*1000;}
+        if(this.notesOn.length) wait = model.duration*1000; 
+        else wait = model.between*1000;
         if(elapsed > wait){
             //this.stop();
             //this.impending();
