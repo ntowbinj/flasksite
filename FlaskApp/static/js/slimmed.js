@@ -117,14 +117,14 @@ var view = {
         var delay = function() {
             $.each(["minNote", "maxNote"], function(index, value){
                 var n, name, oct;
-                n = $("#slider-range").slider("values", index);
+                n = $("#pitch-range").slider("values", index);
                 name = noteName(n); 
                 oct = Math.floor(n/12);
                 dom[value].html("<span class='noteName'>" + name + "</span><span class='noteOct'>" + oct + "</span>");
                 dom[value].position({
                     my: 'right+' + cons.labelRight + ' center',
                     at: 'center center',
-                    of: $("#slider-range a:eq(" + index  + ")")
+                    of: $("#pitch-range a:eq(" + index  + ")")
                 });
             });
         };
@@ -134,7 +134,7 @@ var view = {
 
 var controller = {
     setStaticButtons: function(){
-        $("#slider-range").slider({
+        $("#pitch-range").slider({
             orientation: "vertical",
             range: true,
             min: 0,

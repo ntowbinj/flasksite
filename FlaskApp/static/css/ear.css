@@ -45,31 +45,35 @@ p:first-child
     margin-left: 4px;
     width: auto;
 }
-#slider-range
+#pitch-range
 {
     width: 4px;
     height: 200px;
-    background: #CCCCCC;
+    //background: #CCCCCC;
+    background:url("../img/blueslidevert.png");
+    background-size: 100% 100%;
     //border: black;
-    border-color: #999999;
-    border-width: .5px;
+    border-color: #9999FF;
+    //border-width: .5px;
 }
-#slider-range a
+#pitch-range a
 {
     left: -7px;
     width: 16px;
     height: 10px;
+    background-image: url("../img/bluebvert.png");
+    background-size: 100% 100%;
+    //border: none;
+    border-color: #BBBBFF;
 }
-a.ui-slider-handle.ui-state-hover
+#pitch-range a.ui-slider-handle.ui-state-hover
 {
-    //background: black;
-    background-image: none;
+    background-image: url("../img/bluebvert-hover.png");
+    border-color: #9999DD;
 }
 div.ui-slider-range.ui-widget-header
 {
-    background:#5DBCD2;
-    background-image: none;
-    //background-image: url("../images/blue.jpg");
+    display: none;
 }
 
 

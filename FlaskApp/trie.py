@@ -7,6 +7,7 @@ class Trie:
         self.is_word = False
         self.children = {}
         self.node = None
+        self.on_stack = False
     def add(self, word, fullword=''):
         if not len(word): 
             self.is_word = True
@@ -58,6 +59,8 @@ class Node:
         self.neighbs = []
         self.visited = False
         self.previous = None
+        self.index = None
+        self.low_link = None
     def to_json(self):
         ret = '"' + self.word + '"' + ': [\n '
         comma = False
@@ -88,7 +91,8 @@ class Node:
             for n in curr.neighbs:
                 if not n.visited:
                     q.append(n)
-                    n.previous = curr
+                    if not n.previous:
+                        n.previous = curr
         if not limit or not curr.word == dest.word: 
             print(curr.word + " " + dest.word)
             return None
