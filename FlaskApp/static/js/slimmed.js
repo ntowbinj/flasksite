@@ -134,6 +134,30 @@ var view = {
 
 var controller = {
     setStaticButtons: function(){
+        $("#between").slider({
+            min: .3,
+            max: 5,
+            value: model.duration, 
+            slide: function(event, ui) {
+                model.between = ui.value;
+                console.log(model.between);
+                if(!player.stopped){
+                    player.correctEvent();
+                }
+            }
+        });
+        $("#duration").slider({
+            min: .3,
+            max: 5,
+            value: model.between, 
+            slide: function(event, ui) {
+                model.duration = ui.value;
+                console.log(model.duration);
+                if(!player.stopped){
+                    player.correctEvent();
+                }
+            }
+        });
         $("#pitch-range").slider({
             orientation: "vertical",
             range: true,
@@ -174,7 +198,6 @@ var controller = {
         $.each(["#duration", "#between"], function(index, value){
             $(value).click(function(){
                 if(!player.stopped){
-                    model.fetchTime();
                     player.correctEvent();
                 }
             });
@@ -202,11 +225,6 @@ var model = {
     topInterval: this.bottomInterval,
     fetch: function(){
         model.fetchIntvs();
-        model.fetchTime();
-    },
-    fetchTime: function(){
-        model.duration = dom.duration.prop("value");
-        model.between = dom.between.prop("value");
     },
     fetchIntvs: function (){
         var getIntvs = function(intvList){

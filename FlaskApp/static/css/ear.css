@@ -45,6 +45,13 @@ p:first-child
     margin-left: 4px;
     width: auto;
 }
+#duration, #between
+{
+    width: 120px;
+    height: 4px;
+    background-size: 100% 100%;
+    border-color: #9999FF;
+}
 #pitch-range
 {
     width: 4px;
@@ -52,9 +59,7 @@ p:first-child
     //background: #CCCCCC;
     background:url("../img/blueslidevert.png");
     background-size: 100% 100%;
-    //border: black;
     border-color: #9999FF;
-    //border-width: .5px;
 }
 #pitch-range a
 {
