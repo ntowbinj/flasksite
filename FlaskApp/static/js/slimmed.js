@@ -135,10 +135,11 @@ var view = {
 var controller = {
     setStaticButtons: function(){
         $("#between").slider({
-            min: .3,
+            min: 0.3,
             max: 5,
-            value: model.duration, 
-            slide: function(event, ui) {
+            step: 0.1,
+            value: model.between, 
+            change: function(event, ui) {
                 model.between = ui.value;
                 console.log(model.between);
                 if(!player.stopped){
@@ -147,10 +148,11 @@ var controller = {
             }
         });
         $("#duration").slider({
-            min: .3,
+            min: 0.3,
             max: 5,
-            value: model.between, 
-            slide: function(event, ui) {
+            step: 0.1,
+            value: model.duration, 
+            change: function(event, ui) {
                 model.duration = ui.value;
                 console.log(model.duration);
                 if(!player.stopped){

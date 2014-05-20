@@ -48,9 +48,20 @@ p:first-child
 #duration, #between
 {
     width: 120px;
+    margin: 8px 0 20px 0;
     height: 4px;
+    background:url("../img/blueslidehorz.png");
     background-size: 100% 100%;
     border-color: #9999FF;
+}
+#duration a, #between a
+{
+    top: -7px;
+    width: 10px;
+    height: 16px;
+    background-image: url("../img/bluebhorz.png");
+    background-size: 100% 100%;
+    border-color: #BBBBFF;
 }
 #pitch-range
 {
