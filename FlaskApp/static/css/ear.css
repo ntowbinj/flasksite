@@ -1,7 +1,12 @@
+#instructions{
+    clear: both;
+}
+b{font-weight: bold;}
 #cpanel div
 {
     float: left;
     margin-right: 20px;
+    margin-bottom: 5%;
 }
 #intvLists div
 {
