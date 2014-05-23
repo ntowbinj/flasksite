@@ -51,7 +51,8 @@ p:first-child
 }
 #time p
 {
-    margin-top: 18px;
+    margin-top: 35px;
+    margin-bottom: 5px;
     margin-left: 4px;
     width: auto;
 }
