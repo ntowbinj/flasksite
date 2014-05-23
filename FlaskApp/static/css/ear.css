@@ -1,12 +1,17 @@
 #instructions{
     clear: both;
 }
+#instructions h1{
+    font-weight: bold;
+    font-size: 200%;
+    padding-bottom: 3%;
+}
 b{font-weight: bold;}
 #cpanel div
 {
     float: left;
     margin-right: 20px;
-    margin-bottom: 5%;
+    margin-bottom: 2%;
 }
 #intvLists div
 {
