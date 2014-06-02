@@ -133,9 +133,19 @@ var view = {
 }
 
 var controller = {
-    setStaticButtons: function(){
+    init: function(){
+        $("#answerWait").slider({
+            min: 0,
+            max: 1,
+            step: 0.2,
+            value: model.answerWait, 
+            change: function(event, ui) {
+                model.answerWait = ui.value;
+                console.log(model.answerWait);
+            }
+        });
         $("#between").slider({
-            min: 0.3,
+            min: 0.0,
             max: 5,
             step: 0.1,
             value: model.between, 
@@ -172,6 +182,9 @@ var controller = {
                 model.upperBound = ui.values[1];
                 view.setLabels(5);
             }
+        });
+        dom.wait.progressbar({
+            value: 0
         });
         dom.intervalLabels.find("a").each(function(){
             $(this).click(function(e){
@@ -217,6 +230,7 @@ var model = {
     sep: 15,
     duration: 0,
     between: 0,
+    answerWait: .5,
     bottomInterval: (function(){
         var ret = new Array();
         for(var i = -23; i<24; i++){
@@ -365,7 +379,7 @@ var player = {
             else {
                 MIDI.noteOff(0, noteL, 0);
                 MIDI.noteOff(0, noteU, 0);
-                this.noteOn = [];
+                this.notesOn = [];
                 var that = this;
                 var nextOptions = candidates(noteL, noteU);
                 if(!nextOptions.length){
@@ -407,6 +421,18 @@ var player = {
         this.time = new Date().getTime();
         this.impending = impending;
         this.timeOut = setTimeout(this.impending, when);
+        if(this.notesOn.length) this.moveBar(((model.duration*1000 + model.between*1000)*model.answerWait - new Date().getTime())*this.bar.fillRate/100.0);
+    },
+    moveBar: function(wait){
+        val = dom.wait.progressbar("option", "value");
+        if(val>=100) {
+            dom.wait.progressbar("option", "value", 0);
+            return;
+        }
+        var that = this;
+        this.bar.timeOut = setTimeout(function(){that.moveBar(wait);}, wait);
+        dom.wait.progressbar("option", "value", val + this.bar.fillRate);
+        finishTime = this.time + model.duration*1000;
     },
     correctEvent: function(){
         var elapsed = new Date().getTime() - this.time;
@@ -414,8 +440,6 @@ var player = {
         if(this.notesOn.length) wait = model.duration*1000; 
         else wait = model.between*1000;
         if(elapsed > wait){
-            //this.stop();
-            //this.impending();
             this.setEvent(this.impending, 0);
         }
         else{
@@ -427,6 +451,7 @@ var player = {
     timeOut: undefined,
     impending: function(){},
     stopped: true,
+    bar: {timeOut: undefined, fillRate: 10}
 }
 
 function midiSetup(){
@@ -437,13 +462,15 @@ function midiSetup(){
         minSep: $("#minSep"),
         duration: $("#duration"),
         between: $("#between"),
+        answerWait: $("#answerWait"),
         minNote: $("#minNote"),
         maxNote: $("#maxNote"),
         minOct: $("#minOct"),
         maxOct: $("#maxOct"),
-        message: $("#message")
+        message: $("#message"),
+        wait: $("#wait")
     };
-    controller.setStaticButtons();
+    controller.init();
     view.init();
     view.updateMinSep();
     $(window).bind("beforeunload", function(){player.stop();});

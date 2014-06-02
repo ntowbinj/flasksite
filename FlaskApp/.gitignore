@@ -2,7 +2,7 @@
 *.json
 *.txt
 /neo4j*
-/venv
+venv/
 /try.py
 /dump.txt
 /flask

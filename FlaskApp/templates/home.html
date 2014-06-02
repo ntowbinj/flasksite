@@ -6,18 +6,21 @@
     {% endblock %}
 {% block content %}
     <h1 class="title">Polyphonic Eartrainer</h1>
+    <div id="wait"></div>
     <p id="message"></p>
     <div id='cpanel'>
-        <div id='time'>
+        <div id='time' class='col'>
             <button class="blueButton" id="start">start</button>
             <button class="blueButton" id="stop">stop</button>
             <p class="label">note duration:</p>
             <div id="duration" class="slider"></div>
             <p class="label">silence between:</p>
             <div id="between" class="slider"></div>
+            <p class="label">show answer:</p>
+            <div id="answerWait" class="slider"></div>
 
         </div>
-        <div id='intvLists'>
+        <div id='intvLists' class='col'>
             <div id='intervalLabels'>
                 <p class="label">&nbsp;</p>
                 {% for intv in intervs|dictsort %}
@@ -43,7 +46,7 @@
                 {% endfor %}
             </div>
         </div>
-        <div id='bounds'>
+        <div id='bounds' class='col'>
             <div id="pitch-range" class="slider"></div>
             <div id="minNote"></div>
             <div id="minOct"></div>
