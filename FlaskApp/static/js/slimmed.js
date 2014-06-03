@@ -141,28 +141,31 @@ var controller = {
             value: model.answerWait, 
             change: function(event, ui) {
                 model.answerWait = ui.value;
+                console.log(model.answerWait);
             }
         });
         $("#between").slider({
-            min: 0,
-            max: 5000,
-            step: 100,
+            min: 0.0,
+            max: 5,
+            step: 0.1,
             value: model.between, 
             change: function(event, ui) {
                 model.between = ui.value;
-                if(!player.stopped && !player.on){
+                console.log(model.between);
+                if(!player.stopped){
                     player.correctEvent();
                 }
             }
         });
         $("#duration").slider({
-            min: 300,
-            max: 5000,
-            step: 100,
+            min: 0.3,
+            max: 5,
+            step: 0.1,
             value: model.duration, 
             change: function(event, ui) {
                 model.duration = ui.value;
-                if(!player.stopped && player.on){
+                console.log(model.duration);
+                if(!player.stopped){
                     player.correctEvent();
                 }
             }
@@ -201,8 +204,7 @@ var controller = {
             player.stopped = false;
             var start = startNotes();
             console.log(start);
-            player.notesOn = start;
-            player.play(); 
+            player.play(start[0], start[1], true); 
         });
         $("#stop").click(function(){
             player.stop();
@@ -347,74 +349,63 @@ function candidates(currL, currU){ //assume bottomInterval and topInterval are a
 }
 
 model.lowerBound = 40;
-model.duration = 1000;
+model.duration = 1;
 model.upperBound = 60;
 model.sep = 8;
 model.bottomInterval = [-4, -3, 3, 4];
 model.topInterval = [-5, -4, -3, -2, -1, 2, 3, 4, 5];
-model.between = 3000;
+model.between = 3;
 
 
 var player = {
-    unit: 100,
-    until: 0,
-    on: false,
-    startTime: 0,
-    play: function(){
-        that = this;
+    play: function(noteL, noteU, on){
         view.message("");
+        console.log(noteL + " " + noteU);
+        console.log("on: " + on);
         MIDI.setVolume(0, 127);
-        if(this.stopped) return;
-        if(!this.until){
-            this.startTime = new Date().getTime();
-            if(!this.on){
-                for(var i = 0; i<this.notesOn.length; i++)
-                    MIDI.noteOn(0, this.notesOn[i], 127, 0);
-                this.until = model.duration/this.unit;
-                this.on = true;
-                this.setEvent(function(){that.play();}, this.unit);
+        if(this.stopped){
+            return;
+        }
+        else {
+            if(on){
+                //alert("on");
+                MIDI.noteOn(0, noteL, 127, 0);
+                MIDI.noteOn(0, noteU, 127, 0);
+                this.notesOn = [noteL, noteU];
+                var that = this;
+                //console.log("l and u: " + noteL + " " + noteU);
+                this.setEvent(function(){that.play(noteL, noteU, false);}, model.duration*1000);
             }
-            else{
-                for(var i = 0; i<this.notesOn.length; i++)
-                   MIDI.noteOff(0, this.notesOn[i], 0);
-                var nextOptions = candidates(this.notesOn[0], this.notesOn[1]);
+            else {
+                MIDI.noteOff(0, noteL, 0);
+                MIDI.noteOff(0, noteU, 0);
+                this.notesOn = [];
+                var that = this;
+                var nextOptions = candidates(noteL, noteU);
                 if(!nextOptions.length){
                     var fail = true;
                     if(model.disturbance){
                         var newStart = startNotes();
                         if(newStart){
                             fail = false;
-                            this.notesOn = newStart;
+                            noteL = newStart[0];
+                            noteU = newStart[1];
                         }
                     }
                     if(fail){
                         this.stop();
-                        view.message("error: this configuration is too limiting. Try alowing smaller intervals or a larger range.");
+                        view.message("error: this configuration is too limiting. Try allowing smaller intervals or a larger range.");
                         return;
                     }
                 }
                 else{
                     var index = Math.floor(Math.random()*nextOptions.length);
-                    this.notesOn[0] += nextOptions[index][0];
-                    this.notesOn[1] += nextOptions[index][1];
+                    noteL += nextOptions[index][0];
+                    noteU += nextOptions[index][1];
                 }
                 if(!player.stopped) model.disturbance = false;
-                this.until = model.between/this.unit;
-                this.on = false;
-                this.setEvent(function(){that.play();}, this.unit);
+                this.setEvent(function(){that.play(noteL, noteU, true);}, model.between*1000);
             }
-        }
-        else{
-            this.until--;
-            this.setEvent(function(){that.play();}, this.unit);
-        }
-        if(this.on){
-            val = (100.0*(new Date().getTime() - this.startTime)/model.duration)
-            console.log(val);
-            dom.wait.progressbar("option", "value", val);
-        }
-        else{
-            dom.wait.progressbar("option", "value", 0);
         }
     },
     stop: function(){
@@ -423,8 +414,6 @@ var player = {
         for(var i = 0; i<this.notesOn.length; i++){
             MIDI.noteOff(0, this.notesOn[i], 0);
         }
-        this.on = false;
-        this.until = 0;
         this.notesOn = [];
     },
     setEvent: function(impending, when){
@@ -432,21 +421,29 @@ var player = {
         this.time = new Date().getTime();
         this.impending = impending;
         this.timeOut = setTimeout(this.impending, when);
-        //if(this.notesOn.length) this.moveBar(((model.duration*1000 + model.between*1000)*model.answerWait - new Date().getTime())*this.bar.fillRate/100.0);
+        if(this.notesOn.length) this.moveBar(((model.duration*1000 + model.between*1000)*model.answerWait - new Date().getTime())*this.bar.fillRate/100.0);
+    },
+    moveBar: function(wait){
+        val = dom.wait.progressbar("option", "value");
+        if(val>=100) {
+            dom.wait.progressbar("option", "value", 0);
+            return;
+        }
+        var that = this;
+        this.bar.timeOut = setTimeout(function(){that.moveBar(wait);}, wait);
+        dom.wait.progressbar("option", "value", val + this.bar.fillRate);
+        finishTime = this.time + model.duration*1000;
     },
     correctEvent: function(){
-        var elapsed = new Date().getTime() - this.startTime;
+        var elapsed = new Date().getTime() - this.time;
         var wait;
-        if(this.notesOn.length) wait = model.duration; 
-        else wait = model.between;
+        if(this.notesOn.length) wait = model.duration*1000; 
+        else wait = model.between*1000;
         if(elapsed > wait){
-            console.log("full time elapsed");
-            this.until = 0;
             this.setEvent(this.impending, 0);
         }
         else{
             var remaining = wait - elapsed;
-            this.until = Math.floor(remaining/this.unit);
             this.setEvent(this.impending, remaining);
         }
     },
