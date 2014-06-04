@@ -107,7 +107,7 @@ var view = {
     },
     updateMinSep: function(){
         dom.minSep.find("input").each(function(){
-            if($(this).prop("value") == model.sep){
+            if($(this).prop("value") == config.sep){
                 $(this).prop("checked", true);
             }
             else $(this).prop("checked", false);
@@ -138,33 +138,30 @@ var controller = {
             min: 0,
             max: 1,
             step: 0.2,
-            value: model.answerWait, 
+            value: config.answerWait, 
             change: function(event, ui) {
-                model.answerWait = ui.value;
-                console.log(model.answerWait);
+                config.answerWait = ui.value;
             }
         });
         $("#between").slider({
-            min: 0.0,
-            max: 5,
-            step: 0.1,
-            value: model.between, 
+            min: 0,
+            max: 5000,
+            step: 100,
+            value: config.between, 
             change: function(event, ui) {
-                model.between = ui.value;
-                console.log(model.between);
+                config.between = ui.value;
                 if(!player.stopped){
                     player.correctEvent();
                 }
             }
         });
         $("#duration").slider({
-            min: 0.3,
-            max: 5,
-            step: 0.1,
-            value: model.duration, 
+            min: 300,
+            max: 5000,
+            step: 100,
+            value: config.duration, 
             change: function(event, ui) {
-                model.duration = ui.value;
-                console.log(model.duration);
+                config.duration = ui.value;
                 if(!player.stopped){
                     player.correctEvent();
                 }
@@ -175,11 +172,11 @@ var controller = {
             range: true,
             min: 0,
             max: 100,
-            values: [model.lowerBound, model.upperBound],
+            values: [config.lowerBound, config.upperBound],
             slide: function(event, ui) {
-                model.disturbance = true;
-                model.lowerBound = ui.values[0];
-                model.upperBound = ui.values[1];
+                config.disturbance = true;
+                config.lowerBound = ui.values[0];
+                config.upperBound = ui.values[1];
                 view.setLabels(5);
             }
         });
@@ -193,23 +190,23 @@ var controller = {
         });
         dom.minSep.find("input").each(function(){
             $(this).click(function(){
-                if(!player.stopped) model.disturbance = true;
-                model.sep = $(this).prop("value");
+                if(!player.stopped) config.disturbance = true;
+                config.sep = $(this).prop("value");
                 view.updateMinSep(); 
             });
         });
         $("#start").click(function(){
-            model.fetch();
+            config.fetch();
             player.stop();
             player.stopped = false;
             var start = startNotes();
             console.log(start);
-            player.play(start[0], start[1], true); 
+            player.play(start[0], start[1]); 
         });
         $("#stop").click(function(){
             player.stop();
         });
-        $("#intvLists").click(function(){model.fetchIntvs();});
+        $("#intvLists").click(function(){config.fetchIntvs();});
         $.each(["#duration", "#between"], function(index, value){
             $(value).click(function(){
                 if(!player.stopped){
@@ -221,7 +218,7 @@ var controller = {
 };
 
            
-var model = {
+var config = {
     disturbance: false,
     message: "",
     notes: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
@@ -240,7 +237,7 @@ var model = {
     }()),
     topInterval: this.bottomInterval,
     fetch: function(){
-        model.fetchIntvs();
+        config.fetchIntvs();
     },
     fetchIntvs: function (){
         var getIntvs = function(intvList){
@@ -253,11 +250,11 @@ var model = {
                 }
             });
         };
-        getIntvs.call(dom.lowerVoiceIntervals, model.bottomInterval);
-        getIntvs.call(dom.upperVoiceIntervals, model.topInterval);
+        getIntvs.call(dom.lowerVoiceIntervals, config.bottomInterval);
+        getIntvs.call(dom.upperVoiceIntervals, config.topInterval);
         var numeric = function(a, b){return a-b};
-        model.bottomInterval = model.bottomInterval.sort(numeric);
-        model.topInterval = model.topInterval.sort(numeric);
+        config.bottomInterval = config.bottomInterval.sort(numeric);
+        config.topInterval = config.topInterval.sort(numeric);
     }
 }
 Array.prototype.bindexOfClosest = function (targ, side){ //binary search for index containing largest element *less* than target or symmetric case
@@ -295,15 +292,15 @@ Array.prototype.bindexOfClosest = function (targ, side){ //binary search for ind
 }
 
 function startNotes(){
-    var range = model.upperBound - model.lowerBound;
-    var bottRange = range - model.sep;
+    var range = config.upperBound - config.lowerBound;
+    var bottRange = range - config.sep;
     if(bottRange > 0){
-        var l = Math.floor(Math.random()*bottRange) + model.lowerBound;
-        var u = l+model.sep;
+        var l = Math.floor(Math.random()*bottRange) + config.lowerBound;
+        var u = l+config.sep;
         if(candidates(l, u).length) return [l, u]; //attempt random start notes
         else{ // if that fails, try room maximizing deterministic option
-            l = model.lowerBound;
-            u = model.lowerBound + model.sep;
+            l = config.lowerBound;
+            u = config.lowerBound + config.sep;
             if(candidates(l, u).length){return [l, u];}
         }
     }
@@ -313,16 +310,16 @@ function startNotes(){
 function candidates(currL, currU){ //assume bottomInterval and topInterval are already sorted
     var optionsL = new Array();
     var optionsU = new Array();
-    for(var i = 0; i<model.bottomInterval.length; i++){
-        var result = currL + model.bottomInterval[i];
-        if(result >= model.lowerBound && result <= model.upperBound){
-            optionsL.push(model.bottomInterval[i]);
+    for(var i = 0; i<config.bottomInterval.length; i++){
+        var result = currL + config.bottomInterval[i];
+        if(result >= config.lowerBound && result <= config.upperBound){
+            optionsL.push(config.bottomInterval[i]);
         }
     }
-    for(var i = 0; i<model.topInterval.length; i++){
-        var result = currU + model.topInterval[i];
-        if(result >= model.lowerBound && result <= model.upperBound){
-            optionsU.push(model.topInterval[i]);
+    for(var i = 0; i<config.topInterval.length; i++){
+        var result = currU + config.topInterval[i];
+        if(result >= config.lowerBound && result <= config.upperBound){
+            optionsU.push(config.topInterval[i]);
         }
     }
     var rightward = new Array();
@@ -331,8 +328,8 @@ function candidates(currL, currU){ //assume bottomInterval and topInterval are a
     var ret = new Array();
     var count = 0;
     for(var i = optionsL.length-1; i>=0; i--){ // largest leftward leap to largest rightward
-        //var remaining = gap - optionsL[i] - model.sep; // remaining space after leap (if leap left/positive, is less) 
-        var remaining = gap - optionsL[i] - model.sep + 1;
+        //var remaining = gap - optionsL[i] - config.sep; // remaining space after leap (if leap left/positive, is less) 
+        var remaining = gap - optionsL[i] - config.sep + 1;
         var limit = optionsU.bindexOfClosest(-remaining, 1); // positive 1 for closest but greater than since left is negative
         //console.log("limitdex: " + limit);
         if(typeof limit != 'undefined'){
@@ -348,33 +345,33 @@ function candidates(currL, currU){ //assume bottomInterval and topInterval are a
     return ret;
 }
 
-model.lowerBound = 40;
-model.duration = 1;
-model.upperBound = 60;
-model.sep = 8;
-model.bottomInterval = [-4, -3, 3, 4];
-model.topInterval = [-5, -4, -3, -2, -1, 2, 3, 4, 5];
-model.between = 3;
+config.lowerBound = 40;
+config.duration = 1000;
+config.upperBound = 60;
+config.sep = 8;
+config.bottomInterval = [-4, -3, 3, 4];
+config.topInterval = [-5, -4, -3, -2, -1, 2, 3, 4, 5];
+config.between = 3000;
 
 
 var player = {
-    play: function(noteL, noteU, on){
+    on: false,
+    startTime: 0,
+    play: function(noteL, noteU){
         view.message("");
-        console.log(noteL + " " + noteU);
-        console.log("on: " + on);
         MIDI.setVolume(0, 127);
         if(this.stopped){
             return;
         }
         else {
-            if(on){
-                //alert("on");
+            if(!this.on){
                 MIDI.noteOn(0, noteL, 127, 0);
                 MIDI.noteOn(0, noteU, 127, 0);
                 this.notesOn = [noteL, noteU];
                 var that = this;
-                //console.log("l and u: " + noteL + " " + noteU);
-                this.setEvent(function(){that.play(noteL, noteU, false);}, model.duration*1000);
+                this.on = true;
+                this.startTime = new Date().getTime();
+                this.setEvent(function(){that.play(noteL, noteU);}, config.duration);
             }
             else {
                 MIDI.noteOff(0, noteL, 0);
@@ -384,7 +381,7 @@ var player = {
                 var nextOptions = candidates(noteL, noteU);
                 if(!nextOptions.length){
                     var fail = true;
-                    if(model.disturbance){
+                    if(config.disturbance){
                         var newStart = startNotes();
                         if(newStart){
                             fail = false;
@@ -403,42 +400,48 @@ var player = {
                     noteL += nextOptions[index][0];
                     noteU += nextOptions[index][1];
                 }
-                if(!player.stopped) model.disturbance = false;
-                this.setEvent(function(){that.play(noteL, noteU, true);}, model.between*1000);
+                if(!player.stopped) config.disturbance = false;
+                this.on = false;
+                this.setEvent(function(){that.play(noteL, noteU);}, config.between);
             }
         }
     },
     stop: function(){
         this.stopped = true;
         clearTimeout(this.timeOut);
+        clearTimeout(this.barTimeOut);
         for(var i = 0; i<this.notesOn.length; i++){
             MIDI.noteOff(0, this.notesOn[i], 0);
         }
+        this.on = false;
         this.notesOn = [];
     },
     setEvent: function(impending, when){
         clearTimeout(this.timeOut);
+        clearTimeout(this.barTimeOut);
         this.time = new Date().getTime();
         this.impending = impending;
         this.timeOut = setTimeout(this.impending, when);
-        if(this.notesOn.length) this.moveBar(((model.duration*1000 + model.between*1000)*model.answerWait - new Date().getTime())*this.bar.fillRate/100.0);
+        this.moveBar();
     },
-    moveBar: function(wait){
-        val = dom.wait.progressbar("option", "value");
-        if(val>=100) {
-            dom.wait.progressbar("option", "value", 0);
-            return;
+    moveBar: function(){
+        var oldval = dom.wait.progressbar("option", "value");
+        var val;
+        if(oldval<100){
+            val = 100.0*(new Date().getTime() - this.startTime)/(config.answerWait*(config.duration+config.between));
+            that = this;
+            this.barTimeOut = setTimeout(function(){that.moveBar()}, (val<100) ? 100 : 200);
         }
-        var that = this;
-        this.bar.timeOut = setTimeout(function(){that.moveBar(wait);}, wait);
-        dom.wait.progressbar("option", "value", val + this.bar.fillRate);
-        finishTime = this.time + model.duration*1000;
+        else {
+            val = 0;
+        }
+        dom.wait.progressbar("option", "value", val);
     },
     correctEvent: function(){
         var elapsed = new Date().getTime() - this.time;
         var wait;
-        if(this.notesOn.length) wait = model.duration*1000; 
-        else wait = model.between*1000;
+        if(this.notesOn.length) wait = config.duration; 
+        else wait = config.between;
         if(elapsed > wait){
             this.setEvent(this.impending, 0);
         }
@@ -449,9 +452,9 @@ var player = {
     },
     notesOn: [],
     timeOut: undefined,
+    barTimeOut: undefined,
     impending: function(){},
     stopped: true,
-    bar: {timeOut: undefined, fillRate: 10}
 }
 
 function midiSetup(){
