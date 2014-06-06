@@ -49,12 +49,25 @@ p:first-child
 {
     margin-right: 10px;
 }
-#time p
+#time div.slider{
+    clear: both;
+    margin-bottom: 20px;
+}
+#time p.label
 {
+    clear: both;
     margin-top: 35px;
-    margin-bottom: 5px;
-    margin-left: 4px;
+    margin-bottom: 10px;
     width: auto;
+}
+#time p.rightLabel{
+    clear:both;
+    float: left;
+}
+#inARow{
+    position: relative;
+    margin-left: 10px;
+    top: -3px;
 }
 #duration, #between, #answerWait
 {
@@ -74,6 +87,26 @@ p:first-child
     background-size: 100% 100%;
     border-color: #BBBBFF;
 }
+#wait{
+    width: 300px;
+    height: 20px;
+}
+#wait div{
+    background: none;
+    background-color: blue;
+}
+#answer {
+    display: inline-block;
+    min-width: 300px;
+    border: 1px solid black;
+    height: 60px;
+    font-weight: bold;
+}
+.answerNote{
+    display: inline-block;
+    width: 30px;
+}
+#answer p{margin: 10px;}
 #pitch-range
 {
     width: 4px;
@@ -100,7 +133,8 @@ p:first-child
 }
 div.ui-slider-range.ui-widget-header
 {
-    display: none;
+    background: none;
+    background-color: #CCCCFF;
 }
 
 

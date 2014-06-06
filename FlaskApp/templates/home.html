@@ -6,6 +6,7 @@
     {% endblock %}
 {% block content %}
     <h1 class="title">Polyphonic Eartrainer</h1>
+    <div id="answer"></div>
     <div id="wait"></div>
     <p id="message"></p>
     <div id='cpanel'>
@@ -13,11 +14,19 @@
             <button class="blueButton" id="start">start</button>
             <button class="blueButton" id="stop">stop</button>
             <p class="label">note duration:</p>
-            <div id="duration" class="slider"></div>
+            <div class="slider" id="duration" class="slider"></div>
             <p class="label">silence between:</p>
-            <div id="between" class="slider"></div>
+            <div class="slider" id="between" class="slider"></div>
             <p class="label">answer delay:</p>
-            <div id="answerWait" class="slider"></div>
+            <div class="slider" id="answerWait" class="slider"></div>
+            <p class="rightLabel">in a row:</p>
+            <div>
+                <select id="inARow">
+                    {% for n in range(1, 6) %}
+                        <option value="{{n}}">{{n}}</option>
+                    {% endfor %}
+                </select>
+            </div>
 
         </div>
         <div id='intvLists' class='col'>

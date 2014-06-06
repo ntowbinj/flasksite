@@ -101,6 +101,7 @@ var cons = {
 var view = {
     init: function(){
         this.setLabels();
+        dom.inARow.val(config.inARow);
     },
     message: function(m){
         dom.message.html(m);
@@ -129,6 +130,23 @@ var view = {
             });
         };
         setTimeout(delay, wait);
+    },
+    showAnswer: function(){
+        html = "";
+        var all = player.answer.map(function(ar){
+            return ar.map(function(note){
+                return noteName(note);
+            });
+        });
+        for(var i = all[0].length-1; i>=0; i--){
+            html+= "<p>";
+            for(var j = 0; j<all.length; j++){
+                html += "<span class='answerNote'>";
+                html += all[j][i] + " </span>";
+            }
+            html += "</p>"
+        }
+        dom.answer.html(html);
     }
 }
 
@@ -197,6 +215,7 @@ var controller = {
         });
         $("#start").click(function(){
             config.fetch();
+            player.untilPause = config.inARow;
             player.stop();
             player.stopped = false;
             var start = startNotes();
@@ -214,6 +233,7 @@ var controller = {
                 }
             });
         });
+        dom.inARow.click(function(){config.inARow = $(this).val()});
     }
 };
 
@@ -226,6 +246,7 @@ var config = {
     upperBound: 0,
     sep: 15,
     duration: 0,
+    inARow: 1,
     between: 0,
     answerWait: .5,
     bottomInterval: (function(){
@@ -324,16 +345,12 @@ function candidates(currL, currU){ //assume bottomInterval and topInterval are a
     }
     var rightward = new Array();
     var gap = currU - currL;
-    //console.log("gap: " + gap);
     var ret = new Array();
     var count = 0;
     for(var i = optionsL.length-1; i>=0; i--){ // largest leftward leap to largest rightward
-        //var remaining = gap - optionsL[i] - config.sep; // remaining space after leap (if leap left/positive, is less) 
         var remaining = gap - optionsL[i] - config.sep + 1;
         var limit = optionsU.bindexOfClosest(-remaining, 1); // positive 1 for closest but greater than since left is negative
-        //console.log("limitdex: " + limit);
         if(typeof limit != 'undefined'){
-            //console.log("limit: " + optionsU[limit]);
             rightward = optionsU.slice(limit, optionsU.length).concat(rightward);
             optionsU = optionsU.slice(0, limit);
             for(var j = 0; j<rightward.length; j++){
@@ -352,11 +369,15 @@ config.sep = 8;
 config.bottomInterval = [-4, -3, 3, 4];
 config.topInterval = [-5, -4, -3, -2, -1, 2, 3, 4, 5];
 config.between = 3000;
+config.inARow = 1;
 
 
 var player = {
+    untilPause: 0,
     on: false,
     startTime: 0,
+    shown: true,
+    answer: [],
     play: function(noteL, noteU){
         view.message("");
         MIDI.setVolume(0, 127);
@@ -367,11 +388,18 @@ var player = {
             if(!this.on){
                 MIDI.noteOn(0, noteL, 127, 0);
                 MIDI.noteOn(0, noteU, 127, 0);
+                if(this.untilPause == config.inARow){ 
+                    this.startTime = new Date().getTime();
+                    this.shown = false;
+                    this.moveBar();
+                    this.answer = [];
+                }
                 this.notesOn = [noteL, noteU];
+                this.answer.push(this.notesOn);
                 var that = this;
                 this.on = true;
-                this.startTime = new Date().getTime();
-                this.setEvent(function(){that.play(noteL, noteU);}, config.duration);
+                this.untilPause--;
+                this.setPlayEvent(function(){that.play(noteL, noteU);}, config.duration);
             }
             else {
                 MIDI.noteOff(0, noteL, 0);
@@ -402,40 +430,44 @@ var player = {
                 }
                 if(!player.stopped) config.disturbance = false;
                 this.on = false;
-                this.setEvent(function(){that.play(noteL, noteU);}, config.between);
+                this.setPlayEvent(function(){that.play(noteL, noteU);}, this.untilPause ? 0 : config.between);
+                if(!this.untilPause) this.untilPause = config.inARow;
             }
         }
     },
     stop: function(){
         this.stopped = true;
+        if(this.all) this.show();
         clearTimeout(this.timeOut);
-        clearTimeout(this.barTimeOut);
         for(var i = 0; i<this.notesOn.length; i++){
             MIDI.noteOff(0, this.notesOn[i], 0);
         }
         this.on = false;
         this.notesOn = [];
     },
-    setEvent: function(impending, when){
+    setPlayEvent: function(impending, when){
         clearTimeout(this.timeOut);
-        clearTimeout(this.barTimeOut);
         this.time = new Date().getTime();
         this.impending = impending;
         this.timeOut = setTimeout(this.impending, when);
-        this.moveBar();
     },
     moveBar: function(){
-        var oldval = dom.wait.progressbar("option", "value");
-        var val;
-        if(oldval<100){
-            val = 100.0*(new Date().getTime() - this.startTime)/(config.answerWait*(config.duration+config.between));
+        if(!this.shown && !this.stopped){
+            val = 100.0*(new Date().getTime() - this.startTime)/(config.answerWait*(config.duration*config.inARow + config.between));
+            if(val>110) this.show();
             that = this;
-            this.barTimeOut = setTimeout(function(){that.moveBar()}, (val<100) ? 100 : 200);
+            this.barTimeOut = setTimeout(function(){that.moveBar()}, (val<100) ? 200 : 200);
         }
         else {
             val = 0;
         }
         dom.wait.progressbar("option", "value", val);
+    },
+    show: function(){
+        console.log("SHOW");
+        this.shown = true;
+        view.showAnswer();
+        console.log(this.notesOn);
     },
     correctEvent: function(){
         var elapsed = new Date().getTime() - this.time;
@@ -443,11 +475,11 @@ var player = {
         if(this.notesOn.length) wait = config.duration; 
         else wait = config.between;
         if(elapsed > wait){
-            this.setEvent(this.impending, 0);
+            this.setPlayEvent(this.impending, 0);
         }
         else{
             var remaining = wait - elapsed;
-            this.setEvent(this.impending, remaining);
+            this.setPlayEvent(this.impending, remaining);
         }
     },
     notesOn: [],
@@ -466,12 +498,14 @@ function midiSetup(){
         duration: $("#duration"),
         between: $("#between"),
         answerWait: $("#answerWait"),
+        answer: $("#answer"),
         minNote: $("#minNote"),
         maxNote: $("#maxNote"),
         minOct: $("#minOct"),
         maxOct: $("#maxOct"),
         message: $("#message"),
-        wait: $("#wait")
+        wait: $("#wait"),
+        inARow: $("#inARow")
     };
     controller.init();
     view.init();
