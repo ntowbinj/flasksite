@@ -1,8 +1,8 @@
 *.swp
 *.json
 *.txt
+/venv
 /neo4j*
-venv/
 /try.py
 /dump.txt
 /flask
