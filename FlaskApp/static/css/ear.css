@@ -104,7 +104,7 @@ p:first-child
 }
 .answerNote{
     display: inline-block;
-    width: 30px;
+    width: 40px;
 }
 #answer p{margin: 10px;}
 #pitch-range

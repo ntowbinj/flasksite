@@ -5,6 +5,7 @@ import musichelp
 app = Flask(__name__)
 print(__name__)
 
+@app.route("/eartrainer")
 @app.route("/")
 def hello(): 
     dependencies = ['AudioDetect.js', 'LoadPlugin.js', 'Plugin.js', 'Player.js'] 

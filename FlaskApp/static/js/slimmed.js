@@ -437,7 +437,7 @@ var player = {
     },
     stop: function(){
         this.stopped = true;
-        if(this.all) this.show();
+        if(this.answer.length) this.show();
         clearTimeout(this.timeOut);
         for(var i = 0; i<this.notesOn.length; i++){
             MIDI.noteOff(0, this.notesOn[i], 0);
@@ -464,10 +464,8 @@ var player = {
         dom.wait.progressbar("option", "value", val);
     },
     show: function(){
-        console.log("SHOW");
         this.shown = true;
         view.showAnswer();
-        console.log(this.notesOn);
     },
     correctEvent: function(){
         var elapsed = new Date().getTime() - this.time;
