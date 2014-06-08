@@ -13,7 +13,6 @@ def hello():
     dependencies.append('js/MIDI.js/js/Widgets/Loader.js')
     dependencies.append('js/MIDI.js/inc/Base64.js')
     dependencies.append('js/MIDI.js/inc/base64binary.js')
-    #welllllll
     dependencies.append('js/slimmed.js')
     dependencies.extend(['js/visuals.js'])
     onloads = ['midiSetup']
