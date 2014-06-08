@@ -6,6 +6,7 @@ app = Flask(__name__)
 print(__name__)
 
 @app.route("/")
+@app.route("/dumb")
 def hello(): 
     dependencies = ['AudioDetect.js', 'LoadPlugin.js', 'Plugin.js', 'Player.js'] 
     dependencies = ['js/MIDI.js/js/MIDI/' + d for d in dependencies]
