@@ -505,7 +505,6 @@ function midiSetup(){
         wait: $("#wait"),
         inARow: $("#inARow")
     };
-    alert("hello");
     controller.init();
     view.init();
     view.updateMinSep();
