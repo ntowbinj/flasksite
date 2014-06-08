@@ -9,11 +9,11 @@ print(__name__)
 def hello(): 
     dependencies = ['AudioDetect.js', 'LoadPlugin.js', 'Plugin.js', 'Player.js'] 
     dependencies = ['js/MIDI.js/js/MIDI/' + d for d in dependencies]
-    #well
     dependencies.append('js/MIDI.js/js/Window/DOMLoader.XMLHttp.js')
     dependencies.append('js/MIDI.js/js/Widgets/Loader.js')
     dependencies.append('js/MIDI.js/inc/Base64.js')
     dependencies.append('js/MIDI.js/inc/base64binary.js')
+    #welllllll
     dependencies.append('js/slimmed.js')
     dependencies.extend(['js/visuals.js'])
     onloads = ['midiSetup']
