@@ -1,6 +1,7 @@
 *.swp
 *.json
 *.txt
+hide.sh
 /venv
 /neo4j*
 /try.py

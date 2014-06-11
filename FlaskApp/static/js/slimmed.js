@@ -95,7 +95,8 @@ function noteName(i){
 var dom;
 
 var cons = {
-    labelRight: 40
+    labelRight: 40,
+    barRate: 250
 }
 
 var view = {
@@ -452,16 +453,19 @@ var player = {
         this.timeOut = setTimeout(this.impending, when);
     },
     moveBar: function(){
+        var val;
         if(!this.shown && !this.stopped){
-            val = 100.0*(new Date().getTime() - this.startTime)/(config.answerWait*(config.duration*config.inARow + config.between));
+            val = 100.0*(new Date().getTime() - this.startTime);
+            if(config.inARow == 1) val /= (config.answerWait*(config.duration*config.inARow + config.between));
+            else val /= (config.duration*config.inARow + config.answerWait*config.between);
             if(val>110) this.show();
             that = this;
-            this.barTimeOut = setTimeout(function(){that.moveBar()}, (val<100) ? 200 : 200);
+            this.barTimeOut = setTimeout(function(){that.moveBar()}, (val<100) ? cons.barRate : 2*cons.barRate);
         }
         else {
             val = 0;
         }
-        if(!config.answerWait) val = 0;
+        if(!config.answerWait && config.inARow <= 1) val = 0;
         dom.wait.progressbar("option", "value", val);
     },
     show: function(){
