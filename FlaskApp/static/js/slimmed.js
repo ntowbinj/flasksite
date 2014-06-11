@@ -283,19 +283,19 @@ Array.prototype.bindexOfClosest = function (targ, side){ //binary search for ind
     var maxdex = this.length - 1;
     var i;
     var check;
-    var self = this;
+    var that = this;
     switch(side)
     {
         case -1:
             check = function(i){
-                if(i < self.length - 1) return (self[i] < targ && self[i+1] >= targ);
-                else return (self[i] < targ);
+                if(i < that.length - 1) return (that[i] < targ && that[i+1] >= targ);
+                else return (that[i] < targ);
             };
             break;
         case 1:
             check = function(i){
-                if(i > 0) return (self[i] > targ && self[i-1] <= targ);
-                else return (self[i] > targ);
+                if(i > 0) return (that[i] > targ && that[i-1] <= targ);
+                else return (that[i] > targ);
             };
             break;
     }
@@ -461,6 +461,7 @@ var player = {
         else {
             val = 0;
         }
+        if(!config.answerWait) val = 0;
         dom.wait.progressbar("option", "value", val);
     },
     show: function(){
