@@ -13,12 +13,13 @@ nav li:hover{
     background-color: #2040CD; 
 }
 nav a{
+    white-space: nowrap;
     display: block;
     padding: 8% 0;
     text-decoration: none;
     color: white;
     font-weight: bold;
-    font-size: 180%;
+    font-size: 2vw;
 }
 html {
     overflow: -moz-scrollbars-vertical; 
@@ -122,7 +123,7 @@ a.stayBlue, a.stayBlue:visited
 }
 h1.title {
     font-weight: bold;
-    font-size:550%;
+    font-size:6vw;
     margin-bottom:6%;
     color: #2040CD; 
 }
