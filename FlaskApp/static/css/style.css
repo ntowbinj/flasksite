@@ -1,7 +1,26 @@
+nav {margin-bottom: 10%;}
+nav li{
+    display: block;
+    float: left;
+    width: 18%;
+    text-align: center;
+    background-color:#5DBCD2;
+    margin: .5%;
+    min-height: 240%;
+    border: 1px solid black;
+}
+nav li:hover{
+    background-color: #2040CD; 
+}
+nav a{
+    display: block;
+    padding: 8% 0;
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    font-size: 180%;
+}
 html {
-q
-:q
-:q
     overflow: -moz-scrollbars-vertical; 
     overflow-y: scroll;
     height:100%;
