@@ -234,7 +234,7 @@ var controller = {
                 }
             });
         });
-        dom.inARow.click(function(){config.inARow = $(this).val()});
+        dom.inARow.on('change', function(){config.inARow = $(this).val()});
     }
 };
 
