@@ -11,9 +11,9 @@
         {% endblock %}
     <script type="text/javascript">
         window.onload = function() {
+            visual.resize();
             {% for func in onloads %}
                 {{ func }}();
-                visual.resize();
             {% endfor %}
         };
     </script>
