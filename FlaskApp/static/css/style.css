@@ -7,10 +7,11 @@ nav li{
     background-color:#5DBCD2;
     margin: .5%;
     min-height: 240%;
-    border: 1px solid black;
+    border: 2px solid #2040CD
 }
 nav li:hover{
     background-color: #2040CD; 
+    border: 2px solid #5DBCD2;
 }
 nav a{
     white-space: nowrap;

@@ -20,10 +20,16 @@ def hello():
     return render_template('home.html', onloads=onloads, dependencies=dependencies, intervs = musichelp.INTERVALS) 
 
 @app.route("/synonymgraph")
-def page():
+def synonym():
     dependencies = ['js/visuals.js', 'js/synonyms.js']
     onloads = ['synonymSetup']
     return render_template('syn.html', onloads=onloads, dependencies = dependencies)
+
+@app.route("/music")
+def music():
+    dependencies = ['js/visuals.js', 'js/music.js']
+    onloads = ['musicSetup']
+    return render_template('music.html', onloads=onloads, dependencies = dependencies)
 
 @app.route("/getpath", methods = ['POST'])
 def getpath():

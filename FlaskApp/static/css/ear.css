@@ -93,12 +93,13 @@ p:first-child
 }
 #wait div{
     background: none;
-    background-color: blue;
+    background-color: #2040CD;
 }
 #answer {
     display: inline-block;
     min-width: 300px;
-    border: 1px solid black;
+    border: 1px dashed #2040CD; 
+;
     height: 60px;
     font-weight: bold;
 }
