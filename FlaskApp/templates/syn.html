@@ -4,6 +4,9 @@
         <script src="{{ url_for('static', filename=d) }}"></script>
     {% endfor %}
 {% endblock %}
+{% block title %}
+    synonyms
+{% endblock %}
 {% block content %}
     <h1 class="title">Synonym Path Finder</h1>
     <ul class="instructions">

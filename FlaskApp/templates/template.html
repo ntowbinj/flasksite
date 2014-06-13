@@ -1,6 +1,10 @@
 <!doctype html>
 <html>
     <head>
+        <title>
+            {% block title %}
+            {% endblock %}
+        </title>
         <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
         {% for d in dependencies %}
             <script src="{{ url_for('static', filename=d) }}"></script>
@@ -23,11 +27,11 @@
         <div id="content">
             <nav>
                 <ul>
-                    <li><a href="/music">music</a></li>
                     <li><a href="/eartrainer">ear trainer</a></li>
-                    <li><a href="/synonymgraph">synonyms</a></li>
-                    <li><a href="">digital art</a></li>
-                    <li><a href="">resume</a></li>
+                    <li><a href="/synonyms">synonyms</a></li>
+                    <li><a href="/analytics">analytics</a></li>
+                    <li><a href="/music">music</a></li>
+                    <li><a href="/about">about</a></li>
                 </ul>
             </nav>
             {% block content %}

@@ -20,6 +20,7 @@ def hello():
     return render_template('home.html', onloads=onloads, dependencies=dependencies, intervs = musichelp.INTERVALS) 
 
 @app.route("/synonymgraph")
+@app.route("/synonyms")
 def synonym():
     dependencies = ['js/visuals.js', 'js/synonyms.js']
     onloads = ['synonymSetup']
