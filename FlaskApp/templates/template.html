@@ -16,6 +16,7 @@
     <script type="text/javascript">
         window.onload = function() {
             visual.resize();
+            visual.currentPage();
             {% for func in onloads %}
                 {{ func }}();
             {% endfor %}
@@ -27,11 +28,11 @@
         <div id="content">
             <nav>
                 <ul>
-                    <li><a href="/eartrainer">ear trainer</a></li>
-                    <li><a href="/synonyms">synonyms</a></li>
-                    <li><a href="/analytics">analytics</a></li>
-                    <li><a href="/music">music</a></li>
-                    <li><a href="/about">about</a></li>
+                    <li id="eartrainer"><a href="/eartrainer">ear trainer</a></li>
+                    <li id="synonyms"><a href="/synonyms">synonyms</a></li>
+                    <li id="analytics"><a href="/analytics">analytics</a></li>
+                    <li id="music"><a href="/music">music</a></li>
+                    <li id="about"><a href="/about">about</a></li>
                 </ul>
             </nav>
             {% block content %}

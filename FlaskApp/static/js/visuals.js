@@ -8,7 +8,12 @@ var visual = {
                 html.clientHeight, html.scrollHeight, html.offsetHeight );
         var middleHeight = document.getElementById('middle').style.height;
         document.getElementById('middle').style.height = height + 'px';
+    },
+    currentPage: function() {
+        var title = "#" + $.trim($("title")[0].text);
+        $(title).addClass("currentPage");
     }
+
 }
 
     

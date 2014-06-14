@@ -9,10 +9,16 @@ nav li{
     min-height: 240%;
     border: 2px solid #2040CD
 }
-nav li:hover{
+nav li.currentPage, nav li.currentPage:hover{
     background-color: #2040CD; 
-    border: 2px solid #5DBCD2;
+    border-color:#5DBCD2;
 }
+nav li:hover{
+    background-color: #3898C6; 
+    border: 2px solid #8DDFFF;
+}
+
+
 nav a{
     white-space: nowrap;
     display: block;
