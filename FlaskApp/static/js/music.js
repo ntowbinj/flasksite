@@ -9,6 +9,19 @@ var config = {
     index: 0
 };
 var view = {
+    init: function(){
+        var prevnext = ['next', 'prev'];
+        for(var i = 0; i<prevnext.length; i++){
+            (function(i){
+                dom[prevnext[i]].mouseover(function(){
+                  $(this).find('img').attr('src', '/static/img/' + prevnext[i] + 'hover.png');
+                });
+                dom[prevnext[i]].mouseout(function(){
+                  $(this).find('img').attr('src', '/static/img/' + prevnext[i] + '.png');
+                });
+            })(i);
+        };
+    },
     showSoundcloud: function(){
         dom.soundcloud.attr('src', soundcloudIframes[soundcloudOrder[config.index]]);
     }
@@ -38,6 +51,7 @@ function musicSetup(){
         soundcloud: $("#soundcloud")
     };
     controller.init();
+    view.init();
     var src = soundcloudIframes['kid'];
     dom.soundcloud.attr('src', src);
 }

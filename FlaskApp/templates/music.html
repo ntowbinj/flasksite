@@ -8,7 +8,11 @@
         music
     {% endblock %}
 {% block content %}
-    <h1 class="title">music</h1>
-    <a href="" id="prev">prev</a><a href="" id="next">next</a>
-    <iframe id="soundcloud" width="100%" height="166" scrolling="no" frameborder="no" src=""></iframe>
+    <h1 class="title">Foliage</h1>
+    <div id="prevnext">
+        <a href="" id="prev"><img src="{{url_for('static', filename='img/prev.png')}}">
+        </a>
+        <a href="" id="next"><img src="{{url_for('static', filename='img/next.png')}}">
+        </a>
+    </div>
 {% endblock %}
