@@ -16,6 +16,7 @@
     width: 70%
 }
 #columnright{
+    width: fixed;
     float: left;
     margin-left: 5%;
     width:25%;
