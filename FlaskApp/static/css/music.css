@@ -34,3 +34,5 @@
 span.inst{
     float: right;
 }
+#preload-01 { background: url("/static/img/prevhover.png") no-repeat -9999px -9999px; }
+#preload-02 { background: url("/static/img/nexthover.png") no-repeat -9999px -9999px; }
