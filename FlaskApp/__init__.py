@@ -27,6 +27,7 @@ def synonym():
     return render_template('syn.html', onloads=onloads, dependencies = dependencies)
 
 @app.route("/music")
+@app.route("/foliage")
 def music():
     dependencies = ['js/visuals.js', 'js/music.js']
     onloads = ['musicSetup']

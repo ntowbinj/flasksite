@@ -1,3 +1,35 @@
-#prev, #next {
-    display: inline-block;
+#youtubecontainer{clear:both;}
+#soundcloudcontainer{clear:both;}
+#soundcloud{
+    width: 100%;
+    margin-bottom: 10%;
+}
+#youtube{
+    //float: left;
+    clear: both;
+    margin-right: 20px;
+    width: 100%;
+    margin-right: 15%;
+}
+#columnleft{
+    float: left;
+    width: 70%
+}
+#columnright{
+    float: left;
+    margin-left: 5%;
+    width:25%;
+}
+#columnright h3{
+    text-align: right;
+    border-bottom: 1px solid black;
+}
+#columnright li{
+    margin-top: 2%;
+}
+#columnright ul{
+    margin-bottom: 25%;
+}
+span.inst{
+    float: right;
 }

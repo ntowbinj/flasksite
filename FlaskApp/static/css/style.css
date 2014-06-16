@@ -18,18 +18,18 @@ nav li:hover{
     border: 2px solid #8DDFFF;
 }
 
-#prevnext {
+div.prevnext {
     text-decoration: none;
     float: left;
     margin-bottom: 1%;
 }
-#prevnext a{text-decoration: none}
-#prevnext img{
+div.prevnext a{text-decoration: none}
+div.prevnext img{
     border: 2px solid #8CE9FA;
     width: 25px;
     height: auto;
 }
-#prevnext img:hover{border-color:#2040cd;}
+div.prevnext img:hover{border-color:#2040cd;}
 
 
 
@@ -146,6 +146,12 @@ h1.title {
     font-weight: bold;
     font-size:6vw;
     margin-bottom:6%;
+}
+h3{
+    font-size:2vw;
+    font-weight: bold;
+}
+h1, h2, h3{
     color: #2040CD; 
 }
 #synresult h2, #avoids h2
