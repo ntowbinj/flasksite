@@ -1,3 +1,5 @@
+#home{float: right;}
+#home:visited{color:#2040CD;}
 nav {margin-bottom: 10%;}
 nav li{
     display: block;
@@ -7,7 +9,7 @@ nav li{
     background-color:#5DBCD2;
     margin: .5%;
     min-height: 240%;
-    border: 2px solid #2040CD
+    border: 2px solid #2040CD;
 }
 nav li.currentPage, nav li.currentPage:hover{
     background-color: #2040CD; 
@@ -136,7 +138,7 @@ a.stayBlue, a.stayBlue:visited
 }
 #middle
 {
-    height: auto;
+    height: 100%;
     margin-left:16%;
     margin-right:16%;
     margin-bottom:0%;

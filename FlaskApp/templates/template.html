@@ -26,6 +26,9 @@
     <body>
         <div id="middle">
         <div id="content">
+            {% if hide_nav is defined and hide_nav%}
+                <a id="home" href="http://ntowbinj.com">ntowbinj.com</a>
+            {% else %}
             <nav>
                 <ul>
                     <li id="eartrainer"><a href="/eartrainer">ear trainer</a></li>
@@ -35,6 +38,7 @@
                     <li id="about"><a href="/about">about</a></li>
                 </ul>
             </nav>
+            {% endif %}
             {% block content %}
             {% endblock %}
         </div>

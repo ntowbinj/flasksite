@@ -26,12 +26,15 @@ def synonym():
     onloads = ['synonymSetup']
     return render_template('syn.html', onloads=onloads, dependencies = dependencies)
 
-@app.route("/music")
 @app.route("/foliage")
-def music():
+def foliage():
+    return music(hide_nav=True)
+
+@app.route("/music")
+def music(hide_nav=None):
     dependencies = ['js/visuals.js', 'js/music.js']
     onloads = ['musicSetup']
-    return render_template('music.html', onloads=onloads, dependencies = dependencies)
+    return render_template('music.html', onloads=onloads, dependencies = dependencies, hide_nav=hide_nav)
 
 @app.route("/getpath", methods = ['POST'])
 def getpath():
