@@ -26,6 +26,10 @@ def synonym():
     onloads = ['synonymSetup']
     return render_template('syn.html', onloads=onloads, dependencies = dependencies)
 
+@app.route("/multicolumn")
+def multicolumn():
+    return render_template('multicolumn.html')
+
 @app.route("/foliage")
 def foliage():
     return music(hide_nav=True)

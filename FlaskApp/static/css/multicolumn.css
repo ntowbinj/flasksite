@@ -1,0 +1,40 @@
+#leftcontainer{
+    width: 14%;
+    position: relative;
+    float: left;
+}
+#leftbg
+{
+    background-color: green;
+    height: 100%;
+    width: 14%;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+#rightbg{
+    background-color: blue;
+    height: 100%;
+    width: 24%;
+    position: fixed;
+    top: 0;
+    right:0;
+}
+#middlebg{
+    background-color: red;
+    height: 100%;
+    width:62%;
+    position: fixed;
+    top: 0;
+    right: 24%;
+    left: 14%; 
+}
+#middlecontainer{
+    width: 62%;
+    position: relative;
+    float: left;
+}
+#middlecontent, #leftcontent{
+    /* more math involved in doing this with %, but possible */
+    padding: 20px; 
+}
