@@ -1,5 +1,4 @@
 #home{float: right;}
-#home:visited{color:#2040CD;}
 nav {
     margin-bottom: 10%;
     white-space: nowrap;
@@ -38,7 +37,6 @@ div.prevnext img{
 div.prevnext img:hover{border-color:#2040cd;}
 
 
-
 nav a{
     white-space: nowrap;
     display: block;
@@ -59,9 +57,9 @@ body
     height:100%;
     background-color: rgb(235, 240, 255);
 } 
-a.stayBlue, a.stayBlue:visited
+a.stay, a.stay:visited
 {
-    color: #0000EE; text-decoration: underline;
+    color: #2222EE; text-decoration: underline;
 }
 .blueButton {
         -moz-box-shadow:inset 0px 1px 0px 0px #97c4fe;

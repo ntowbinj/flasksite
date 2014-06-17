@@ -8,6 +8,7 @@
         <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
     {% endblock %}
 {% block content %}
+    <div id="overlay"></div>
     <h1 class="title">Polyphonic Eartrainer</h1>
     <div id="answer"></div>
     <div id="wait"></div>
@@ -36,7 +37,7 @@
             <div id='intervalLabels'>
                 <p class="label">&nbsp;</p>
                 {% for intv in intervs|dictsort %}
-                    <p><a class="stayBlue" href="">{{ intv[1] }}</a></p>
+                    <p><a class="stay" href="">{{ intv[1] }}</a></p>
                 {% endfor %}
             </div>
             <div id='lowerVoiceIntervals'>

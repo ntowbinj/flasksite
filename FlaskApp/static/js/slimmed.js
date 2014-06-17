@@ -493,23 +493,27 @@ var player = {
 }
 
 function midiSetup(){
-    dom = {
-        lowerVoiceIntervals: $("#lowerVoiceIntervals"),
-        upperVoiceIntervals: $("#upperVoiceIntervals"),
-        intervalLabels: $("#intervalLabels"),
-        minSep: $("#minSep"),
-        duration: $("#duration"),
-        between: $("#between"),
-        answerWait: $("#answerWait"),
-        answer: $("#answer"),
-        minNote: $("#minNote"),
-        maxNote: $("#maxNote"),
-        minOct: $("#minOct"),
-        maxOct: $("#maxOct"),
-        message: $("#message"),
-        wait: $("#wait"),
-        inARow: $("#inARow")
-    };
+    dom = {};
+    els = [
+        "lowerVoiceIntervals",
+        "upperVoiceIntervals",
+        "intervalLabels",
+        "minSep",
+        "duration",
+        "between",
+        "answerWait",
+        "answer",
+        "minNote",
+        "maxNote",
+        "minOct",
+        "maxOct",
+        "message",
+        "wait",
+        "inARow"
+    ];
+    for(var i = 0; i<els.length; i++){
+        dom[els[i]] = $("#" + els[i]); 
+    }
     controller.init();
     view.init();
     view.updateMinSep();
@@ -520,6 +524,8 @@ function midiSetup(){
         soundfontUrl: "/static/js/MIDI.js/soundfont/",
         callback: function() {
             MIDI.loader.stop();	
+            MIDI.noteOn(0, 0, 0, 0); //for instant start
+            MIDI.noteOff(0, 0, 100);
         }
     });
         
