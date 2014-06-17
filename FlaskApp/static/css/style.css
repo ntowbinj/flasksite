@@ -10,18 +10,18 @@ nav li{
     float: left;
     width: 18.0%;
     text-align: center;
-    background-color:#5DBCD2;
+    background-color: rgb(108, 153, 228);
     margin: .5%;
     min-height: 240%;
-    border: 2px solid #2040CD;
+    border: 2px solid rgb(0, 198, 255);
 }
 nav li.currentPage, nav li.currentPage:hover{
     background-color: #2040CD; 
-    border-color:#5DBCD2;
+    border-color: rgb(108, 153, 228);
 }
 nav li:hover{
-    background-color: #3898C6; 
-    border: 2px solid #8DDFFF;
+    background-color: rgb(75, 125, 210);
+    border: 2px solid rgb(0, 198, 255);
 }
 
 div.prevnext {
@@ -57,8 +57,7 @@ body
 {
     font-family: "Times New Roman", sans-serif;
     height:100%;
-    background-color: white;
-    //background-color:#5DBCD2;
+    background-color: rgb(235, 240, 255);
 } 
 a.stayBlue, a.stayBlue:visited
 {
@@ -143,34 +142,26 @@ a.stayBlue, a.stayBlue:visited
 }
 #left
 {
-    //border; 1px solid black;
     height: 100%;
     position: fixed;
-    float: left;
-    //height: 100%;
-    //margin: 0 16%;
-    min-width: 15%;
-    background-color: rgb(128, 153, 178);
-    z-index -2;
+    //float: left;
+    min-width: 14%;
+    background-color: rgb(108, 153, 198);
+}
+#right{
+    min-width: 14%;
+    height: 100%;
+    background-color: rgb(108, 153, 198);
+    //float: right;
+    position: fixed;
+    right:0;
 }
 #middle{
-    width:70%;
+    width:72%;
     height: 100%;
     position: relative;
     float: right;
-    left: -15%;
-    top: 0;
-    bottom: 0;
-    right:0;
-}
-#right{
-    min-width: 15%;
-    height: 100%;
-    background-color: rgb(128, 153, 178);
-    float: right;
-    position: fixed;
-    //left: 15%;
-    left: -10;
+    left: -14%;
     top: 0;
     bottom: 0;
     right:0;
