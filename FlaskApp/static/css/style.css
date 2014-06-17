@@ -57,7 +57,7 @@ body
 {
     font-family: "Times New Roman", sans-serif;
     height:100%;
-    background-color:#5DBCD2;
+    //background-color:#5DBCD2;
 } 
 a.stayBlue, a.stayBlue:visited
 {
@@ -140,12 +140,25 @@ a.stayBlue, a.stayBlue:visited
 {
     visibility: hidden;
 }
+#left{
+    min-width: 15%;
+    height: 100%;
+    background-color: blue;
+    float: left;
+    position: fixed;
+    //left: 15%;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right:15%;
+    z-index: -1;
+}
 #middle
 {
-    height: 100%;
-    margin-left:16%;
-    margin-right:16%;
-    margin-bottom:0%;
+    float: left;
+    //height: 100%;
+    //margin: 0 16%;
+    width: 70%;
     background-color:white;
 }
 h1.title {

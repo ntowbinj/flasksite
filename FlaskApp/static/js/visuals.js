@@ -1,6 +1,8 @@
 var visual = {
     resize: function()
     {
+        return;
+        alert('didnt return');
         var body = document.body,
             html = document.documentElement;
 
