@@ -141,16 +141,30 @@ a.stayBlue, a.stayBlue:visited
     visibility: hidden;
 }
 #left{
-    min-width: 15%;
+    min-width: 19%;
     height: 100%;
-    background-color: blue;
-    float: left;
+    background-color: red;
+    float: right;
     position: fixed;
     //left: 15%;
     left: 0;
     top: 0;
     bottom: 0;
-    right:15%;
+    right:0;
+    z-index: -2;
+}
+#right{
+    min-width: 19%;
+    height: 100%;
+    background-color: blue;
+    float: right;
+    padding-left: 10px;
+    position: fixed;
+    //left: 15%;
+    left: -10;
+    top: 0;
+    bottom: 0;
+    right:0;
     z-index: -1;
 }
 #middle
@@ -160,6 +174,7 @@ a.stayBlue, a.stayBlue:visited
     //margin: 0 16%;
     width: 70%;
     background-color:white;
+    z-index 2;
 }
 h1.title {
     font-weight: bold;
