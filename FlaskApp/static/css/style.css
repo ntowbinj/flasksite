@@ -140,7 +140,7 @@ a.stayBlue, a.stayBlue:visited
 {
     visibility: hidden;
 }
-#left{
+#middle{
     min-width: 19%;
     height: 100%;
     background-color: red;
@@ -167,7 +167,7 @@ a.stayBlue, a.stayBlue:visited
     right:0;
     z-index: -1;
 }
-#middle
+#left
 {
     float: left;
     //height: 100%;
