@@ -7,9 +7,8 @@
 #youtube{
     //float: left;
     clear: both;
-    margin-right: 20px;
     width: 100%;
-    margin-right: 15%;
+    margin-bottom: 10%;
 }
 #columnleft{
     float: left;
@@ -21,15 +20,28 @@
     margin-left: 5%;
     width:25%;
 }
+#imagecontainer{
+    height: 700px;
+}
+#image{
+    width: 100%;
+    //border:12px solid rgb(0, 198, 255);
+}
 #columnright h3{
     text-align: right;
     border-bottom: 1px solid black;
 }
+#columnright ul, #columnright p{
+    margin-top: 3%;
+}
 #columnright li{
-    margin-top: 2%;
 }
 #columnright ul{
     margin-bottom: 25%;
+}
+
+#columnright p{
+    text-indent: 50px;
 }
 span.inst{
     float: right;

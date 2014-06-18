@@ -99,7 +99,7 @@ p:first-child
     display: inline-block;
     min-width: 300px;
     border: 1px dashed #2040CD; 
-;
+    background-color: white;
     height: 60px;
     font-weight: bold;
 }

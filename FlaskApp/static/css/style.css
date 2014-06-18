@@ -142,7 +142,6 @@ a.stay, a.stay:visited
 {
     height: 100%;
     position: fixed;
-    //float: left;
     min-width: 14%;
     background-color: rgb(108, 153, 198);
 }
@@ -150,7 +149,6 @@ a.stay, a.stay:visited
     min-width: 14%;
     height: 100%;
     background-color: rgb(108, 153, 198);
-    //float: right;
     position: fixed;
     right:0;
 }

@@ -8,13 +8,27 @@ var youtubeIframes = {
     blimp: "//www.youtube.com/embed/ukNejCx57uo"
 }
 
+var images = {};
+[
+    'whitewater0', 
+    'whitewater1', 
+    'joint0',
+    'ballroom0',
+    'film0',
+    'film1',
+    'film2'
+].map(function(value) {
+    images[value] = "/static/img/" + value + ".jpg";
+});
+
 var orders = {
     sound: ['kid', 'gray'],
     yout: ['thomas', 'blimp', 'kid'],
+    img: ['whitewater1', 'ballroom0', 'whitewater0', 'joint0', 'film2', 'film0', 'film1']
 };
 
 var config = {
-    indexes: {sound: 0, yout: 0}
+    indexes: {sound: 0, yout: 0, img: 0}
 };
 var view = {
     init: function(){
@@ -44,12 +58,15 @@ var view = {
         },
         yout: function(){
             dom.youtube.attr('src', youtubeIframes[orders['yout'][config.indexes.yout]]);
+        },
+        img: function(){
+            dom.image.attr('src', images[orders['img'][config.indexes.img]]);
         }
     }
 };
 var controller = {
     init: function(){
-        var pvs = ['sound', 'yout'];
+        var pvs = ['sound', 'yout', 'img'];
         for(var i = 0; i<pvs.length; i++){
             (function(i){
                 dom['next' + pvs[i]].click(function(e){
@@ -72,7 +89,7 @@ var dom;
 
 function musicSetup(){
     dom = {};
-    els = ['soundcloud', 'youtube', 'nextsound', 'prevsound', 'nextyout', 'prevyout'];
+    els = ['soundcloud', 'youtube', 'nextsound', 'prevsound', 'nextyout', 'prevyout', 'nextimg', 'previmg', 'image'];
     for(var i = 0; i<els.length; i++){
         dom[els[i]] = $("#" + els[i]);
     }
