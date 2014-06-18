@@ -40,6 +40,7 @@
 
 #columnright p{
     text-indent: 50px;
+    text-align: justify;
     text-justify: inter-word;
     margin-bottom: 0;
 }
