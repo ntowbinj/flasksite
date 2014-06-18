@@ -40,6 +40,7 @@
 
 #columnright p{
     text-indent: 50px;
+    text-justify: inter-word;
     margin-bottom: 0;
 }
 span.inst{
