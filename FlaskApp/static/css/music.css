@@ -30,9 +30,7 @@
 #columnright h3{
     text-align: right;
     border-bottom: 1px solid black;
-}
-#columnright ul, #columnright p{
-    margin-top: 3%;
+    margin-bottom: 2%;
 }
 #columnright li{
 }
@@ -42,6 +40,7 @@
 
 #columnright p{
     text-indent: 50px;
+    margin-bottom: 0;
 }
 span.inst{
     float: right;
