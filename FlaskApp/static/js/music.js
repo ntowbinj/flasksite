@@ -6,7 +6,8 @@ var youtubeIframes = {
     thomas: "//www.youtube.com/embed/66CApDQ_nBU",
     kid: "//www.youtube.com/embed/IgjXhG8g1CI",
     blimp: "//www.youtube.com/embed/ukNejCx57uo",
-    five: "//www.youtube.com/embed/cgCocWU7EW8"
+    five: "//www.youtube.com/embed/cgCocWU7EW8",
+    hihats: "//www.youtube.com/embed/R-eNyHCe46w"
 }
 
 var images = {};
@@ -24,7 +25,7 @@ var images = {};
 
 var orders = {
     sound: ['kid', 'gray'],
-    yout: ['thomas', 'blimp', 'kid', 'five'],
+    yout: ['thomas', 'blimp', 'hihats', 'kid', 'five'],
     img: ['whitewater1', 'ballroom0', 'whitewater0', 'joint0', 'film2', 'film0', 'film1']
 };
 
