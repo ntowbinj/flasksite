@@ -5,7 +5,6 @@ import musichelp
 app = Flask(__name__)
 print(__name__)
 
-@app.route("/")
 @app.route("/eartrainer")
 def hello(): 
     dependencies = ['AudioDetect.js', 'LoadPlugin.js', 'Plugin.js', 'Player.js'] 
@@ -34,6 +33,7 @@ def multicolumn():
 def foliage():
     return music(hide_nav=True)
 
+@app.route("/")
 @app.route("/music")
 def music(hide_nav=None):
     dependencies = ['js/visuals.js', 'js/music.js']
