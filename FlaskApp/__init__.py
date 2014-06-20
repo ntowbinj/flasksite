@@ -18,6 +18,11 @@ def hello():
     onloads = ['midiSetup']
     return render_template('home.html', onloads=onloads, dependencies=dependencies, intervs = musichelp.INTERVALS) 
 
+@app.route("/about")
+@app.route("/analytics")
+def soon():
+    return render_template('soon.html', hide_nav=True)
+
 @app.route("/synonymgraph")
 @app.route("/synonyms")
 def synonym():
