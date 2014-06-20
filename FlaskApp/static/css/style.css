@@ -7,12 +7,13 @@ nav {
 nav li{
     display: block;
     float: left;
-    width: 18.0%;
+    width: 19.0%;
     text-align: center;
     background-color: rgb(108, 153, 228);
     margin: .5%;
     min-height: 240%;
     border: 2px solid rgb(0, 198, 255);
+    box-sizing: border-box;
 }
 nav li.currentPage, nav li.currentPage:hover{
     background-color: #2040CD; 
