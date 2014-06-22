@@ -139,29 +139,32 @@ a.stay, a.stay:visited
 {
     visibility: hidden;
 }
-#left
-{
-    height: 100%;
-    position: fixed;
-    min-width: 14%;
-    background-color: rgb(108, 153, 198);
-}
-#right{
-    min-width: 14%;
-    height: 100%;
-    background-color: rgb(108, 153, 198);
-    position: fixed;
-    right:0;
-}
-#middle{
-    width:72%;
-    height: 100%;
-    position: relative;
-    float: right;
-    left: -14%;
-    top: 0;
-    bottom: 0;
-    right:0;
+@media only screen
+and (min-width: 1224px) {
+    #left
+    {
+        height: 100%;
+        position: fixed;
+        min-width: 14%;
+        background-color: rgb(108, 153, 198);
+    }
+    #right{
+        min-width: 14%;
+        height: 100%;
+        background-color: rgb(108, 153, 198);
+        position: fixed;
+        right:0;
+    }
+    #middle{
+        width:72%;
+        height: 100%;
+        position: relative;
+        float: right;
+        left: -14%;
+        top: 0;
+        bottom: 0;
+        right:0;
+    }
 }
 h1.title {
     font-weight: bold;
