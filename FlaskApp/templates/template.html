@@ -9,9 +9,8 @@
         {% for d in dependencies %}
             <script src="{{ url_for('static', filename=d) }}"></script>
         {% endfor %}
-        <link type="text/css" href="{{ url_for('static', filename='css/reset.css') }}" rel="stylesheet" media="Screen">
-        <link type="text/css" href="{{ url_for('static', filename='css/style.css') }}" media="Screen" rel="stylesheet">
-        <link type="text/css" href="{{ url_for('static', filename='css/mobilestyle.css') }}" media="handheld" rel="stylesheet">
+        <link type="text/css" href="{{ url_for('static', filename='css/reset.css') }}" rel="stylesheet">
+        <link type="text/css" href="{{ url_for('static', filename='css/style.css') }}" media="(min-width: 800px)" rel="stylesheet">
         {% block external %}
         {% endblock %}
     <script type="text/javascript">
