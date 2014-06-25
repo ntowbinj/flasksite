@@ -140,7 +140,7 @@ a.stay, a.stay:visited
     visibility: hidden;
 }
 @media only screen
-and (min-width: 1224px) {
+and (min-width: 1000px) {
     #left
     {
         height: 100%;
