@@ -23,6 +23,7 @@ def hello():
 def soon():
     return render_template('soon.html', hide_nav=True)
 
+@app.route("/")
 @app.route("/synonymgraph")
 @app.route("/synonyms")
 def synonym():
@@ -38,7 +39,6 @@ def multicolumn():
 def foliage():
     return music(hide_nav=True)
 
-@app.route("/")
 @app.route("/music")
 def music(hide_nav=None):
     dependencies = ['js/visuals.js', 'js/music.js']
