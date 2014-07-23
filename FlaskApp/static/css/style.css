@@ -7,6 +7,24 @@ nav {
 nav li{
     display: block;
     float: left;
+    width: 18.0%;
+    text-align: center;
+    background-color: rgb(108, 153, 228);
+    margin: .5%;
+    min-height: 240%;
+    border: 2px solid rgb(0, 198, 255);
+}
+nav.boxsized li{
+    width: 18.6%;
+    box-sizing: border-box;
+}
+nav.notBoxsized li{
+    width: 18.0%;
+}
+
+nav li{
+    display: block;
+    float: left;
     width: 18.6%;
     text-align: center;
     background-color: rgb(108, 153, 228);
