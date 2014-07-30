@@ -1,10 +1,11 @@
 var soundcloudIframes = {
     gray: "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/114306377&amp;color=2040cd&amp;auto_play=false&amp;hide_related=false&amp;show_artwork=true&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false",
-    kid: "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/129879035&amp;color=2040cd&amp;theme_color=000000&amp;auto_play=false&amp;hide_related=false&amp;show_artwork=true&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false"
+    kid: "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/129879035&amp;color=2040cd&amp;theme_color=000000&amp;auto_play=false&amp;hide_related=false&amp;show_artwork=true&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false",
+    thomas: "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/161018583&amp;color=2040cd&amp;auto_play=false&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false"
 };
 var youtubeIframes = {
-    thomas: "//www.youtube.com/embed/66CApDQ_nBU",
     kid: "//www.youtube.com/embed/IgjXhG8g1CI",
+    thomas: "//www.youtube.com/embed/66CApDQ_nBU",
     blimp: "//www.youtube.com/embed/ukNejCx57uo",
     five: "//www.youtube.com/embed/cgCocWU7EW8",
     hihats: "//www.youtube.com/embed/R-eNyHCe46w"
@@ -24,8 +25,8 @@ var images = {};
 });
 
 var orders = {
-    sound: ['kid', 'gray'],
-    yout: ['thomas', 'blimp', 'hihats', 'kid', 'five'],
+    sound: ['thomas', 'gray', 'kid'],
+    yout: ['blimp', 'thomas', 'kid', 'hihats', 'five'],
     img: ['whitewater1', 'ballroom0', 'whitewater0', 'joint0', 'film2', 'film0', 'film1']
 };
 

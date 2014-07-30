@@ -22,9 +22,10 @@ def hello():
 def soon():
     return render_template('soon.html', hide_nav=True)
 
-@app.route("/blog")
+@app.route("/blog/")
 def nullblog():
     return blog("7-5-14")
+
 @app.route("/blog/<post>")
 def blog(post):
     static = ['js/visuals.js', 'js/blog.js']
