@@ -16,9 +16,9 @@ var visual = {
         if((tem= ua.match(/version\/(\d+)/i))!= null) M.splice(1, 1, tem[1]);
         return M;
         })();
-        if(browserversion[0] == 'Firefox' && parseInt(browserversion[1]) < 29){
-            $('nav').addClass("notBoxsized");
-            $('nav').removeClass("boxsized");
+        if(browserversion[0] == 'Firefox' && parseInt(browserversion[1]) >= 29){
+            $('nav').removeClass("notBoxsized");
+            $('nav').addClass("boxsized");
         }
 
     },
