@@ -1,0 +1,61 @@
+<h2>Neo4j's Cypher and Shortest Paths</h2>
+<p>
+When I originally set out to make my <a href="">synonym path</a> webapp, 
+graph databses were something I knew little about, though I 
+assumed they existed.  I was already familiar with tabular 
+databases like MySQL, and recognized that they aren't ideal for
+representing graphs.  It didn't take long to find out that Neo4j
+was the go-to graph database.
+</p>
+<p>
+Since this is a Flask site, and since I was in an overall Python
+phase at the time, I didn't initially consider an alternative
+to using a Python API to Neo4j.  The main two options were 
+<a href="">Neo4j Python REST Client</a> and 
+<a href="">Py2neo</a>.  I tried out both.  I was able to create
+and query a graph easily enough, but was unable to find anything
+in the respective docs about shortest paths, which is what I needed
+to find shortest paths between two synonym nodes in my thesaurus graph.
+</p>
+<p>So the next step was to learn Cypher, Neo4j's counterpart to SQL. Like
+most database API's, Py2neo supports writing your own queries directly.  
+Fortunately, Cypher did have a built in shortestPath feature, with the option
+to limit the length.  For instance, my Python code to find a synonym path
+shorter than 100 looked like this:
+
+
+<pre class="prettyprint codebox">
+g = neo4j.GraphDatabaseService()
+
+def shortest_path_neo(a, b):
+    a = g.get_indexed_node("worddex", "word", a)
+    b = g.get_indexed_node("worddex", "word", b)
+    if not a and b: return None
+    #the important part
+    query_string = "START beginning=node(%d), end=node(%d) 
+                    MATCH p = shortestPath(beginning-[*..100]-end) 
+                    RETURN p" % (a._id, b._id)
+    result = neo4j.CypherQuery(g, query_string).execute()
+    if not len(result): return None
+    p = result[0].p
+    ret = []
+    return [node["word"] for node in p.nodes]
+</pre>
+
+<p>
+This performed well and I built the initial version of the webapp upon it.
+However, I soon got the idea of letting users block certain words from being
+included in paths--essentially find shortest paths in a subgraph consisting
+of all words except for a few they choose to leave out.   Since so few people
+are actually using this webapp, it probably would have been a decent practical
+solution to simply remove the given words from the database, perform the query, 
+and then add them back in.  But clearly that's a bad solution from a theoretical
+standpoint, because if there were ever lots of users at the same time, it could
+potentially lead to inconsistent, incorrect behavior.
+</p>
+
+<p>
+Unfortunately, hours of searching eventually revealed that Cypher does not  
+yet support shortest path queries with any kind of constraint on the nodes in the
+path.
+</p>
