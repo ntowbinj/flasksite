@@ -7,29 +7,36 @@ print(__name__)
 
 @app.route("/eartrainer")
 def hello(): 
-    dependencies = ['AudioDetect.js', 'LoadPlugin.js', 'Plugin.js', 'Player.js'] 
-    dependencies = ['js/MIDI.js/js/MIDI/' + d for d in dependencies]
-    dependencies.append('js/MIDI.js/js/Window/DOMLoader.XMLHttp.js')
-    dependencies.append('js/MIDI.js/js/Widgets/Loader.js')
-    dependencies.append('js/MIDI.js/inc/Base64.js')
-    dependencies.append('js/MIDI.js/inc/base64binary.js')
-    dependencies.append('js/slimmed.js')
-    dependencies.extend(['js/visuals.js'])
+    static = ['AudioDetect.js', 'LoadPlugin.js', 'Plugin.js', 'Player.js'] 
+    static = ['js/MIDI.js/js/MIDI/' + d for d in static]
+    static.append('js/MIDI.js/js/Window/DOMLoader.XMLHttp.js')
+    static.append('js/MIDI.js/js/Widgets/Loader.js')
+    static.append('js/MIDI.js/inc/Base64.js')
+    static.append('js/MIDI.js/inc/base64binary.js')
+    static.append('js/slimmed.js')
+    static.extend(['js/visuals.js'])
     onloads = ['midiSetup']
-    return render_template('home.html', onloads=onloads, dependencies=dependencies, intervs = musichelp.INTERVALS) 
+    return render_template('home.html', onloads=onloads, static=static, intervs = musichelp.INTERVALS) 
 
-@app.route("/about")
 @app.route("/analytics")
 def soon():
     return render_template('soon.html', hide_nav=True)
+
+@app.route("/blog")
+def nullblog():
+    return blog("7-5-14")
+@app.route("/blog/<post>")
+def blog(post):
+    static = ['js/visuals.js', 'js/blog.js']
+    return render_template('blog.html', static=static, post="./blogs/%s.html"%post)
 
 @app.route("/")
 @app.route("/synonymgraph")
 @app.route("/synonyms")
 def synonym():
-    dependencies = ['js/visuals.js', 'js/synonyms.js']
+    static = ['js/visuals.js', 'js/synonyms.js']
     onloads = ['synonymSetup']
-    return render_template('syn.html', onloads=onloads, dependencies = dependencies)
+    return render_template('syn.html', onloads=onloads, static = static)
 
 @app.route("/multicolumn")
 def multicolumn():
@@ -41,9 +48,9 @@ def foliage():
 
 @app.route("/music")
 def music(hide_nav=None):
-    dependencies = ['js/visuals.js', 'js/music.js']
+    static = ['js/visuals.js', 'js/music.js']
     onloads = ['musicSetup']
-    return render_template('music.html', onloads=onloads, dependencies = dependencies, hide_nav=hide_nav)
+    return render_template('music.html', onloads=onloads, static = static, hide_nav=hide_nav)
 
 @app.route("/getpath", methods = ['POST'])
 def getpath():

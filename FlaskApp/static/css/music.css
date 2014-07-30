@@ -10,39 +10,12 @@
     width: 100%;
     margin-bottom: 10%;
 }
-#columnleft{
-    float: left;
-    width: 70%
-}
-#columnright{
-    width: fixed;
-    float: left;
-    margin-left: 5%;
-    width:25%;
-}
 #imagecontainer{
     height: 700px;
 }
 #image{
     width: 100%;
     //border:12px solid rgb(0, 198, 255);
-}
-#columnright h3{
-    text-align: right;
-    border-bottom: 1px solid black;
-    margin-bottom: 2%;
-}
-#columnright li{
-}
-#columnright ul{
-    margin-bottom: 25%;
-}
-
-#columnright p{
-    text-indent: 50px;
-    text-align: justify;
-    text-justify: inter-word;
-    margin-bottom: 0;
 }
 span.inst{
     float: right;

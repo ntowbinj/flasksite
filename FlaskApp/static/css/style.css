@@ -21,7 +21,34 @@ nav.boxsized li{
 nav.notBoxsized li{
     width: 18.0%;
 }
+p {line-height: 110%;}
+#columnleft{
+    float: left;
+    width: 70%
+}
+#columnright{
+    width: fixed;
+    float: left;
+    margin-left: 5%;
+    width:25%;
+}
+#columnright h3{
+    text-align: right;
+    border-bottom: 1px solid black;
+    margin-bottom: 2%;
+}
+#columnright li{
+}
+#columnright ul{
+    margin-bottom: 25%;
+}
 
+#columnright p{
+    text-indent: 50px;
+    text-align: justify;
+    text-justify: inter-word;
+    margin-bottom: 0;
+}
 nav li{
     display: block;
     float: left;
@@ -184,9 +211,19 @@ and (min-width: 1000px) {
         right:0;
     }
 }
+h1.no-title {
+    font-weight: bold;
+    font-size:2vw;
+    margin-bottom:6%;
+}
 h1.title {
     font-weight: bold;
     font-size:6vw;
+    margin-bottom:6%;
+}
+h2{
+    font-weight: bold;
+    font-size:3vw;
     margin-bottom:6%;
 }
 h3{
@@ -270,4 +307,9 @@ ul.instructions li, #content p, #synresult, #avoids
     padding-top: 3%;
     padding-bottom: 4%;
     //text-align: center;
+}
+
+pre.codebox {
+    margin-top: 5%;
+    margin-bottom: 5%;
 }
