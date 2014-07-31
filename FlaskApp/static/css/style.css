@@ -11,6 +11,7 @@ nav.boxsized li{
 nav.notBoxsized li{
     width: 18.0%;
 }
+b {font-weight: bold;}
 p {line-height: 115%;}
 #columnleft{
     float: left;

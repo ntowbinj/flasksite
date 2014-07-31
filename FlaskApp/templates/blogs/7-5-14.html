@@ -44,19 +44,59 @@ def shortest_path_neo(a, b):
 </pre>
 
 <p>
-This performed well and I built the initial version of the webapp upon it.
-However, I soon got the idea of letting users block certain words from being
-included in paths--essentially find shortest paths in a subgraph consisting
-of all words except for a few they choose to leave out.   Since so few people
-are actually using this webapp, it probably would have been a decent practical
-solution to simply remove the given words from the database, perform the query, 
-and then add them back in.  But clearly that's a bad solution from a theoretical
-standpoint, because if there were ever lots of users at the same time, it could
-potentially lead to inconsistent, incorrect behavior.
+This performed well and I built the initial version of the webapp upon it. However, I soon got the idea of letting users block certain words from being included in paths--essentially find shortest paths in a subgraph consisting of all words except for a few they choose to leave out.   Since so few people are actually using this webapp, it probably would have been a decent practical solution to simply remove the given words from the database, perform the query,  and then add them back in.  But clearly that's a bad solution from a theoretical standpoint, because if there were ever lots of users at the same time, it could potentially lead to inconsistent, incorrect behavior.
 </p>
 
 <p>
-Unfortunately, hours of searching eventually revealed that Cypher does not  
-yet support shortest path queries with any kind of constraint on the nodes in the
-path.
+Unfortunately, hours of searching eventually revealed that Cypher does notyet support shortest path queries with any kind of constraint on the nodes in the path.  But since the webapp does not involve any writes to the thesaurus data, and since it's no more than a MB or two in size, all I really needed was a data structure sitting in memory that could be shared among threads.  To balance speed of code with the availability of HTTP server libraries, I ended up going with Java and Apache Tomcat.
+</p>
+
+<p>
+I implemented a standard link-based graph, with a trie as an index into the nodes (though a HashMap would have worked just as well).  Visited nodes and nodes for words the user wants to avoid are added to a HashSet for quick containment checks, since it must be done at every iteration in the BFS. Here is <b>Wordnode.shortestPath</b>: 
+</p>
+
+<pre class="prettyprint codebox">
+public LinkedList&lt;String&gt; shortestPath(Wordnode dest, int limit, HashSet&lt;Wordnode&gt; avoids)
+{
+    HashSet&lt;Wordnode&gt; visited = new HashSet&lt;&gt;();
+    HashMap&lt;Wordnode, Wordnode&gt; previous = new HashMap&lt;&gt;();
+    LinkedList&lt;Wordnode&gt; q = new LinkedList&lt;Wordnode&gt;();
+    previous.put(this, null);
+    if(!avoids.contains(this))
+        q.add(this);
+    Wordnode curr = null;
+    boolean found = false;
+    while(!q.isEmpty() && !found)
+    {
+        curr = q.removeLast();
+        visited.add(curr);
+        if(curr == dest)
+            found = true;
+        else
+        {
+            for(Wordnode n: curr.neighbors)
+            {
+                if(!visited.contains(n) && !avoids.contains(n))
+                {
+                    q.addFirst(n);
+                    if(!previous.containsKey(n))
+                        previous.put(n, curr);
+                }
+            }
+        }
+    }
+    if(!found)
+        return null;
+    LinkedList&lt;String&gt; ret = new LinkedList&lt;&gt;();
+    while(curr != null)
+    {
+        ret.addFirst(curr.word);
+        curr = previous.get(curr);
+    }
+    return ret;
+}
+</pre>
+<p>
+For now, this is a fine solution.  With over 20 thousand nodes in the graph, worst case (non-existant path) queries usually take about a tenth of a second on the server, which is actually a bit less than what I recall the Neo4j implementation taking.  With that said, I have since discovered
+a couple porential alternate solutions to explore down the road.  One would be to learn Neo4j's official Traversal Framework Java API.  The other would be to checkout Datomic, an idea I got from <a href="http://hashrocket.com/blog/posts/using-datomic-as-a-graph-database">this article</a> on using Datomic as a graph database for a shortest path webapp quite similar to mine.
 </p>
