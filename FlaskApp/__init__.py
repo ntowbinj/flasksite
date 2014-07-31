@@ -28,8 +28,9 @@ def nullblog():
 
 @app.route("/blog/<post>")
 def blog(post):
-    static = ['js/visuals.js', 'js/blog.js']
-    return render_template('blog.html', static=static, post="./blogs/%s.html"%post)
+    static = ['js/visuals.js', 'js/blog.js', 'js/prettify.js']
+    onloads = ['blogSetup']
+    return render_template('blog.html', static=static, post="./blogs/%s.html"%post, onloads=onloads)
 
 @app.route("/")
 @app.route("/synonymgraph")

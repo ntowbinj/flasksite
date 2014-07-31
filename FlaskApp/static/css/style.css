@@ -63,12 +63,12 @@ div.prevnext {
     text-decoration: none;
     float: left;
     margin-bottom: 1%;
+    width: 17%;
 }
 div.prevnext a{text-decoration: none}
 div.prevnext img{
     border: 2px solid #8CE9FA;
-    width: 20px;
-    height: auto;
+    width: 20%;
 }
 div.prevnext img:hover{border-color:#2040cd;}
 
@@ -301,6 +301,7 @@ ul.instructions li, #content p, #synresult, #avoids
 }
 
 pre.codebox {
+    font-family: Consolas,Menlo,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New,monospace,serif;;
     margin-top: 5%;
     margin-bottom: 5%;
 }
