@@ -2,6 +2,7 @@
 {% extends "template.html" %}
     {% block external %}
 
+        <link href="{{ url_for('static', filename='css/blog.css') }}" rel="stylesheet">
         <link href="{{ url_for('static', filename='css/solarized.css') }}" rel="stylesheet">
     {% endblock %}
     {% block title %}
@@ -10,8 +11,17 @@
 {% block content %}
     <h1 class="no-title">&nbsp;</h1>
 
-    <div id="blog">
-    {% include post %}
+    <div id="columnleft">
+        <div id="blog">
+        {% include post %}
+        </div>
+    </div>
+    <div id="columnright">
+        <h3>Index</h3>
+        <ul>
+            <li><a href="/blog/7-15-14">July 15: A pure CSS solution to flexible multi-column layouts with background colors </a></li>
+            <li><a href="/blog/7-5-14">July 5: Neo4j's Cypher and Shortest Paths</a></li>
+        </ul>
     </div>
     <div id="preload-01"></div><div id="preload-02"></div>
 {% endblock %}
