@@ -1,0 +1,100 @@
+<h2>A Pure CSS Solution To Flexible Multi-Column Layouts with Background Colors</h2>
+<p>
+This is an infamous css problem, and there are lots of partial solutions out there that didn't suit my needs.
+</p>
+
+<p>
+The goal is to have a multi-column layout, like that of this page.  In this example, the left and right columns are functioning as borders, but the problem is the same.  If the page content (this text) is long enough that the page scrolls, the columns on the left and right must at least appear to continue down the page.  If the content is less than a full page, the border columns must still reach all the way to down to the floor.
+</p>
+
+<p>
+I was previously using a Javascript fix but encountered problems when the browser was caching iframes and then preloading them when I use the backarrow before running the css-fixing js, even though I was setting the src attribute of the iframes <i>after</i> the css-fixing code completed in order to delay it. The delayed src attribute did work when the page was not reached via back arrow, but when it was, it lead to a screwed up appearance while the iframes loaded because the css-fixing code was held up by the iframes. Perhaps there is a way around this, but nonetheless a css-only solution desirable if it does what you need.
+</p>
+
+<p> This approach does not work for background <i>images</i>--only solid background <i>colors</i>--unless you don't mind the scrolling content moving against a static image.
+</p>
+
+<p>"Flexible" means that the height of content in each column can be different, and the widths can be percentages. Here is an uneven <a href="/multicolumn">3-column demonstration</a>, though it should apply for any n.  
+</p>
+
+<p>
+Given n columns, and the width (in percentage if you want) you want each to occupy, first create an empty div for each that will serve as their respective backgrounds (colors). Order shouldn't matter.  Continuing the n=3 example:
+</p>
+
+<pre class="prettyprint codebox">
+    &lt;div id="leftbg"&gt;&lt;/div&gt;
+    &lt;div id="middlebg"&gt;&lt;/div&gt;
+    &lt;div id="rightbg"&gt;&lt;/div&gt;
+</pre>
+
+with the following styles:
+
+
+<pre class="prettyprint codebox">
+#leftbg {
+    background-color: green;
+    height: 100%;
+    width: 14%;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+#rightbg {
+    background-color: blue;
+    height: 100%;
+    width: 24%;
+    position: fixed;
+    top: 0;
+    right:0;
+}
+
+#middlebg {
+    background-color: red;
+    height: 100%;
+    width:62%;
+    position: fixed;
+    top: 0;
+    right: 24%;
+    left: 14%; 
+}
+</pre>
+
+Note for example, that the <b>left</b> style attribute of <b>#middlebg</b> is the same as the <b>width</b> attribute of <b>#leftbg</b>, and so on.
+
+<p>
+Then float content containers with each column's content above each of those backgrounds.
+</p>
+
+<pre class="prettyprint codebox">
+&lt;div id="leftcontainer"&gt;
+    &lt;div id="leftcontent"&gt;&lt;p&gt;hello&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div id="middlecontainer"&gt;
+    &lt;div id="middlecontent"&gt;&lt;p&gt;hello&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+</pre>
+
+<p>with:</p>
+
+<pre class="prettyprint codebox">
+#leftcontainer{
+    width: 14%;
+    position: relative;
+    float: left;
+}
+#middlecontainer{
+    width: 62%;
+    position: relative;
+    float: left;
+}
+</pre>
+
+<p>
+Note the widths are the same as their respective background divs. The containers and content have no background. It's just text/whatever that is made to float over the background divs.
+<p>
+
+</p>
+At this point, aside from the use of absolute positioning, you can effectively treat each column an isolated page.
+</p>

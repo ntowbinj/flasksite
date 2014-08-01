@@ -1,0 +1,22 @@
+#columnleft{
+    float: left;
+    width: 79%
+}
+
+#columnright{
+    width: fixed;
+    float: left;
+    margin-left: 3%;
+    width:18%;
+}
+#columnright a{
+    text-decoration: none;
+    color: #0066ee; 
+}
+#columnright li{
+    margin: 10% 0;
+}
+#columnright a:hover{
+    text-decoration: underline;
+    color: #3333ff; 
+}
