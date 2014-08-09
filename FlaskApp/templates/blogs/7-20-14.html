@@ -1,0 +1,95 @@
+<h2>Storing boolean information in individual bits in C</h2>
+
+In my current webscraping/Big Data/thesaurus project (that's only loosely related to <a href="/synonyms">this</a>, I was originally representing the graph with an <b>NxN</b> connectrix instead of as linked nodes.  It later became clear that that wasn't the way to go, due the low edge density.  Since edges were non-weighted, they could only take on one of two values, and so only one bit is needed to represent it in a connectrix.  The best immediately available option, an unsigned char, would use 8 times as much space as is theoretically needed.  
+</p>
+
+<p>
+Of course, computer hardware doesn't lend itself to a single-bit <i>type</i>.  However, the idea of an <i>array</i> of single bits makes a bit more sense, even if bits can't technically be accessed or changed directly in the same way as a byte.  I ended up implementing a <b>bitsarr</b> that can store an array of either 1-, 2-, or 4-bit values, since those all divide the number of bits in a byte.  I haven't done any testing yet to see how much the extra work in accessing and writing slows it down compared to a proper C array, but there's no doubt it can save space.  So even though I'm not currently using it, it was an interesting experiment that I figured was worth mentioning.
+</p>
+
+<p>Underneath the hood, a <b>bitsarr</b> is an array of unsigned chars.  To store 0 or 1 (when numbits is ONE) at index 13, simply do the bitwise operations necessary to set or unset the 5th bit in the 2nd unsigned char 'bucket'.
+</p>
+
+<pre class="prettyprint codebox">
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#define BYTE 8
+
+typedef enum {ONE=1, TWO=2, FOUR=4} numbits;
+
+typedef struct bitsarr{
+    unsigned char* buckets;
+    numbits n;
+} bitsarr;
+
+
+bitsarr new_bitsarr(int size, numbits n)
+{
+    int b = sizeof(unsigned char)*BYTE;
+    int numbuckets = (size*n + b - 1)/b;
+    bitsarr ret;  
+    ret.buckets = malloc(sizeof(ret.buckets)*numbuckets);
+    ret.n = n;
+    return ret;
+}
+void bitsarr_delete(bitsarr xp)
+{
+    free(xp.buckets);
+}
+
+void bitsarr_set(bitsarr *xp, int index, int value)
+{
+    int buckdex, innerdex;
+    buckdex = index/(BYTE/xp-&gt;n);
+    innerdex = index%(BYTE/xp-&gt;n);
+    xp-&gt;buckets[buckdex] = (value &lt;&lt; innerdex*xp-&gt;n) | ((~(((1 &lt;&lt; xp-&gt;n) - 1) &lt;&lt; innerdex*xp-&gt;n)) & xp-&gt;buckets[buckdex]);
+
+    //longer, readable version
+
+    /*unsigned int width, width_in_place, zeros, old, newbits, new;
+    width = (1 << xp->n) - 1; 
+    width_in_place = width << innerdex*xp->n;
+    zeros = ~width_in_place;
+    old = xp->buckets[buckdex];
+    old = old & zeros;
+    newbits = value << innerdex*xp->n;
+    new = newbits | old;
+    xp->buckets[buckdex] = new; */
+
+}
+
+int bitsarr_get(bitsarr *xp, int index)
+{
+    int buckdex, innerdex;
+    buckdex = index/(BYTE/xp->n);
+    innerdex = index%(BYTE/xp->n);
+    return ((((1 << xp->n) - 1) << innerdex*xp->n) & (xp->buckets[buckdex])) >> innerdex*xp->n;
+
+    //longer, readable version
+
+    /*unsigned int width = (1 << xp->n) - 1; 
+    unsigned int width_in_place = width << innerdex*xp->n;
+    unsigned int val = xp->buckets[buckdex];
+    unsigned int retshifted = width_in_place & val;
+    unsigned int ret = retshifted >> innerdex*xp->n;
+    return ret; */
+}
+
+int main() //test
+{
+    bitsarr x = new_bitsarr(100, FOUR);
+    for(int i = 0; i<16; i++)
+        bitsarr_set(&x, i, i);
+    for(int i = 0; i<16; i++)
+        printf("%d\n", bitsarr_get(&x, i));
+    for(int i = 0; i<16; i++)
+        bitsarr_set(&x, i, 15-i);
+    for(int i = 0; i<16; i++)
+        printf("%d\n", bitsarr_get(&x, i));
+    bitsarr_delete(x);
+}
+</pre>
+
+<p>
+One thing to note about the above implementation is that it assumes the user will not try to set an index to a value outside the range.  E.g., if the user creates a <b>bitsarr</b> to store 4-byte values, and tries to set an index to 17, the value at that index will not overflow unless it happens to be the last value blocked into an unsigned char 'bucket'.  Otherwise, the value at the subsequent index will be corrupted.
+</p>

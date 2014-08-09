@@ -8,17 +8,17 @@ The goal is to have a multi-column layout, like that of this page.  In this exam
 </p>
 
 <p>
-I was previously using a Javascript fix but encountered problems when the browser was caching iframes and then preloading them when I use the backarrow before running the css-fixing js, even though I was setting the src attribute of the iframes <i>after</i> the css-fixing code completed in order to delay it. The delayed src attribute did work when the page was not reached via back arrow, but when it was, it lead to a screwed up appearance while the iframes loaded because the css-fixing code was held up by the iframes. Perhaps there is a way around this, but nonetheless a css-only solution desirable if it does what you need.
+I was previously using a Javascript fix but encountered problems when the browser was caching iframes and then pre-loading them when I use the backarrow before running the css-fixing js, even though I was setting the src attribute of the iframes <i>after</i> the css-fixing code completed in order to delay it. The delayed src attribute did work when the page was not reached via back arrow, but when it was, it lead to a screwed up appearance while the iframes loaded because the css-fixing code was held up by the iframes. Perhaps there is a way around this, but nonetheless a css-only solution desirable if it does what you need.
 </p>
 
 <p> This approach does not work for background <i>images</i>--only solid background <i>colors</i>--unless you don't mind the scrolling content moving against a static image.
 </p>
 
-<p>"Flexible" means that the height of content in each column can be different, and the widths can be percentages. Here is an uneven <a href="/multicolumn">3-column demonstration</a>, though it should apply for any n.  
+<p>"Flexible" means that the height of content in each column can be different, and the widths can be percentages. Here is an uneven <a href="/multicolumn">3-column demonstration</a>, though it should apply for any <i>n</i>.  
 </p>
 
 <p>
-Given n columns, and the width (in percentage if you want) you want each to occupy, first create an empty div for each that will serve as their respective backgrounds (colors). Order shouldn't matter.  Continuing the n=3 example:
+Given <i>n</i> columns, and the width (in percentage if you want) you want each to occupy, first create an empty div for each that will serve as their respective backgrounds (colors). Order shouldn't matter.  Continuing the <i>n=3</i> example:
 </p>
 
 <pre class="prettyprint codebox">

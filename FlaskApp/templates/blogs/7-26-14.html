@@ -1,0 +1,72 @@
+<h2>July 26: MySQL 5.6 partition selection feature as alternative to 'LIMIT offset, count'</h2>
+<p>
+When processing tens of millions of MySQL rows with text fields, you can't load them all into memory at once.  So, you need a way of systematically loading pieces of it one at a time.  The simplest, but not best performing way would be something like this (100,000 at a time):
+</p>
+<pre class="prettyprint codebox">
+SELECT &lt;fields&gt; FROM &lt;table&gt; LIMIT 0, 100000;
+SELECT &lt;fields&gt; FROM &lt;table&gt; LIMIT 100000, 100000;
+SELECT &lt;fields&gt; FROM &lt;table&gt; LIMIT 200000, 100000;
+...
+</pre>
+<p>
+However, the bigger that offset is, the more work MySQL has to do to know where to begin holding on to rows to send back.  But as <a href="http://explainextended.com/2009/10/23/mysql-order-by-limit-performance-late-row-lookups/">this article</a> explains, this can be improved significantly with a JOIN approach--select the desired range of ids, and JOIN that with the other fields.  It's worth noting that this approach can lead to rows coming back in a different order, but if the goal is to iterate through <i>all</i> the rows and perform non-sequential computations on them, that wouldn't matter.
+</p>
+
+<p>
+If you really have tens of millions of rows, that approach will still cost you seconds or minutes (better than minutes or hours).  While table partitioning has been available since 5.1, there's a new feature in 5.6 that allows for manually limiting queries to a partition specified by number.  What's nice about this is that--at least with MyISAM tables, though presumably InnoDB as well--it doesn't take measurably longer to select from the 80th partition than from the 5th, even if each partition has hundreds of thousands of rows.
+</p>
+
+
+<p>
+One way to use the feature would be to select entire partitions at a time for processing. This should be safe as long as you know the partitions won't get too large (and depending on the type of partition, they may or may not be roughly equal in size).  But with a little more work, you can systematically use the feature to get the same <i>nth</i> row as the naive approach with speed improved by orders of magnitude.  Since COUNT queries with no WHERE clause are quite fast on whole partitions of MyISAM tables, you would simply need to add the sizes of sequential partitions until partition <i>i</i>, where you're at row <i>m</i>, just over <i>n</i>, and then select from that last partition with the appropriate offset.
+</p>
+
+<pre class="prettyprint codebox">
+SELECT &lt;fields&gt; FROM &lt;table&gt; partition (p&lt;i-1&gt;) LIMIT &lt;m-n&gt;, 1
+</pre>
+
+<p>
+But again, if all you need to do is analyze every row in reasonably sized chunks, all that trouble is unnecessary and it's quite straightforward to just select one whole partition at a time.
+</p>
+
+<p>
+I wrote a simple bash script to compare query times for selecting a single row at various 'depths' into the table using the three different methods.  The results and script are below.  I don't know exactly what causes the severe spike in the naive method about halfway through the chart, but I'm guessing it's due to the amount of RAM on my machine.  This is on a hash-partitioned MyISAM table with about 21 million rows and 100 nearly equal partitions.  Instead of explaining exactly what the test was in words, I'll let the short bash script speak for itself.  Suffice it to say, if the <i>nth</i> partition is rows <i>a</i> through <i>b</i>, it is in general much faster to select the <i>nth</i> partition than to use 'LIMIT a, b-a'.
+</p>
+
+<iframe height=371 width=600 src="//docs.google.com/spreadsheets/d/10U0np3UWVaPqwFQ-DWxUjc13iRp-wZ8MgwDZHmxaTQU/gviz/chartiframe?oid=960114616" seamless frameborder=0 scrolling=no></iframe>
+<pre class="prettyprint codebox">
+#!/bin/bas
+#!/bin/bash
+
+part_start=0
+small_offset=1000
+
+function nano_time() {
+    echo "$(($(date +'%s * 1000 + %-N / 1000000')))"
+}
+
+for i in {0..99}; do
+    partsize_result="$(mysql --login-path=local $1 -e "select count(*) from $2 partition (p$i);")"
+    partsize=`echo $partsize_result | cut -d ' ' -f2` 
+    offset=`expr $small_offset + $part_start`
+
+    start=$(nano_time)
+    res=$(mysql --login-path=local $1 -e "select id, author from $2 limit $offset, 1;")
+    finish=$(nano_time)
+    naive_elapsed=`expr $finish - $start`
+
+    start=$(nano_time)
+    res=$(mysql --login-path=local $1 -e "select l.id, author from ( select id from $2 limit $offset, 1 ) o join $2 l on l.id = o.id; ")
+    finish=$(nano_time)
+    join_elapsed=`expr $finish - $start`
+    #join_way=`expr $join_way + $elapsed`
+
+    start=$(nano_time)
+    res="$(mysql --login-path=local $1 -e "select id, author from $2 partition (p$i) limit $small_offset, 1;")"
+    finish=$(nano_time)
+    part_elapsed=`expr $finish - $start`
+
+    echo $i, $part_elapsed, $join_elapsed, $naive_elapsed
+    part_start=`expr $part_start + $partsize`
+done
+</pre>
