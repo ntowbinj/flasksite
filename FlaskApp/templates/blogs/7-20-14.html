@@ -1,3 +1,5 @@
+{% extends "blog.html" %}
+{% block post %}
 <h2>Storing boolean information in individual bits in C</h2>
 
 In my current webscraping/Big Data/thesaurus project (that's only loosely related to <a href="/synonyms">this</a>, I was originally representing the graph with an <b>NxN</b> connectrix instead of as linked nodes.  It later became clear that that wasn't the way to go, due the low edge density.  Since edges were non-weighted, they could only take on one of two values, and so only one bit is needed to represent it in a connectrix.  The best immediately available option, an unsigned char, would use 8 times as much space as is theoretically needed.  
@@ -93,3 +95,4 @@ int main() //test
 <p>
 One thing to note about the above implementation is that it assumes the user will not try to set an index to a value outside the range.  E.g., if the user creates a <b>bitsarr</b> to store 4-byte values, and tries to set an index to 17, the value at that index will not overflow unless it happens to be the last value blocked into an unsigned char 'bucket'.  Otherwise, the value at the subsequent index will be corrupted.
 </p>
+{% endblock %}
