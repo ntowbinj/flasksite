@@ -35,7 +35,7 @@ But again, if all you need to do is analyze every row in reasonably sized chunks
 I wrote a simple bash script to compare query times for selecting a single row at various 'depths' into the table using the three different methods.  The results and script are below.  I don't know exactly what causes the severe spike in the naive method about halfway through the chart, but I'm guessing it's due to the amount of RAM on my machine.  This is on a hash-partitioned MyISAM table with about 21 million rows and 100 nearly equal partitions.  Instead of explaining exactly what the test was in words, I'll let the short bash script speak for itself.  Suffice it to say, if the <i>nth</i> partition is rows <i>a</i> through <i>b</i>, it is in general much faster to select the <i>nth</i> partition than to use 'LIMIT a, b-a'.
 </p>
 
-<iframe name= "//docs.google.com/spreadsheets/d/10U0np3UWVaPqwFQ-DWxUjc13iRp-wZ8MgwDZHmxaTQU/gviz/chartiframe?oid=960114616"id="chart" height=371 width=600 src="" seamless frameborder=0 scrolling=no></iframe>
+<img src="{{url_for('static', filename='img/spreadsheet.png')}}" id="chart"></img>
 <pre class="prettyprint codebox">
 #!/bin/bas
 #!/bin/bash
