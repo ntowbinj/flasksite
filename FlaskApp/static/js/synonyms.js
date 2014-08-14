@@ -178,3 +178,4 @@ function synonymSetup(){
     synController.setStaticButtons();    
     
 }
+onloads.push(synonymSetup);

@@ -15,8 +15,7 @@ def hello():
     static.append('js/MIDI.js/inc/base64binary.js')
     static.append('js/slimmed.js')
     static.extend(['js/visuals.js'])
-    onloads = ['midiSetup']
-    return render_template('home.html', onloads=onloads, static=static, intervs = musichelp.INTERVALS) 
+    return render_template('home.html', static=static, intervs = musichelp.INTERVALS) 
 
 @app.route("/analytics")
 def soon():
@@ -29,16 +28,14 @@ def nullblog():
 @app.route("/blog/<post>")
 def blog(post):
     static = ['js/visuals.js', 'js/blog.js', 'js/prettify.js']
-    onloads = ['blogSetup']
-    return render_template('/blogs/%s.html' % (post), static=static, onloads=onloads)
+    return render_template('/blogs/%s.html' % (post), static=static)
 
 @app.route("/")
 @app.route("/synonymgraph")
 @app.route("/synonyms")
 def synonym():
     static = ['js/visuals.js', 'js/synonyms.js']
-    onloads = ['synonymSetup']
-    return render_template('syn.html', onloads=onloads, static = static)
+    return render_template('syn.html', static = static)
 
 @app.route("/multicolumn")
 def multicolumn():
@@ -51,14 +48,18 @@ def foliage():
 @app.route("/music")
 def music(hide_nav=None):
     static = ['js/visuals.js', 'js/music.js']
-    onloads = ['musicSetup']
-    return render_template('music.html', onloads=onloads, static = static, hide_nav=hide_nav)
+    return render_template('music.html', static = static, hide_nav=hide_nav)
 
 @app.route("/getpath", methods = ['POST'])
 def getpath():
     print("HELLO")
     path = shortestpath.shortest_path(request.form);
     return path 
+
+@app.route("/wordlist.txt")
+def wordlist():
+    with open("/usr/share/dict/words") as reader:
+        return reader.read()
 
 @app.route("/red")
 def first_resutl():

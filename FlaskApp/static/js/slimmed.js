@@ -530,4 +530,5 @@ function midiSetup(){
     });
         
 };
+onloads.push(midiSetup);
 

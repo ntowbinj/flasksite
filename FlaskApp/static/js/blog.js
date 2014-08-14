@@ -1,4 +1,3 @@
-
 function blogSetup(){
     prettyPrint();
     $("iframe").each(function(){
@@ -7,3 +6,4 @@ function blogSetup(){
         $(this).attr('name', "");
     });
 }
+onloads.push(blogSetup);

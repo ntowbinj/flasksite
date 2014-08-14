@@ -5,6 +5,7 @@
             {% block title %}
             {% endblock %}
         </title>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/base.js') }}"></script>
         <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
         {% for d in static %}
             <script src="{{ url_for('static', filename=d) }}"></script>
@@ -13,15 +14,6 @@
         <link type="text/css" href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
         {% block external %}
         {% endblock %}
-    <script type="text/javascript">
-        window.onload = function() {
-            visual.resize();
-            visual.currentPage();
-            {% for func in onloads %}
-                {{ func }}();
-            {% endfor %}
-        };
-    </script>
     </head>
     <body>
         <div id="left"></div>

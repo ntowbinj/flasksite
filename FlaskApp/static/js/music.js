@@ -99,3 +99,4 @@ function musicSetup(){
     view.init();
     controller.init();
 }
+onloads.push(musicSetup);
