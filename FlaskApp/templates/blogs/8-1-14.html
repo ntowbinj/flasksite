@@ -1,7 +1,12 @@
 {% extends "blog.html" %}
-{% block blogjs %}
-<script type="text/javascript" src="{{ url_for('static', filename='js/8-1-14.js') }}"></script>
+{% block blogexternal %}
+    <link href="{{ url_for('static', filename='css/blogs/8-1-14.css') }}" rel="stylesheet">
+    <script type="text/javascript" src="{{ url_for('static', filename='js/blogs/8-1-14.js') }}"></script>
 {% endblock %}
 {% block post %}
-helo
+    <input id="string" type="text" value="nowherenow">
+    <button class="blueButton" id="submit">did you mean</button>
+    <div id="result">
+        <ul id="resultList"></ul> 
+    </div>
 {% endblock %}

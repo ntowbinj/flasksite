@@ -1,7 +1,8 @@
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, abort
 import shortestpath
 import urllib2, urllib, httplib
 import musichelp
+from jinja2 import TemplateNotFound
 app = Flask(__name__)
 print(__name__)
 
@@ -28,7 +29,10 @@ def nullblog():
 @app.route("/blog/<post>")
 def blog(post):
     static = ['js/visuals.js', 'js/blog.js', 'js/prettify.js']
-    return render_template('/blogs/%s.html' % (post), static=static)
+    try:
+        return render_template('/blogs/%s.html' % (post), static=static)
+    except TemplateNotFound:
+        abort(404)
 
 @app.route("/")
 @app.route("/synonymgraph")
@@ -59,6 +63,13 @@ def getpath():
 @app.route("/wordlist.txt")
 def wordlist():
     with open("/usr/share/dict/words") as reader:
+        return reader.read()
+
+@app.route("/words_ten_thousand.txt")
+def words_ten_thousand():
+    import os
+    here = os.path.dirname(__file__)
+    with open(os.path.join(here, "data/words_ten_thousand.txt")) as reader:
         return reader.read()
 
 @app.route("/red")
