@@ -1,6 +1,6 @@
 function Trie(){
     this.isWord = false;
-    this.children = {};
+    this.children = [];
 }
 
 Trie.prototype.add = function(word) {
@@ -10,12 +10,13 @@ Trie.prototype.add = function(word) {
     else{
         var child = word[0];
         var tail = word.substring(1, word.length);
-        if(!(child in this.children)){
-            this.children[child] = new Trie();
+        if(!this.getChild(child)){
+            this.children[child.charCodeAt(0)] = new Trie();
         }
-        this.children[child].add(tail);
+        this.getChild(child).add(tail);
     }
 }
+
 Trie.prototype.has = function(word) {
     if(word.length == 0){
         return this.isWord;
@@ -23,16 +24,16 @@ Trie.prototype.has = function(word) {
     else{
         var child = word[0];
         var tail = word.substring(1, word.length);
-        if(!this.hasChild(child)){
+        if(!this.getChild(child)){
             return false;
         }
         else{
-            return this.children[child].has(tail);
+            return this.getChild(child).has(tail);
         }
     }
 }
-Trie.prototype.hasChild = function(c) {
-    return (c in this.children);
+Trie.prototype.getChild = function(c) {
+    return (this.children[c.charCodeAt(0)]);
 }
 
 var data = {
@@ -46,7 +47,7 @@ var data = {
     },
     getCandidates: function(){
         (function(){
-            if(!this.T){ alert("not ready");}
+            if(!this.T){return;}
             this.candidates = [];
             this.candidates = this.recGetCandidates(this.string);
         }).call(data);
@@ -57,11 +58,11 @@ var data = {
         if(!s.length) return ret;
         var cur = this.T;
         for(var i = 0; i<s.length; i++){
-            if(!cur.hasChild(s[i])){
+            if(!cur.getChild(s[i])){
                 break;
             }
             else{
-                cur = cur.children[s[i]];
+                cur = cur.children[s[i].charCodeAt(0)];
             }
             if(cur.isWord){
                 if(i == s.length-1) ret.push(s);
@@ -97,6 +98,33 @@ var show = {
             listhtml += "<li>" + data.candidates[i] + "</li>";
         }
         $("#resultList").html(listhtml);
+    },
+    target: undefined,
+    spinner: undefined,
+    init: function(){
+        (function(){
+            var opts = {
+                lines: 13, // The number of lines to draw
+                length: 5, // The length of each line
+                width: 1.5, // The line thickness
+                radius: 4, // The radius of the inner circle
+                corners: 1, // Corner roundness (0..1)
+                rotate: 48, // The rotation offset
+                direction: 1, // 1: clockwise, -1: counterclockwise
+                color: '#000', // #rgb or #rrggbb or array of colors
+                speed: 1.1, // Rounds per second
+                trail: 100, // Afterglow percentage
+                shadow: false, // Whether to render a shadow
+                hwaccel: false, // Whether to use hardware acceleration
+                className: 'spinner', // The CSS class to assign to the spinner
+                zIndex: 2e9, // The z-index (defaults to 2000000000)
+                top: '50%', // Top position relative to parent
+                left: '45%' // Left position relative to parent
+            }
+            this.target = document.getElementById('form')
+            this.spinner = new Spinner(opts).spin()
+            this.target.appendChild(this.spinner.el);
+        }).call(show);
     }
 };
 
@@ -113,11 +141,13 @@ function buildTrie(){
             }
         }
         data.T = T;
+        show.spinner.stop();
     });
 }
 
 function blog8_1_14Setup(){
     control.setStaticButtons();
     buildTrie();
+    show.init();
 };
 onloads.push(blog8_1_14Setup);

@@ -2,11 +2,24 @@
 {% block blogexternal %}
     <link href="{{ url_for('static', filename='css/blogs/8-1-14.css') }}" rel="stylesheet">
     <script type="text/javascript" src="{{ url_for('static', filename='js/blogs/8-1-14.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/blogs/sizeof.compressed.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/widgets/spin.min.js') }}"></script>
 {% endblock %}
 {% block post %}
-    <input id="string" type="text" value="nowherenow">
-    <button class="blueButton" id="submit">did you mean</button>
-    <div id="result">
-        <ul id="resultList"></ul> 
+<h2>Didyoumeanthis</h2>
+<p> Since I have recently become interested in the field of data science, I was watching <a href="https://www.youtube.com/watch?v=gUTuESHKbXI">this</a> talk by Daniel Tunkeland of LinkedIn about the interviewing process for data scientists.  He was talking about potential coding questions to ask, and one was to try to segment a string with no spaces into possible word sequences.  This happens to be an especially good use case for tries, which I've always liked working with, and since I generally feel guilty if I go months without writing anything non-trivial in one of the languages I've chosen to maintain knowledge of, I decided to implement it client-side with Javascript (which makes sense, after all).  Try it out:
+</p>
+    <div id="form">
+        <input id="string" type="text" value="nowherenow">
+        <button class="blueButton" id="submit">did you mean</button>
+        <div id="result">
+            <b><ul id="resultList"></ul> </b>
+        </div>
     </div>
+<p>When representing set data or key-value data on strings, tries aren't a bad choice.  However, in many situations involving simple look-ups exposed by a basic map interface, there's a pretty good chance some hash-based implementation will be faster and maybe more memory efficient than a regular trie.  But in this situation, the trie is used for more than a representation of a set.  The internal structure of the trie is exploited to do all necessary lookups in constant time.
+</p>
+<p>
+For example, if we had the string "nowhere", we can check whether "n" is a word in constant time.  Then, when we check whether "no" is a word, we don't traverse the trie from the root again--instead, we keep around a reference to the node for "n" and go from there.
+<p>In theory, the problem of finding all possible segmentations has exponential worst case runtime.  If all substrings are in a dictionary, then the loop that outputs all 2^(n-1) solutions would of course require at least 2^(n-1) operations.
+</p>
 {% endblock %}

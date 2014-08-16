@@ -1,3 +1,7 @@
 #resultList li{
     margin: 1% 0;
 }
+#form{
+    margin: 7% 0;
+}
+#form { position: relative;}
