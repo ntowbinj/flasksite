@@ -49,15 +49,15 @@ var data = {
         (function(){
             if(!this.T){return;}
             this.candidates = [];
-            this.candidates = this.recGetCandidates(this.string);
+            this.candidates = this.recGetCandidates(0, this.string, []);
         }).call(data);
     },
-    recGetCandidates: function(s)
+    recGetCandidates: function(start, s, memo)
     {
         var ret = [];
         if(!s.length) return ret;
         var cur = this.T;
-        for(var i = 0; i<s.length; i++){
+        for(var i=start; i<s.length; i++){
             if(!cur.getChild(s[i])){
                 break;
             }
@@ -65,11 +65,15 @@ var data = {
                 cur = cur.children[s[i].charCodeAt(0)];
             }
             if(cur.isWord){
-                if(i == s.length-1) ret.push(s);
+                if(i == s.length-1) ret.push(s.substring(start, s.length + 1));
                 else{
-                    recRes = this.recGetCandidates(s.substring(i+1, s.length));
+                    var recRes = memo[i+1];
+                    if(recRes == undefined) {
+                        recRes = this.recGetCandidates(i+1, s, memo);
+                        memo[i+1] = recRes;
+                    }
                     for(var j = 0; j<recRes.length; j++){
-                        ret.push(s.substring(0, i+1) + " " + recRes[j]);
+                        ret.push(s.substring(start, i+1) + " " + recRes[j]);
                     }
                 }
             }

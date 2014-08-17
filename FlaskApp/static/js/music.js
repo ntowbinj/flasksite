@@ -1,9 +1,9 @@
-var soundcloudIframes = {
+var soundIframes = {
     gray: "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/114306377&amp;color=2040cd&amp;auto_play=false&amp;hide_related=false&amp;show_artwork=true&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false",
     kid: "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/129879035&amp;color=2040cd&amp;theme_color=000000&amp;auto_play=false&amp;hide_related=false&amp;show_artwork=true&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false",
     thomas: "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/161018583&amp;color=2040cd&amp;auto_play=false&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false"
 };
-var youtubeIframes = {
+var youtIframes = {
     kid: "//www.youtube.com/embed/IgjXhG8g1CI",
     thomas: "//www.youtube.com/embed/66CApDQ_nBU",
     blimp: "//www.youtube.com/embed/ukNejCx57uo",
@@ -57,10 +57,10 @@ var view = {
     },
     show: {
         sound: function(){
-            dom.soundcloud.attr('src', soundcloudIframes[orders['sound'][config.indexes.sound]]);
+            dom.sound.attr('src', soundIframes[orders['sound'][config.indexes.sound]]);
         },
         yout: function(){
-            dom.youtube.attr('src', youtubeIframes[orders['yout'][config.indexes.yout]]);
+            dom.yout.attr('src', youtIframes[orders['yout'][config.indexes.yout]]);
         },
         img: function(){
             dom.image.attr('src', images[orders['img'][config.indexes.img]]);
@@ -72,6 +72,12 @@ var controller = {
         var pvs = ['sound', 'yout', 'img'];
         for(var i = 0; i<pvs.length; i++){
             (function(i){
+                if(pvs[i] != 'img'){
+                    dom[pvs[i]].load(function(){
+                        dom['next' + pvs[i]].css("visibility", "visible");
+                        dom['prev' + pvs[i]].css("visibility", "visible");
+                    });
+                }
                 dom['next' + pvs[i]].click(function(e){
                     e.preventDefault();
                     config.indexes[pvs[i]]++;
@@ -92,7 +98,7 @@ var dom;
 
 function musicSetup(){
     dom = {};
-    els = ['soundcloud', 'youtube', 'nextsound', 'prevsound', 'nextyout', 'prevyout', 'nextimg', 'previmg', 'image'];
+    els = ['sound', 'yout', 'nextsound', 'prevsound', 'nextyout', 'prevyout', 'nextimg', 'previmg', 'image'];
     for(var i = 0; i<els.length; i++){
         dom[els[i]] = $("#" + els[i]);
     }

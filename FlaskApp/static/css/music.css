@@ -1,10 +1,10 @@
 #youtubecontainer{clear:both;}
 #soundcloudcontainer{clear:both;}
-#soundcloud{
+#sound{
     width: 100%;
     margin-bottom: 10%;
 }
-#youtube{
+#yout{
     //float: left;
     clear: both;
     width: 100%;
@@ -19,6 +19,13 @@
 }
 span.inst{
     float: right;
+}
+.prev, .next{visibility:hidden;}
+div.prevnext img{
+    text-decoration: none;
+    float: left;
+    margin-bottom: 1%;
+    width: 17%;
 }
 #preload-01 { background: url("/static/img/prevhover.png") no-repeat -9999px -9999px; }
 #preload-02 { background: url("/static/img/nexthover.png") no-repeat -9999px -9999px; }
