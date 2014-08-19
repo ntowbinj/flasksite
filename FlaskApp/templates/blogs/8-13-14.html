@@ -1,0 +1,139 @@
+{% extends "blog.html" %}
+{% block post %}
+<h2>Tracking Down Bugs in Git's Source Code</h2>
+
+
+<p>
+Even great software has bugs, but I honestly didn't expect to be debugging git anytime soon.  To go ahead and spoil the ending--it turns out I should have just upgraded from 1.9.1 to 2, but I mistakenly assumed that Mint 17 would have the latest.  It all started when I decided to try using vimdiff as my diff tool. I followed <a href="http://technotales.wordpress.com/2009/05/17/git-diff-with-vimdiff/">this tutorial</a> to configure it.  Upon trying to use vimdiff via git, I got this error:
+</p>
+<pre class="codebox">
+fatal: cannot exec 'git_diff_wrapper': Bad address
+external diff died, stopping at HEAD:switch-monitor.sh.
+</pre>
+
+<p>
+Attempts at finding similar errors on google yielded nothing, which is usually a sign that you're in for a bad time.
+</p>
+
+<p>So I decided to clone git's source and use grep to try to find where this error message is being outputted.  Unfortunately, it was not as simple as grepping the first line with a regex in place of 'git_diff_wrapper'.  This is because the text "fatal" and "cannot exec" never occur on the same line in git's source, and "Bad address" doesn't occur in git's source <i>at all</i> (only in one test shell script).
+</p>
+
+<p>After digging around in the source, I found that these three components were being pieced together in separate places (a.k.a. modularity).  Additionally, the text "Bad address" was coming from from the <b>strerror</b> message for <b>EFAULT</b>.
+
+<p>This code is run when a system exec call returns (hence an error).</p>
+
+<pre class="codebox prettyprint">
+if (errno == ENOENT) {
+        if (!cmd->silent_exec_failure)
+                error("cannot run %s: %s", cmd->argv[0],
+                        strerror(ENOENT));
+        exit(127);
+} else {
+        die_errno("cannot exec '%s'", cmd->argv[0]);
+}
+</pre>
+
+<p> and it turns out that in the course of function calls within <b>die_errno</b>, "fatal: " is prepended, and the <b>strerror</b> message is appended.  All of the above occur in a child process spawned below:
+<p>
+
+<pre class="codebox prettyprint">
+if (run_command_v_opt_cd_env(argv.argv, RUN_USING_SHELL, NULL, env.argv))
+        die(_("external diff died, stopping at %s"), name);
+</pre>
+
+
+<p>
+<b>EFAULT</b> is often caused by the absence of a pointer to NULL at the end of the argument list.  The call to execvp occurs within <b>sane_execvp</b>, but there's little going on there besides the call.  Thus I decided to look in <b>prepare_shell_cmd</b> for the culprit.  Here is the greater context:
+</p>
+<pre class="codebox prettyprint">
+static int execv_shell_cmd(const char **argv)
+{
+    const char **nargv = prepare_shell_cmd(argv);
+    trace_argv_printf(nargv, "trace: exec:");
+    sane_execvp(nargv[0], (char **)nargv);
+    free(nargv);
+    return -1;
+}
+</pre>
+<p>and here is <b>prepare_shell_cmd</b>:</p>
+
+<pre class="codebox prettyprint">
+static const char **prepare_shell_cmd(const char **argv)
+{
+    int argc, nargc = 0;
+    const char **nargv;
+
+    for (argc = 0; argv[argc]; argc++)
+        ; /* just counting */
+    /* +1 for NULL, +3 for "sh -c" plus extra $0 */
+    nargv = xmalloc(sizeof(*nargv) * (argc + 1 + 3));
+
+    if (argc &lt; 1)
+        die("BUG: shell command is empty");
+
+    if (strcspn(argv[0], "|&;&lt;&gt;()$`\\\"' \t\n*?[#~=%") != strlen(argv[0])) {
+#ifndef GIT_WINDOWS_NATIVE
+        nargv[nargc++] = SHELL_PATH;
+#else
+        nargv[nargc++] = "sh";
+#endif
+        nargv[nargc++] = "-c";
+
+        if (argc &lt; 2)
+            nargv[nargc++] = argv[0];
+        else {
+            struct strbuf arg0 = STRBUF_INIT;
+            strbuf_addf(&arg0, "%s \"$@\"", argv[0]);
+            nargv[nargc++] = strbuf_detach(&arg0, NULL);
+        }
+    }
+
+    for (argc = 0; argv[argc]; argc++)
+        nargv[nargc++] = argv[argc];
+    nargv[nargc] = NULL;
+
+    return nargv;
+}
+</pre>
+
+<p>but I was unable to spot the problem here.  User's on stackoverflow recommended I run the git command under strace and valgrind.  The results of both suggested that the problem was indeed a bug in git.</p>
+<p>As relived as I was when the problematic code was spotted, I must admit I was disappointed that I didn't get to pinpoint the problematic code myself. A friendly and knowledgable stackoverflow user <a href="http://stackoverflow.com/questions/25272721/execvp-call-in-gits-source-for-external-shell-cmd-returns-efault-bad-address">beat me to it</a></p>
+
+<pre class="codebox prettyprint">
+const char *spawn_arg[10];
+int retval;
+const char **arg = &spawn_arg[0];
+struct diff_queue_struct *q = &diff_queued_diff;
+const char *env[3] = { NULL };
+char env_counter[50];
+char env_total[50];
+
+if (one && two) {
+        struct diff_tempfile *temp_one, *temp_two;
+        const char *othername = (other ? other : name);
+        temp_one = prepare_temp_file(name, one);
+        temp_two = prepare_temp_file(othername, two);
+        *arg++ = pgm;
+        *arg++ = name;
+        *arg++ = temp_one->name;
+        *arg++ = temp_one->hex;
+        *arg++ = temp_one->mode;
+        *arg++ = temp_two->name;
+        *arg++ = temp_two->hex;
+        *arg++ = temp_two->mode;
+        if (other) {
+                *arg++ = other;
+                *arg++ = xfrm_msg;
+        }
+} else {
+        *arg++ = pgm;
+        *arg++ = name;
+}
+*arg = NULL;
+</pre>
+
+<p>If <b>one</b>, <b>two</b>, and <b>other</b> all evaulate to true, then <b>spawn_arg</b>, of size 10, is filled with 10 arguments, <i>then</i> the terminating NULL.  That leaves the possibility of that NULL getting overwritten.</p>
+
+
+
+{% endblock %}
