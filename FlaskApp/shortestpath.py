@@ -1,17 +1,16 @@
 import json
 import urllib2
 
-#g = neo4j.GraphDatabaseService()
 
 def shortest_path_neo(a, b):
     c = "precise"
-    a = g.get_indexed_node("worddex", "word", a)
-    b = g.get_indexed_node("worddex", "word", b)
-    c = g.get_indexed_node("worddex", "word", c)
+    a = g.conn.get_indexed_node("worddex", "word", a)
+    b = g.conn.get_indexed_node("worddex", "word", b)
+    c = g.conn.get_indexed_node("worddex", "word", c)
     if not a and b: return None
     print("before")
     query_string = "START beginning=node(%d), end=node(%d) MATCH p = shortestPath(beginning-[*..100]-end) RETURN p" % (a._id, b._id)
-    result = neo4j.CypherQuery(g, query_string).execute()
+    result = neo4j.CypherQuery(g.conn, query_string).execute()
     print("after")
     print("length: %d" % (len(result)))
     if not len(result): return None

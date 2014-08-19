@@ -28,17 +28,16 @@ shorter than 100 looked like this:
 
 
 <pre class="prettyprint codebox">
-g = neo4j.GraphDatabaseService()
 
 def shortest_path_neo(a, b):
-    a = g.get_indexed_node("worddex", "word", a)
-    b = g.get_indexed_node("worddex", "word", b)
+    a = g.conn.get_indexed_node("worddex", "word", a)
+    b = g.conn.get_indexed_node("worddex", "word", b)
     if not a and b: return None
     #the important part
     query_string = "START beginning=node(%d), end=node(%d) 
                     MATCH p = shortestPath(beginning-[*..100]-end) 
                     RETURN p" % (a._id, b._id)
-    result = neo4j.CypherQuery(g, query_string).execute()
+    result = neo4j.CypherQuery(g.conn, query_string).execute()
     if not len(result): return None
     p = result[0].p
     ret = []
