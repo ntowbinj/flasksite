@@ -1,4 +1,5 @@
 .startupex
+*.pyc
 launch.sh
 *.swp
 *.json
