@@ -1,0 +1,15 @@
+{% extends "blog.html" %}
+{% block post %}
+<h2>Spending More Time Optimizing a Process Than Will Ever Be Gained Back by The Optimization</h2>
+
+<p>I had been thinking about this problem (and its meta, meta-meta, etc. versions) well before I saw <a href="http://xkcd.com/1205/">this webcomic</a>, which describes it quite well.  It's always nice when someone else makes a similar observation of a subtle phenomenon and then puts it into words or otherwise expresses it succintly. That's the recipe for good observational comedy.
+</p>
+<p>How much time would it be worthwhile to spend optimizing a process? Any amount less than the amount of time saved in the execution of that process in the future due to the optimization.  How much time would it be worthwhile to spend deciding how much time you should allocate to optimizing a certain process?  Any amount such that, when combined with the time spent optimizing, it is less than the amount of time saved in the execution of that process in the future.  How much time would it be worthwhile to spend deciding how much time to spend deciding how much time to allocate to optimizing?
+
+<p>While I haven't delved much yet into the rigorous study of this problem (and doing so would fall easily into the scope of the problem itself), I did recently encounter it in practice.  I've been using a a second monitor with my laptop to <i>enhance my workflow</i> (it doesn't feel at all natural using that jargon).  Frequently, there's a need to get a window from one monitor to another.  One way would be to drag it with the mouse.  Linux Mint, which I use, provides an option when right-clicking the window's icon on the panel to Move to Monitor X. 
+</p>
+<img src="{{ url_for('static', filename='img/move_monitor.jpg') }}"></img>
+<p>Needless to say, doing it with the mouse is inefficient--it takes maybe 2 seconds.  For some reason, even though the functionality is clearly there, there is no way to bind this behavior to a key pressing.  I've probably spent the equivalent of over a year's worth of sub-optimal mouse-driven monitor switching time looking for a way online to optimize it, but to no avail.
+</p>
+<p>But that's okay, because it doesn't just waste time.  It's also tedious--far more tedious than writing bash.  So I wrote bash.  Did I spend more time doing it then I'll ever gain back?  Quite possibly.  But then again, I improved my bash skills in the process, and that could easily save time in other tasks.  Also, there's always the option of not being entirely self-centered and thinking about time it might save other people.  In light of that, I made the bash script somewhat user friendly and generalized (for more than two montiors), and made it publically available on <a href="https://github.com/ntowbinj/switch-monitor">github</a>.
+{% endblock %}
