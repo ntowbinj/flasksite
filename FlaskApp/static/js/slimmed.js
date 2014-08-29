@@ -216,12 +216,7 @@ var controller = {
         });
         $("#start").click(function(){
             config.fetch();
-            player.untilPause = config.inARow;
-            player.stop();
-            player.stopped = false;
-            var start = startNotes();
-            console.log(start);
-            player.play(start[0], start[1]); 
+            player.initPlay();
         });
         $("#stop").click(function(){
             player.stop();
@@ -374,11 +369,30 @@ config.inARow = 1;
 
 
 var player = {
-    untilPause: 0,
+    playedInGroup: 0,
+    inARowTempCopy: 0,
+    answerWaitTempCopy: 0,
     on: false,
-    startTime: 0,
+    groupStartTime: 0,
+    noteStartTime: 0,
     shown: true,
     answer: [],
+    initPlay: function(){
+            this.stop();
+            this.stopped = false;
+            var start = startNotes();
+            this.startGroup(start[0], start[1]); 
+    },
+    startGroup: function(noteL, noteU){
+            this.playedInGroup = 0;
+            this.inARowTempCopy = config.inARow;
+            this.answerWaitTempCopy = config.answerWait;
+            this.groupStartTime = new Date().getTime();
+            this.shown = false;
+            this.answer = [];
+            this.play(noteL, noteU); 
+            this.moveBar();
+    },
     play: function(noteL, noteU){
         view.message("");
         MIDI.setVolume(0, 127);
@@ -389,17 +403,12 @@ var player = {
             if(!this.on){
                 MIDI.noteOn(0, noteL, 127, 0);
                 MIDI.noteOn(0, noteU, 127, 0);
-                if(this.untilPause == config.inARow){ 
-                    this.startTime = new Date().getTime();
-                    this.shown = false;
-                    this.moveBar();
-                    this.answer = [];
-                }
                 this.notesOn = [noteL, noteU];
                 this.answer.push(this.notesOn);
-                var that = this;
                 this.on = true;
-                this.untilPause--;
+                this.playedInGroup++;
+                var that = this;
+                this.noteStartTime = new Date().getTime();
                 this.setPlayEvent(function(){that.play(noteL, noteU);}, config.duration);
             }
             else {
@@ -431,8 +440,12 @@ var player = {
                 }
                 if(!player.stopped) config.disturbance = false;
                 this.on = false;
-                this.setPlayEvent(function(){that.play(noteL, noteU);}, this.untilPause ? 0 : config.between);
-                if(!this.untilPause) this.untilPause = config.inARow;
+                if(this.playedInGroup < this.inARowTempCopy){
+                    this.setPlayEvent(function(){that.play(noteL, noteU);}, 0);
+                }
+                else{
+                    this.setPlayEvent(function(){that.startGroup(noteL, noteU);}, config.between);
+                }
             }
         }
     },
@@ -455,9 +468,9 @@ var player = {
     moveBar: function(){
         var val;
         if(!this.shown && !this.stopped){
-            val = 100.0*(new Date().getTime() - this.startTime);
-            if(config.inARow == 1) val /= (config.answerWait*(config.duration*config.inARow + config.between));
-            else val /= (config.duration*config.inARow + config.answerWait*config.between);
+            val = 100.0*(new Date().getTime() - this.groupStartTime);
+            if(this.inARowTempCopy == 1) val /= (this.answerWaitTempCopy*(config.duration + config.between));
+            else val /= (config.duration*this.inARowTempCopy + this.answerWaitTempCopy*config.between);
             if(val>110) this.show();
             that = this;
             this.barTimeOut = setTimeout(function(){that.moveBar()}, (val<100) ? cons.barRate : 2*cons.barRate);
@@ -465,7 +478,7 @@ var player = {
         else {
             val = 0;
         }
-        if(!config.answerWait && config.inARow <= 1) val = 0;
+        if(!this.answerWaitTempCopy && this.inARowTempCopy <= 1) val = 0;
         dom.wait.progressbar("option", "value", val);
     },
     show: function(){
