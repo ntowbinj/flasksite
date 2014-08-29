@@ -468,7 +468,7 @@ var player = {
     moveBar: function(){
         var val;
         if(!this.shown && !this.stopped){
-            val = 100.0*(new Date().getTime() - this.groupStartTime);
+            val = 100.0*(new Date().getTime() - this.noteStartTime + (this.playedInGroup-1)*config.duration);
             if(this.inARowTempCopy == 1) val /= (this.answerWaitTempCopy*(config.duration + config.between));
             else val /= (config.duration*this.inARowTempCopy + this.answerWaitTempCopy*config.between);
             if(val>110) this.show();

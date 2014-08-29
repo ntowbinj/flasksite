@@ -13,60 +13,63 @@
     <div id="answer"></div>
     <div id="wait"></div>
     <p id="message"></p>
-    <div id='cpanel'>
-        <div id='time' class='col'>
-            <button class="blueButton" id="start">start</button>
-            <button class="blueButton" id="stop">stop</button>
-            <p class="label">note duration:</p>
-            <div class="slider" id="duration" class="slider"></div>
-            <p class="label">silence between:</p>
-            <div class="slider" id="between" class="slider"></div>
-            <p class="label">answer delay:</p>
-            <div class="slider" id="answerWait" class="slider"></div>
-            <p class="rightLabel">in a row:</p>
-            <div>
-                <select id="inARow">
-                    {% for n in range(1, 6) %}
-                        <option value="{{n}}">{{n}}</option>
-                    {% endfor %}
-                </select>
-            </div>
+    <div id='cpanel_background'>
+        <div id='cpanel'>
+            <div id='time' class='col'>
+                <button class="blueButton" id="start">start</button>
+                <button class="blueButton" id="stop">stop</button>
+                <p class="label">note duration:</p>
+                <div class="slider" id="duration" class="slider"></div>
+                <p class="label">silence between:</p>
+                <div class="slider" id="between" class="slider"></div>
+                <p class="label">answer delay:</p>
+                <div class="slider" id="answerWait" class="slider"></div>
+                <p class="rightLabel">in a row:</p>
+                <div>
+                    <select id="inARow">
+                        {% for n in range(1, 6) %}
+                            <option value="{{n}}">{{n}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-        </div>
-        <div id='intvLists' class='col'>
-            <div id='intervalLabels'>
-                <p class="label">&nbsp;</p>
-                {% for intv in intervs|dictsort %}
-                    <p><a class="stay" href="">{{ intv[1] }}</a></p>
-                {% endfor %}
             </div>
-            <div id='lowerVoiceIntervals'>
-                <p class="label">bot:</p>
-                {% for intv in intervs|dictsort %}
-                    <p><input type="checkbox" checked="" value={{ intv[0] }}></p>
-                {% endfor %}
+            <div id='intvLists' class='col'>
+                <div id='intervalLabels'>
+                    <p class="label">&nbsp;</p>
+                    {% for intv in intervs|dictsort %}
+                        <p><a class="stay" href="">{{ intv[1] }}</a></p>
+                    {% endfor %}
+                </div>
+                <div id='lowerVoiceIntervals'>
+                    <p class="label">bot:</p>
+                    {% for intv in intervs|dictsort %}
+                        <p><input type="checkbox" checked="" value={{ intv[0] }}></p>
+                    {% endfor %}
+                </div>
+                <div id='upperVoiceIntervals'>
+                    <p class="label">top:</p>
+                    {% for intv in intervs|dictsort %}
+                        <p><input type="checkbox" checked="" value={{ intv[0] }}></p>
+                    {% endfor %}
+                </div>
+                <div id='minSep'>
+                    <p class="label">sep:</p>
+                    {% for intv in intervs|dictsort %}
+                        <p><input type="checkbox" checked="" value={{ intv[0] }}></p>
+                    {% endfor %}
+                </div>
             </div>
-            <div id='upperVoiceIntervals'>
-                <p class="label">top:</p>
-                {% for intv in intervs|dictsort %}
-                    <p><input type="checkbox" checked="" value={{ intv[0] }}></p>
-                {% endfor %}
+            <div id='bounds' class='col'>
+                <div id="pitch-range" class="slider"></div>
+                <div id="minNote"></div>
+                <div id="minOct"></div>
+                <div id="maxNote"></div>
+                <div id="maxOct"></div>
             </div>
-            <div id='minSep'>
-                <p class="label">sep:</p>
-                {% for intv in intervs|dictsort %}
-                    <p><input type="checkbox" checked="" value={{ intv[0] }}></p>
-                {% endfor %}
-            </div>
-        </div>
-        <div id='bounds' class='col'>
-            <div id="pitch-range" class="slider"></div>
-            <div id="minNote"></div>
-            <div id="minOct"></div>
-            <div id="maxNote"></div>
-            <div id="maxOct"></div>
         </div>
     </div>
+    <div id="spacer"></div>
     <div id="instructions">
         <h1>how</h1>
         <p>Works best in Chrome</p>

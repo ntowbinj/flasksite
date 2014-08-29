@@ -1,5 +1,9 @@
 #instructions{
     clear: both;
+    margin-top: 8%;
+}
+#spacer{
+    clear:both;
 }
 #instructions h1{
     font-weight: bold;
@@ -7,15 +11,44 @@
     padding-bottom: 3%;
 }
 b{font-weight: bold;}
+#cpanel{
+    margin: 4%;
+}
+#cpanel_wrapper{
+    margin-bottom: 10%;
+}
+#cpanel_background{
+    float: left;
+    height: 100%;
+    width: 550px;
+    background-color: white;
+    border-radius: 10px;
+    border: 1px solid #BBBBBB; 
+    margin-bottom 19%;
+}
+.col:last-child{
+    margin-right: 0;
+    margin-left: 20px;
+}
+.col{
+    width: auto;
+    margin-right: 11%;
+    float: left;
+}
 #cpanel div
 {
     float: left;
-    margin-right: 20px;
     margin-bottom: 2%;
+}
+#intvLists div:first-child
+{
+    margin-left: 0;
+    margin-right: 4px;
 }
 #intvLists div
 {
     float: left;
+    margin-left: 8px;
     width: auto;
 }
 #maxNote, #minNote{font-size: 90%;}
@@ -28,7 +61,6 @@ b{font-weight: bold;}
 {
     margin-top: 7px;
     margin-bottom: 7px;
-    //margin-top: 0;
     height: 20px;
 }
 p:first-child
@@ -98,7 +130,8 @@ p:first-child
 #answer {
     display: inline-block;
     min-width: 300px;
-    border: 1px dashed #2040CD; 
+    border-radius: 7px;
+    border: 1px solid #BBBBBB; 
     background-color: white;
     height: 60px;
     font-weight: bold;
@@ -112,7 +145,6 @@ p:first-child
 {
     width: 4px;
     height: 350px;
-    //background: #CCCCCC;
     background:url("../img/blueslidevert.png");
     background-size: 100% 100%;
     border-color: #9999FF;
@@ -124,7 +156,6 @@ p:first-child
     height: 10px;
     background-image: url("../img/bluebvert.png");
     background-size: 100% 100%;
-    //border: none;
     border-color: #BBBBFF;
 }
 #pitch-range a.ui-slider-handle.ui-state-hover
