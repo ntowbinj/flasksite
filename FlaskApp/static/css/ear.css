@@ -5,10 +5,14 @@
 #spacer{
     clear:both;
 }
+#instructions p{
+    margin-bottom: 1%;
+}
 #instructions h1{
     font-weight: bold;
     font-size: 200%;
-    padding-bottom: 3%;
+    padding-bottom: 2%;
+    margin-top: 4%;
 }
 b{font-weight: bold;}
 #cpanel{
