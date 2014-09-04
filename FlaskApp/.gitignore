@@ -4,11 +4,11 @@ launch.sh
 *.swp
 *.json
 *.txt
+!/static/files/strongly_connected.txt
 hide.sh
 /venv
 /neo4j*
 /try.py
-/dump.txt
 /flask
 /reddit
 solarized*.css
