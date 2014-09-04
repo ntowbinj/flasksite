@@ -7,7 +7,7 @@
         </title>
         <script type="text/javascript" src="{{ url_for('static', filename='js/base.js') }}"></script>
         <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
-        {% for d in static %}
+        {% for d in scripts %}
             <script src="{{ url_for('static', filename=d) }}"></script>
         {% endfor %}
         <link type="text/css" href="{{ url_for('static', filename='css/reset.css') }}" rel="stylesheet">

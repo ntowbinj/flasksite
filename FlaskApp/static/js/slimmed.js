@@ -210,7 +210,7 @@ var controller = {
         dom.minSep.find("input").each(function(){
             $(this).click(function(){
                 if(!player.stopped) config.disturbance = true;
-                config.sep = $(this).prop("value");
+                config.sep = parseInt($(this).prop("value"));
                 view.updateMinSep(); 
             });
         });
@@ -321,7 +321,9 @@ function startNotes(){
             if(candidates(l, u).length){return [l, u];}
         }
     }
-    else return undefined;
+    else{
+        return undefined;
+    }
 }
 
 function candidates(currL, currU){ //assume bottomInterval and topInterval are already sorted
@@ -381,6 +383,11 @@ var player = {
             this.stop();
             this.stopped = false;
             var start = startNotes();
+            if(!start){
+                this.stop();
+                view.message("error: this configuration is too limiting. Try allowing smaller intervals or a larger range.");
+                return;
+            }
             this.startGroup(start[0], start[1]); 
     },
     startGroup: function(noteL, noteU){

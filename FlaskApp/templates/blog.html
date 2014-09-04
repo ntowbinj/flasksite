@@ -5,7 +5,7 @@
         {% block blogexternal %}
         {% endblock %}
         <link href="{{ url_for('static', filename='css/blog.css') }}" rel="stylesheet">
-        <link href="{{ url_for('static', filename='css/solarized.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/tomorrow.css') }}" rel="stylesheet">
     {% endblock %}
     {% block title %}
         blog
@@ -22,6 +22,7 @@
     <div id="columnright">
         <h3>Index</h3>
         <ul>
+            <li><a href="/blog/9-3-14">September 3: Simulating Recursion in Tarjan's Algorithm</a></li>
             <li><a href="/blog/8-13-14">August 13: Tracking Down Bugs in Git's Source Code</a></li>
             <li><a href="/blog/8-7-14">August 7: Spending More Time Optimizing a Process Than Will Ever Be Gained Back by The Optimization</a></li>
             <li><a href="/blog/8-1-14">August 1: didyoumeanthis</a></li>

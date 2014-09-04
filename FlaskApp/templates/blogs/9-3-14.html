@@ -1,0 +1,77 @@
+{% extends "blog.html" %}
+{% block post %}
+<h2>Simulating Recursion in Tarjan's Algorithm</h2>
+<p>I've been working a lot in related projects with the idea of representing a thesaurus with a directed graph.  One interesting prospect was to find the strongly connected components of said graph.</p>
+
+<p><a href="http://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm">Tarjan's algorithm</a> for finding strongly connected components is a quite simple and efficient recursive algorithm.  It involves a depth-first traversal of the nodes.  The problem is, what happens in the midst of the traversal makes it difficult to convert the recursion to iteration with a loop.</p>
+
+<p>With small graphs, the elegant recursive approach works fine.  However, a on my own graph, Python's recursion limit was exceeded. So I knew I needed to do it with less recursion.  I was familiar with how to flatten recursive algorithms like nth Fibonacci or a simple linked list or tree insertion, retrieval, etc.  The reason that's difficult here is that at any level, what happens before the recursive call depends on higher levels, and what happens after depends on deeper levels, so it isn't a simple matter of performing operations in reverse topological order.  I definitely found this hard to visualize.</p>
+
+<p>I had read about simulating recursion by pushing and popping 'states', and figured that's what I needed to try.  I took a peek at <a href="https://github.com/bwesterb/py-tarjan/">another</a> Python implementation referenced on Wikipedia that I think did something similar, but I didn't read much of the code because it would be more satisfying to figure it out for myself.  Maybe theirs is better, I don't know.  After the effort it took to get mine working, I'm too exhausted to look at what they did for now.</p>
+
+<p>In shorted, I only simulated a stack insofar as was necessary to do the before stuff before, and the after stuff after.  This also involve simulating a loop, because the looping is interrupted by recursion, so I didn't see a way to use actual loop syntax.</p>
+<pre class="prettyprint codebox">
+# tree_root will be one of possibly multiple 
+# roots of a spanning forest of the graph
+
+def strong(tree_root): 
+    components = []
+    # the same stack as in the recursive algorithm
+    stack = [tree_root] 
+    class Addr:
+        start, after = range(2)
+    # state stores the current 'address' in the function and 
+    # iteration progress i
+    State = namedtuple('State', 'addr v i') 
+    state_stack = [State(Addr.start, tree_root, 0)]
+    index = 1
+    while len(state_stack):
+        cur = state_stack.pop()
+        v = cur.v
+
+        # beginning of simulated function
+        if not cur.i and cur.addr == Addr.start: 
+            v.index = v.lowlink = index
+            index += 1
+            stack.append(v)
+            v.onstack = True
+
+        # still iterating through neighbors
+        if cur.i < len(v.neighbs): 
+            w = v.neighbs[cur.i]
+
+            if cur.addr == Addr.start:
+                if not w.index:
+                    # save state for after 'recursive' call
+                    # then, push 'recursive' call
+                    # will be immediately popped
+                    state_stack.append(State(Addr.after, v, cur.i)) 
+                    state_stack.append(State(Addr.start, w, 0)) 
+                elif w.onstack:
+                    v.lowlink = min(v.lowlink, w.index)
+                    # push next iteration of loop at current level
+                    state_stack.append(State(Addr.start, v, cur.i+1))
+                else:
+                    state_stack.append(State(Addr.start, v, cur.i+1))
+            elif cur.addr == Addr.after:
+                v.lowlink = min(v.lowlink, w.lowlink)
+                state_stack.append(State(Addr.start, v, cur.i+1))
+
+        # done iterating
+        else: 
+            if v.lowlink == v.index:
+                comp = []
+                while len(stack):
+                    w = stack.pop()
+                    w.onstack = False
+                    comp.append(w.word)
+                    if w == v: break
+                components.append(comp)
+    return components
+
+</pre>
+
+The results of the algorithm weren't too surprising.  Roughly half of the 20K or so words are in a single component.  The rest are in components of size 30 or less.  Many are singletons.  Somewhat disappointingly most of the words that aren't in the big component are fairly uncommon, technical words.  I was kind of hoping to find something more profound about how we give meaning to words, or something dumb like that.  <a href="/synonyms/strongly_connected.txt">Here</a> are all non-singleton components in order of decreasing size.
+
+{% endblock %}
+

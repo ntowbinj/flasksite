@@ -1,8 +1,6 @@
 {% extends "template.html" %}
 {% block external %}
-    {% for d in dependencies %}
-        <script src="{{ url_for('static', filename=d) }}"></script>
-    {% endfor %}
+        <link href="{{ url_for('static', filename='css/syn.css') }}" rel="stylesheet">
 {% endblock %}
 {% block title %}
     synonyms
@@ -42,3 +40,4 @@
         <ul id="avoidlist"></ul>
     </div>
 {% endblock %}
+

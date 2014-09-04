@@ -1,22 +1,11 @@
-from flask import Flask, render_template, jsonify, request, abort
+from flask import Flask, render_template, jsonify, request, abort, send_from_directory
 import shortestpath
 import urllib2, urllib, httplib
 import musichelp
+import os
 from jinja2 import TemplateNotFound
-app = Flask(__name__)
-print(__name__)
 
-@app.route("/eartrainer")
-def hello(): 
-    static = ['AudioDetect.js', 'LoadPlugin.js', 'Plugin.js', 'Player.js'] 
-    static = ['js/MIDI.js/js/MIDI/' + d for d in static]
-    static.append('js/MIDI.js/js/Window/DOMLoader.XMLHttp.js')
-    static.append('js/MIDI.js/js/Widgets/Loader.js')
-    static.append('js/MIDI.js/inc/Base64.js')
-    static.append('js/MIDI.js/inc/base64binary.js')
-    static.append('js/slimmed.js')
-    static.extend(['js/visuals.js'])
-    return render_template('home.html', static=static, intervs = musichelp.INTERVALS) 
+app = Flask(__name__)
 
 @app.route("/analytics")
 def soon():
@@ -24,13 +13,13 @@ def soon():
 
 @app.route("/blog/")
 def nullblog():
-    return blog("7-5-14")
+    return blog("9-3-14")
 
 @app.route("/blog/<post>")
 def blog(post):
-    static = ['js/visuals.js', 'js/blog.js', 'js/prettify.js']
+    scripts = ['js/visuals.js', 'js/blog.js', 'js/prettify.js']
     try:
-        return render_template('/blogs/%s.html' % (post), static=static)
+        return render_template('/blogs/%s.html' % (post), scripts=scripts)
     except TemplateNotFound:
         abort(404)
 
@@ -38,8 +27,8 @@ def blog(post):
 @app.route("/synonymgraph")
 @app.route("/synonyms")
 def synonym():
-    static = ['js/visuals.js', 'js/synonyms.js']
-    return render_template('syn.html', static = static)
+    scripts = ['js/visuals.js', 'js/synonyms.js']
+    return render_template('syn.html', scripts = scripts)
 
 @app.route("/multicolumn")
 def multicolumn():
@@ -51,39 +40,34 @@ def foliage():
 
 @app.route("/music")
 def music(hide_nav=None):
-    static = ['js/visuals.js', 'js/music.js']
-    return render_template('music.html', static = static, hide_nav=hide_nav)
+    scripts = ['js/visuals.js', 'js/music.js']
+    return render_template('music.html', scripts = scripts, hide_nav=hide_nav)
 
 @app.route("/getpath", methods = ['POST'])
 def getpath():
-    print("HELLO")
     path = shortestpath.shortest_path(request.form);
     return path 
 
+@app.route("/eartrainer")
+def eartrainer(): 
+    scripts = ['AudioDetect.js', 'LoadPlugin.js', 'Plugin.js', 'Player.js'] 
+    scripts = ['js/MIDI.js/js/MIDI/' + d for d in scripts]
+    scripts.append('js/MIDI.js/js/Window/DOMLoader.XMLHttp.js')
+    scripts.append('js/MIDI.js/js/Widgets/Loader.js')
+    scripts.append('js/MIDI.js/inc/Base64.js')
+    scripts.append('js/MIDI.js/inc/base64binary.js')
+    scripts.append('js/slimmed.js')
+    scripts.extend(['js/visuals.js'])
+    return render_template('home.html', scripts=scripts, intervs = musichelp.INTERVALS) 
+
 @app.route("/wordlist.txt")
 def wordlist():
-    with open("/usr/share/dict/words") as reader:
-        return reader.read()
+    return send_from_directory('/usr/share/dict', "words")
 
-@app.route("/words_ten_thousand.txt")
-def words_ten_thousand():
-    import os
-    here = os.path.dirname(__file__)
-    with open(os.path.join(here, "data/words_ten_thousand.txt")) as reader:
-        return reader.read()
+@app.route("/synonyms/strongly_connected.txt")
+def strongly():
+    return send_from_directory(os.path.dirname(__file__)+"static/files/", "strongly_connected.txt")
 
-@app.route("/red")
-def first_resutl():
-    hdr = [('User-Agent','flimpflumpagus')]
-    opener = urllib2.build_opener()
-    opener.addheaders = hdr
-    page = RedditPage('all', opener)
-    page.gather_posts()
-    for title in page.soup.find_all('a', attrs={'class' : 'title'}):
-        title['href'] = 'floont'
-    title.string = 'hello'
-    return page.soup.prettify()
-  #return page.posts[0].title 
 
 
 if __name__ == "__main__":
