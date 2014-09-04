@@ -1,0 +1,61 @@
+ul.instructions{
+    list-style-type: circle;
+    list-style-position: inside;
+    padding-bottom: 1%;
+}
+ul.instructions li, #content p, #synresult, #avoids
+{
+    margin-bottom: 2%;
+}
+
+#synresult li, #avoids li
+{
+    margin-bottom: 10px;
+}
+#synresult ol
+{
+    margin-left: 9%;
+    list-style-type: decimal;
+    list-style-position: outside;
+}
+#synresult, #avoids
+{
+    float: left;
+    min-height: 50px;
+    overflow: auto;
+}
+.word
+{
+    padding-right: 10px;
+    //font-weight: bold;
+}
+
+#synresult{
+    width: 35%;
+    margin-right: 20%;
+}
+
+
+#synform div
+{
+    display:inline-block;
+    margin-right: 2%;
+}
+
+ 
+#synform
+{
+    margin-left:auto;
+    margin-right:auto;
+    padding-top: 3%;
+    padding-bottom: 4%;
+    //text-align: center;
+}
+
+#synresult h2, #avoids h2
+{
+    font-size: 120%;
+    margin-bottom: 20px;
+    white-space: nowrap;
+    font-weight: bold;
+}
