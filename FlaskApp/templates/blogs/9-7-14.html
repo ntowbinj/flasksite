@@ -36,37 +36,36 @@ private void put(Node n, Label keySuffix, V v){
         // initialize edge with leaf node
         Node newNode = new Node(v);
         n.addEdge(new Edge(keySuffix, newNode));
+        return;
     }
-    else{ 
-        // determine common prefix
-        // of suffix and current edge label
-        Label walkEdgeLabel, walkKeySuffix;
-        walkEdgeLabel = e.l;
-        walkKeySuffix = keySuffix;
+    // determine common prefix
+    // of suffix and current edge label
+    Label walkEdgeLabel, walkKeySuffix;
+    walkEdgeLabel = e.l;
+    walkKeySuffix = keySuffix;
 
-        while(walkEdgeLabel.next != null && walkKeySuffix.next != null){
-            if(walkEdgeLabel.next.c == walkKeySuffix.next.c){
-                // limited by length of edge label
-                walkEdgeLabel = walkEdgeLabel.next;
-                // limited by length of suffix
-                walkKeySuffix = walkKeySuffix.next;
-            }
-            else{
-                break;
-            }
+    while(walkEdgeLabel.next != null && walkKeySuffix.next != null){
+        if(walkEdgeLabel.next.c == walkKeySuffix.next.c){
+            // limited by length of edge label
+            walkEdgeLabel = walkEdgeLabel.next;
+            // limited by length of suffix
+            walkKeySuffix = walkKeySuffix.next;
         }
-
-        if(walkEdgeLabel.next != null){
-            // split edge label into common prefix, and remainder
-            Edge newEdge = new Edge(walkEdgeLabel.next, e.n);
-            Node newNode = new Node();
-            newNode.addEdge(newEdge);
-            e.n = newNode;
-            walkEdgeLabel.next = null;
+        else{
+            break;
         }
-
-        put(e.n, walkKeySuffix.next, v);
     }
+
+    if(walkEdgeLabel.next != null){
+        // split edge label into common prefix, and remainder
+        Edge newEdge = new Edge(walkEdgeLabel.next, e.n);
+        Node newNode = new Node();
+        newNode.addEdge(newEdge);
+        e.n = newNode;
+        walkEdgeLabel.next = null;
+    }
+
+    put(e.n, walkKeySuffix.next, v);
 }
 
 </pre>
@@ -85,48 +84,46 @@ private void remove(Node n, Label keySuffix){
     if(e == null){ // nothing to remove
         return;
     }
-    else{
-        // determine common prefix
-        // of suffix and current edge label
-        Label walkEdgeLabel, walkKeySuffix;
-        walkEdgeLabel = e.l;
-        walkKeySuffix = keySuffix;
+    // determine common prefix
+    // of suffix and current edge label
+    Label walkEdgeLabel, walkKeySuffix;
+    walkEdgeLabel = e.l;
+    walkKeySuffix = keySuffix;
 
-        while(walkEdgeLabel.next != null && walkKeySuffix.next != null){
-            if(walkEdgeLabel.next.c == walkKeySuffix.next.c){
-                walkEdgeLabel = walkEdgeLabel.next;
-                walkKeySuffix = walkKeySuffix.next;
-            }
-            else{
-                break;
-            }
+    while(walkEdgeLabel.next != null && walkKeySuffix.next != null){
+        if(walkEdgeLabel.next.c == walkKeySuffix.next.c){
+            walkEdgeLabel = walkEdgeLabel.next;
+            walkKeySuffix = walkKeySuffix.next;
         }
+        else{
+            break;
+        }
+    }
 
-        if(walkEdgeLabel.next == null){
-            // if we don't enter this if
-            // there's nothing to remove
-            if(walkKeySuffix.next == null){ 
-                // edge label equals suffix
-                if(e.n.edgesSize() > 0){ 
-                    e.n.value = null;
-                }
-                else{ 
-                    // edge only exists for node being removed 
-                    n.edges.remove(keySuffix.c);
-                }
+    if(walkEdgeLabel.next == null){
+        // if we don't enter this if
+        // there's nothing to remove
+        if(walkKeySuffix.next == null){ 
+            // edge label equals suffix
+            if(e.n.edgesSize() > 0){ 
+                e.n.value = null;
             }
             else{ 
-                // more suffix after common prefix, recurse
-                remove(e.n, walkKeySuffix.next);
+                // edge only exists for node being removed 
+                n.edges.remove(keySuffix.c);
             }
-            if(e.n.edgesSize() == 1 && e.n.value == null){
-                // get the only descendant edge
-                Iterator<Character> it = e.n.edges.iterator();
-                Edge onlyDescendantEdge = e.n.edges.get(it.next());
-                e.n = onlyDescendantEdge.n;
-                // splice
-                walkEdgeLabel.next = onlyDescendantEdge.l;
-            }
+        }
+        else{ 
+            // more suffix after common prefix, recurse
+            remove(e.n, walkKeySuffix.next);
+        }
+        if(e.n.edgesSize() == 1 && e.n.value == null){
+            // get the only descendant edge
+            Iterator<Character> it = e.n.edges.iterator();
+            Edge onlyDescendantEdge = e.n.edges.get(it.next());
+            e.n = onlyDescendantEdge.n;
+            // splice
+            walkEdgeLabel.next = onlyDescendantEdge.l;
         }
     }
 }
