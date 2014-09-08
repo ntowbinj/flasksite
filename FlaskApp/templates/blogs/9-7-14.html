@@ -1,0 +1,137 @@
+{% extends "blog.html" %}
+{% block post %}
+<h2>Radix Trees with Insertion and Deletion Runtime Independent of Longest Word</h2>
+
+<p>The idea of insertion (and deletion) into a radix tree taking <b>O(k)</b> time where <b>k</b> is the length of the longest word in the tree bothered me.  The <a href="http://en.wikipedia.org/wiki/Radix_tree#Operations">Wikipedia page</a> on radix trees seemed to think that was standard and didn't say anything about alternatives. I'm sure others have come up with such alternatives, but I wasn't able to find anything on it.</p>
+
+<p>In cases where most strings put into the tree are of a similar length, my solution may actually be slower, but I had to verify for myself that there was a way to make it asymptotically better in the worst case, and possibly the average case as well.</p>
+
+<p>One initial idea was to have an edge's label be two pointers into a string, or a single pointer and a length.  Then, if an edge needed to be split, the two resultant edges could both point into the same string, and no copying would need to be done.  Then, if due to a deletion, those edges need to be spliced together again, that too would not require copying.  However, other deletion scenarios could lead to either wasted memory, or a freeing of part of the string.  A <b>realloc</b> in C is not guaranteed to not copy the entire block, and there's no solution with arrays in Java either.</p>
+
+<p>So instead, the solution is to use a linked structure for the edge labels.  All that's needed is a character and next field.</p>
+<pre class="prettyprint codebox">
+class Label{
+    public char c;
+    public Label next;
+    ...
+}
+</pre>
+
+<p>One of these can be constructed from a string of length <b>k</b> in <b>O(k)</b> time.  Then, when traversing a label in parallel with the string (also a <b>Label</b>) to find the common prefix, you can maintain a reference to the first in the chain of <b>Label</b> where they differ, which can be used to split the edge.</p>
+
+<pre class="prettyprint codebox">
+public void put(String k, V v){
+    put(root, new Label(k), v);
+}
+
+private void put(Node n, Label keySuffix, V v){
+    if(keySuffix == null){ 
+        // found destination
+        n.value = v;
+        return;
+    }
+    Edge e = n.getEdge(keySuffix.c);
+    if(e == null){ 
+        // create new edge to insert down
+        // initialize edge with leaf node
+        Node newNode = new Node(v);
+        n.addEdge(new Edge(keySuffix, newNode));
+    }
+    else{ 
+        // determine common prefix
+        // of suffix and current edge label
+        Label walkEdgeLabel, walkKeySuffix;
+        walkEdgeLabel = e.l;
+        walkKeySuffix = keySuffix;
+
+        while(walkEdgeLabel.next != null && walkKeySuffix.next != null){
+            if(walkEdgeLabel.next.c == walkKeySuffix.next.c){
+                // limited by length of edge label
+                walkEdgeLabel = walkEdgeLabel.next;
+                // limited by length of suffix
+                walkKeySuffix = walkKeySuffix.next;
+            }
+            else{
+                break;
+            }
+        }
+
+        if(walkEdgeLabel.next != null){
+            // split edge label into common prefix, and remainder
+            Edge newEdge = new Edge(walkEdgeLabel.next, e.n);
+            Node newNode = new Node();
+            newNode.addEdge(newEdge);
+            e.n = newNode;
+            walkEdgeLabel.next = null;
+        }
+
+        put(e.n, walkKeySuffix.next, v);
+    }
+}
+
+</pre>
+
+<p>Note that the total sum of iterations through that while loop at all levels of recursion in the course of an insertion is at most <b>k</b>.  Everything else is done only once per level, and the depth of recursion for an insertion of a word of length <b>k</b> is at most <b>k</b>, usually less.</p>
+
+<p>Similarly, when deleting, if we have to splice two edge labels, the right portion will be the beginning of an existing label (no traversal needed), and the length of the left portion (that we must traverse to get a reference to the splicing point) will be at most <b>k</b>.  Furthermore, that traversal will be done already from finding common prefix.</p>
+
+<pre class="prettyprint codebox">
+public void remove(String k){
+    remove(root, new Label(k));
+}
+
+private void remove(Node n, Label keySuffix){
+    Edge e = n.getEdge(keySuffix.c);
+    if(e == null){ // nothing to remove
+        return;
+    }
+    else{
+        // determine common prefix
+        // of suffix and current edge label
+        Label walkEdgeLabel, walkKeySuffix;
+        walkEdgeLabel = e.l;
+        walkKeySuffix = keySuffix;
+
+        while(walkEdgeLabel.next != null && walkKeySuffix.next != null){
+            if(walkEdgeLabel.next.c == walkKeySuffix.next.c){
+                walkEdgeLabel = walkEdgeLabel.next;
+                walkKeySuffix = walkKeySuffix.next;
+            }
+            else{
+                break;
+            }
+        }
+
+        if(walkEdgeLabel.next == null){
+            // if we don't enter this if
+            // there's nothing to remove
+            if(walkKeySuffix.next == null){ 
+                // edge label equals suffix
+                if(e.n.edgesSize() > 0){ 
+                    e.n.value = null;
+                }
+                else{ 
+                    // edge only exists for node being removed 
+                    n.edges.remove(keySuffix.c);
+                }
+            }
+            else{ 
+                // more suffix after common prefix, recurse
+                remove(e.n, walkKeySuffix.next);
+            }
+            if(e.n.edgesSize() == 1 && e.n.value == null){
+                // get the only descendant edge
+                Iterator<Character> it = e.n.edges.iterator();
+                Edge onlyDescendantEdge = e.n.edges.get(it.next());
+                e.n = onlyDescendantEdge.n;
+                // splice
+                walkEdgeLabel.next = onlyDescendantEdge.l;
+            }
+        }
+    }
+}
+</pre>
+
+{% endblock %}
+
+

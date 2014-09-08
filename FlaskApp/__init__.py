@@ -13,7 +13,7 @@ def soon():
 
 @app.route("/blog/")
 def nullblog():
-    return blog("9-3-14")
+    return blog("9-7-14")
 
 @app.route("/blog/<post>")
 def blog(post):
