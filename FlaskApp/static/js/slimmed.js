@@ -97,7 +97,8 @@ var dom;
 var cons = {
     all: Array.apply(null, Array(23)).map(function(_, i){return i - 11;}),
     labelRight: 40,
-    barRate: 250
+    barRate: 250,
+    tries: 3
 }
 
 var view = {
@@ -242,7 +243,6 @@ var controller = {
             player.stop();
         });
         var intvListClick = function(){
-            //config.fetchIntvs.call(this, $(this).attr('id'));
             config.fetchIntvs($(this).attr('id'));
         }
         dom.lower.click(intvListClick);
@@ -316,8 +316,10 @@ var config = {
         this.duration = 1000;
         this.upperBound = 60;
         this.sep = 8;
-        this.lower.intervals = [-4, -3, 3, 4];
-        this.upper.intervals = [-5, -4, -3, -2, -1, 1, 2, 3, 4, 5];
+        this.lower.intervals = [-5, 5];
+        this.upper.intervals = [-4, 4];
+        //this.lower.intervals = [-4, -3, 3, 4];
+        //this.upper.intervals = [-5, -4, -3, -2, -1, 1, 2, 3, 4, 5];
         this.between = 3000;
         this.inARow = 1;
     }
@@ -361,14 +363,21 @@ function startNotes(){
     var range = config.upperBound - config.lowerBound;
     var bottRange = range - config.sep;
     if(bottRange > 0){
-        var l = Math.floor(Math.random()*bottRange) + config.lowerBound;
-        var u = l+config.sep;
-        if(candidates(l, u).length) return [l, u]; //attempt random start notes
-        else{ // if that fails, try room maximizing deterministic option
-            l = config.lowerBound;
-            u = config.lowerBound + config.sep;
-            if(candidates(l, u).length){return [l, u];}
+        var max = 0;
+        // default start values if no random value found
+        var maxLU = [config.lowerBound, config.upperBound];
+        if(!candidates(maxLU[0], maxLU[1]).length){return undefined;} // deterministic metric for "too limiting"
+        for(var i = 0; i<cons.tries; i++){
+            var l = Math.floor(Math.random()*bottRange) + config.lowerBound;
+            var u = l+config.sep;
+            var res = candidates(l, u);
+            if(res.length > max){
+                max = res.length; 
+                randPair = res[Math.floor(Math.random()*res.length)];
+                maxLU = [l + randPair[0], u + randPair[1]];
+            }
         }
+        return maxLU;
     }
     else{
         return undefined;
