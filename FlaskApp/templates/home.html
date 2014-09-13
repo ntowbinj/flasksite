@@ -42,14 +42,14 @@
                     {% endfor %}
                     <p><a class="stay" href="">all</a></p>
                 </div>
-                <div id='lowerIntervals'>
+                <div id='lower'>
                     <p class="label">bot:</p>
                     {% for intv in intervs|dictsort %}
                         <p><input type="checkbox" checked="" value={{ intv[0] }} class="single"></p>
                     {% endfor %}
                     <p><input type="checkbox" checked="" value="all" class="all"></p>
                 </div>
-                <div id='upperIntervals'>
+                <div id='upper'>
                     <p class="label">top:</p>
                     {% for intv in intervs|dictsort %}
                         <p><input type="checkbox" checked="" value={{ intv[0] }} class="single"></p>

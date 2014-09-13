@@ -105,32 +105,28 @@ var view = {
         this.setLabels();
         dom.inARow.val(config.inARow);
         this.updateMinSep();
-        this.updateIntvList();
+        this.updateIntvList(dom.lower, config.lower);
+        this.updateIntvList(dom.upper, config.upper);
     },
     message: function(m){
         dom.message.html(m);
     },
-    updateIntvList: function(){
-        var update = function(domEl, intvSet){
-            list = intvSet.intervals;
-            //console.log("list: " + list);
-            var i = Math.floor(list.length/2); // only look at positive intervals
-            domEl.find(".all").prop("checked", intvSet.allToggled);
-            domEl.find(".single").each(function(){
-                var val = parseInt($(this).prop("value"));
-                var checked = false;
-                if(val == Math.abs(list[i])){
-                    checked = true;
-                    i++;
-                }
-                else{
-                    checked = false;
-                }
-                $(this).prop("checked", checked);
-            });
-        };
-        update(dom.lowerIntervals, config.lower);
-        update(dom.upperIntervals, config.upper);
+    updateIntvList: function(domEl, intvSet){
+        list = intvSet.intervals;
+        var i = Math.floor(list.length/2); // only look at positive intervals
+        domEl.find(".all").prop("checked", intvSet.allToggled);
+        domEl.find(".single").each(function(){
+            var val = parseInt($(this).prop("value"));
+            var checked = false;
+            if(val == Math.abs(list[i])){
+                checked = true;
+                i++;
+            }
+            else{
+                checked = false;
+            }
+            $(this).prop("checked", checked);
+        });
     },
     updateMinSep: function(){
         dom.minSep.find("input").each(function(){
@@ -245,7 +241,12 @@ var controller = {
         $("#stop").click(function(){
             player.stop();
         });
-        $("#intvLists").click(function(){config.fetchIntvs();});
+        var intvListClick = function(){
+            //config.fetchIntvs.call(this, $(this).attr('id'));
+            config.fetchIntvs($(this).attr('id'));
+        }
+        dom.lower.click(intvListClick);
+        dom.upper.click(intvListClick);
         $.each(["#duration", "#between"], function(index, value){
             $(value).click(function(){
                 if(!player.stopped){
@@ -279,39 +280,36 @@ var config = {
     fetch: function(){
         config.fetchIntvs();
     },
-    fetchIntvs: function (){
+    fetchIntvs: function (whichSet){
+        var intvSet = config[whichSet];
+        var domEl = dom[whichSet];
         var signalUpdate = false;
-        var getIntvs = function(intvSet){
-            oldAll = intvSet.allToggled;
-            intvSet.allToggled = this.find(".all").prop("checked");
-            intvSet.intervals = [];
-            this.find(".single").each(function(){
-                if($(this).prop("checked")){
-                    intv = parseInt($(this).prop("value"));
-                    intvSet.intervals.push(intv);
-                    intvSet.intervals.push(-1*intv);
-                }
-            });
-            if(!oldAll && intvSet.allToggled){
-                intvSet.intervals = cons.all;
-                signalUpdate = true;
+        oldAll = intvSet.allToggled;
+        intvSet.allToggled = domEl.find(".all").prop("checked");
+        intvSet.intervals = [];
+        domEl.find(".single").each(function(){
+            if($(this).prop("checked")){
+                intv = parseInt($(this).prop("value"));
+                intvSet.intervals.push(intv);
+                intvSet.intervals.push(-1*intv);
             }
-            if(oldAll){
-                signalUpdate = true;
-                if(intvSet.allToggled){
-                    intvSet.allToggled = false;
-                }
-                else{
-                    intvSet.intervals = [];
-                }
+        });
+        if(!oldAll && intvSet.allToggled){
+            intvSet.intervals = cons.all;
+            signalUpdate = true;
+        }
+        if(oldAll){
+            signalUpdate = true;
+            if(intvSet.allToggled){
+                intvSet.allToggled = false;
             }
-        };
-        getIntvs.call(dom.lowerIntervals, config.lower);
-        getIntvs.call(dom.upperIntervals, config.upper);
+            else{
+                intvSet.intervals = [];
+            }
+        }
         var numeric = function(a, b){return a-b};
-        config.lower.intervals = config.lower.intervals.sort(numeric);
-        config.upper.intervals = config.upper.intervals.sort(numeric);
-        if(signalUpdate) view.updateIntvList();
+        intvSet.intervals = intvSet.intervals.sort(numeric);
+        if(signalUpdate) view.updateIntvList(domEl, intvSet);
     },
     init: function(){
         this.lowerBound = 40;
@@ -377,7 +375,7 @@ function startNotes(){
     }
 }
 
-function candidates(currL, currU){ //assume lowerIntervals and upperIntervals are already sorted
+function candidates(currL, currU){ //assume lower and upper are already sorted
     var optionsL = new Array();
     var optionsU = new Array();
     for(var i = 0; i<config.lower.intervals.length; i++){
@@ -557,8 +555,8 @@ var player = {
 function midiSetup(){
     dom = {};
     els = [
-        "lowerIntervals",
-        "upperIntervals",
+        "lower",
+        "upper",
         "intervalLabels",
         "minSep",
         "duration",
