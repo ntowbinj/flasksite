@@ -95,6 +95,7 @@ function noteName(i){
 var dom;
 
 var cons = {
+    all: Array.apply(null, Array(23)).map(function(_, i){return i - 11;}),
     labelRight: 40,
     barRate: 250
 }
@@ -103,9 +104,33 @@ var view = {
     init: function(){
         this.setLabels();
         dom.inARow.val(config.inARow);
+        this.updateMinSep();
+        this.updateIntvList();
     },
     message: function(m){
         dom.message.html(m);
+    },
+    updateIntvList: function(){
+        var update = function(domEl, intvSet){
+            list = intvSet.intervals;
+            //console.log("list: " + list);
+            var i = Math.floor(list.length/2); // only look at positive intervals
+            domEl.find(".all").prop("checked", intvSet.allToggled);
+            domEl.find(".single").each(function(){
+                var val = parseInt($(this).prop("value"));
+                var checked = false;
+                if(val == Math.abs(list[i])){
+                    checked = true;
+                    i++;
+                }
+                else{
+                    checked = false;
+                }
+                $(this).prop("checked", checked);
+            });
+        };
+        update(dom.lowerIntervals, config.lower);
+        update(dom.upperIntervals, config.upper);
     },
     updateMinSep: function(){
         dom.minSep.find("input").each(function(){
@@ -215,7 +240,6 @@ var controller = {
             });
         });
         $("#start").click(function(){
-            config.fetch();
             player.initPlay();
         });
         $("#stop").click(function(){
@@ -233,7 +257,12 @@ var controller = {
     }
 };
 
-           
+function IntervalSet(){
+    this.intervals = [];
+    this.allToggled = false;
+}
+
+
 var config = {
     disturbance: false,
     message: "",
@@ -244,36 +273,58 @@ var config = {
     duration: 0,
     inARow: 1,
     between: 0,
-    answerWait: .5,
-    bottomInterval: (function(){
-        var ret = new Array();
-        for(var i = -23; i<24; i++){
-            ret.push(i);
-        }
-        return ret;
-    }()),
-    topInterval: this.bottomInterval,
+    answerWait: .2,
+    lower: new IntervalSet(),
+    upper: new IntervalSet(),
     fetch: function(){
         config.fetchIntvs();
     },
     fetchIntvs: function (){
-        var getIntvs = function(intvList){
-            intvList.length = 0;
-            this.find("input").each(function(){
+        var signalUpdate = false;
+        var getIntvs = function(intvSet){
+            oldAll = intvSet.allToggled;
+            intvSet.allToggled = this.find(".all").prop("checked");
+            intvSet.intervals = [];
+            this.find(".single").each(function(){
                 if($(this).prop("checked")){
                     intv = parseInt($(this).prop("value"));
-                    intvList.push(intv);
-                    intvList.push(-1*intv);
+                    intvSet.intervals.push(intv);
+                    intvSet.intervals.push(-1*intv);
                 }
             });
+            if(!oldAll && intvSet.allToggled){
+                intvSet.intervals = cons.all;
+                signalUpdate = true;
+            }
+            if(oldAll){
+                signalUpdate = true;
+                if(intvSet.allToggled){
+                    intvSet.allToggled = false;
+                }
+                else{
+                    intvSet.intervals = [];
+                }
+            }
         };
-        getIntvs.call(dom.lowerVoiceIntervals, config.bottomInterval);
-        getIntvs.call(dom.upperVoiceIntervals, config.topInterval);
+        getIntvs.call(dom.lowerIntervals, config.lower);
+        getIntvs.call(dom.upperIntervals, config.upper);
         var numeric = function(a, b){return a-b};
-        config.bottomInterval = config.bottomInterval.sort(numeric);
-        config.topInterval = config.topInterval.sort(numeric);
+        config.lower.intervals = config.lower.intervals.sort(numeric);
+        config.upper.intervals = config.upper.intervals.sort(numeric);
+        if(signalUpdate) view.updateIntvList();
+    },
+    init: function(){
+        this.lowerBound = 40;
+        this.duration = 1000;
+        this.upperBound = 60;
+        this.sep = 8;
+        this.lower.intervals = [-4, -3, 3, 4];
+        this.upper.intervals = [-5, -4, -3, -2, -1, 1, 2, 3, 4, 5];
+        this.between = 3000;
+        this.inARow = 1;
     }
 }
+
 Array.prototype.bindexOfClosest = function (targ, side){ //binary search for index containing largest element *less* than target or symmetric case
     var mindex = 0;
     var maxdex = this.length - 1;
@@ -326,19 +377,19 @@ function startNotes(){
     }
 }
 
-function candidates(currL, currU){ //assume bottomInterval and topInterval are already sorted
+function candidates(currL, currU){ //assume lowerIntervals and upperIntervals are already sorted
     var optionsL = new Array();
     var optionsU = new Array();
-    for(var i = 0; i<config.bottomInterval.length; i++){
-        var result = currL + config.bottomInterval[i];
+    for(var i = 0; i<config.lower.intervals.length; i++){
+        var result = currL + config.lower.intervals[i];
         if(result >= config.lowerBound && result <= config.upperBound){
-            optionsL.push(config.bottomInterval[i]);
+            optionsL.push(config.lower.intervals[i]);
         }
     }
-    for(var i = 0; i<config.topInterval.length; i++){
-        var result = currU + config.topInterval[i];
+    for(var i = 0; i<config.upper.intervals.length; i++){
+        var result = currU + config.upper.intervals[i];
         if(result >= config.lowerBound && result <= config.upperBound){
-            optionsU.push(config.topInterval[i]);
+            optionsU.push(config.upper.intervals[i]);
         }
     }
     var rightward = new Array();
@@ -359,15 +410,6 @@ function candidates(currL, currU){ //assume bottomInterval and topInterval are a
     }
     return ret;
 }
-
-config.lowerBound = 40;
-config.duration = 1000;
-config.upperBound = 60;
-config.sep = 8;
-config.bottomInterval = [-4, -3, 3, 4];
-config.topInterval = [-5, -4, -3, -2, -1, 2, 3, 4, 5];
-config.between = 3000;
-config.inARow = 1;
 
 
 var player = {
@@ -515,8 +557,8 @@ var player = {
 function midiSetup(){
     dom = {};
     els = [
-        "lowerVoiceIntervals",
-        "upperVoiceIntervals",
+        "lowerIntervals",
+        "upperIntervals",
         "intervalLabels",
         "minSep",
         "duration",
@@ -534,9 +576,9 @@ function midiSetup(){
     for(var i = 0; i<els.length; i++){
         dom[els[i]] = $("#" + els[i]); 
     }
+    config.init();
     controller.init();
     view.init();
-    view.updateMinSep();
     $(window).bind("beforeunload", function(){player.stop();});
     MIDI.loader = new widgets.Loader;
     MIDI.loadPlugin({

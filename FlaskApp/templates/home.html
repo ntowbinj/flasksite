@@ -40,18 +40,21 @@
                     {% for intv in intervs|dictsort %}
                         <p><a class="stay" href="">{{ intv[1] }}</a></p>
                     {% endfor %}
+                    <p><a class="stay" href="">all</a></p>
                 </div>
-                <div id='lowerVoiceIntervals'>
+                <div id='lowerIntervals'>
                     <p class="label">bot:</p>
                     {% for intv in intervs|dictsort %}
-                        <p><input type="checkbox" checked="" value={{ intv[0] }}></p>
+                        <p><input type="checkbox" checked="" value={{ intv[0] }} class="single"></p>
                     {% endfor %}
+                    <p><input type="checkbox" checked="" value="all" class="all"></p>
                 </div>
-                <div id='upperVoiceIntervals'>
+                <div id='upperIntervals'>
                     <p class="label">top:</p>
                     {% for intv in intervs|dictsort %}
-                        <p><input type="checkbox" checked="" value={{ intv[0] }}></p>
+                        <p><input type="checkbox" checked="" value={{ intv[0] }} class="single"></p>
                     {% endfor %}
+                    <p><input type="checkbox" checked="" value="all" class="all"></p>
                 </div>
                 <div id='minSep'>
                     <p class="label">sep:</p>

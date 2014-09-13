@@ -36,6 +36,13 @@ ul.instructions li, #content p, #synresult, #avoids
 }
 
 
+#message
+{
+    color: red;
+    padding-top: 1%;
+    height: 10px;
+}
+
 #synform div
 {
     display:inline-block;

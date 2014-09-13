@@ -237,12 +237,6 @@ h1, h2, h3{
     padding-right: 3%;  
     padding-left: 3%;
 }
-#message
-{
-    color: red;
-    padding-top: 1%;
-    height: 10px;
-}
 pre.codebox {
     font-family: Consolas,Menlo,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New,monospace,serif;;
     margin-top: 5%;

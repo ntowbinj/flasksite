@@ -39,6 +39,12 @@ b{font-weight: bold;}
     margin-right: 11%;
     float: left;
 }
+#message
+{
+    color: red;
+    padding: 1.2% 0;
+    height: 10px;
+}
 #cpanel div
 {
     float: left;
