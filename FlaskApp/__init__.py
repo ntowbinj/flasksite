@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, request, abort, send_from_directory
+from flask import Flask, render_template, jsonify, request, abort, send_from_directory, redirect, url_for
 import shortestpath
 import urllib2, urllib, httplib
 import musichelp
@@ -17,18 +17,18 @@ def nullblog():
 
 @app.route("/blog/<post>")
 def blog(post):
-    scripts = ['js/visuals.js', 'js/blog.js', 'js/prettify.js']
     try:
-        return render_template('/blogs/%s.html' % (post), scripts=scripts)
+        return render_template('/blogs/%s.html' % (post))
     except TemplateNotFound:
         abort(404)
 
 @app.route("/")
-@app.route("/synonymgraph")
+def default():
+    return synonym()
+
 @app.route("/synonyms")
 def synonym():
-    scripts = ['js/visuals.js', 'js/synonyms.js']
-    return render_template('syn.html', scripts = scripts)
+    return render_template('syn.html')
 
 @app.route("/multicolumn")
 def multicolumn():
@@ -40,8 +40,7 @@ def foliage():
 
 @app.route("/music")
 def music(hide_nav=None):
-    scripts = ['js/visuals.js', 'js/music.js']
-    return render_template('music.html', scripts = scripts, hide_nav=hide_nav)
+    return render_template('music.html', hide_nav=hide_nav)
 
 @app.route("/getpath", methods = ['POST'])
 def getpath():
@@ -50,15 +49,7 @@ def getpath():
 
 @app.route("/eartrainer")
 def eartrainer(): 
-    scripts = ['AudioDetect.js', 'LoadPlugin.js', 'Plugin.js', 'Player.js'] 
-    scripts = ['js/MIDI.js/js/MIDI/' + d for d in scripts]
-    scripts.append('js/MIDI.js/js/Window/DOMLoader.XMLHttp.js')
-    scripts.append('js/MIDI.js/js/Widgets/Loader.js')
-    scripts.append('js/MIDI.js/inc/Base64.js')
-    scripts.append('js/MIDI.js/inc/base64binary.js')
-    scripts.append('js/slimmed.js')
-    scripts.extend(['js/visuals.js'])
-    return render_template('home.html', scripts=scripts, intervs = musichelp.INTERVALS) 
+    return render_template('home.html', intervs = musichelp.INTERVALS) 
 
 @app.route("/wordlist.txt")
 def wordlist():

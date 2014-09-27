@@ -6,6 +6,8 @@
         {% endblock %}
         <link href="{{ url_for('static', filename='css/blog.css') }}" rel="stylesheet">
         <link href="{{ url_for('static', filename='css/tomorrow.css') }}" rel="stylesheet">
+        <script type="text/javascript" src="{{ url_for('static', filename='js/blog.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/prettify.js') }}"></script>
     {% endblock %}
     {% block title %}
         blog
