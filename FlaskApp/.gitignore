@@ -1,15 +1,11 @@
-.startupex
 *.pyc
 launch.sh
 *.swp
 *.json
 *.txt
 !/static/files/strongly_connected.txt
+config.py
 hide.sh
 /venv
-/neo4j*
-/try.py
-/flask
-/reddit
 solarized*.css
 !solarized.css
