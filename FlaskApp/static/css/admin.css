@@ -1,6 +1,11 @@
 #textbox {
     overflow: hidden;
 }
+
+#title{
+    width: 60%;
+}
+
 #postcontent {
     width: 60%;
     height: 400px;

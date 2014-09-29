@@ -3,7 +3,7 @@
     <form method="post" id="postform">
         <a href="{{ url_for('blog.post', date=post.date) }}">preview</a>
         <div class='spacer'></div>
-        <input type="text" name="title" value="{{ post.title }}"></input>
+        <input type="text" name="title" value="{{ post.title }}" id="title"></input>
         <div class='spacer'></div>
         <div id="textbox">
             <textarea id="postcontent" name="text" form="postform">{{ post.text }}</textarea>
@@ -11,8 +11,8 @@
         <div class='spacer'></div>
         <input type="text" name="date" value="{{ post.date }}"></input>
         <div class='spacer'></div>
-        <input type="radio" name="live" value="true">live<br>
-        <input type="radio" name="live" value="false">not live
+        <input type="radio" name="live" value="1" {{ 'checked' if post.live }}>live<br>
+        <input type="radio" name="live" value="0" {{ 'checked' if not post.live }}>not live
         <div class='spacer'></div>
         <input id="tags" name="tags" type="text" value="{{ tags|map(attribute='name')|join(',') }}"></input>
         <div class='spacer'></div>

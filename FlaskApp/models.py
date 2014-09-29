@@ -11,7 +11,7 @@ class Post(BaseModel):
     text = TextField()
     date = DateField()
     title = CharField()
-    live = BooleanField()
+    live = IntegerField()
 
     class Meta:
         order_by = ('date',)
