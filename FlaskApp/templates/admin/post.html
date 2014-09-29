@@ -1,0 +1,23 @@
+{% extends "admin/template.html" %}
+{% block content %}
+    <form method="post" id="postform">
+        <a href="{{ url_for('blog.post', date=post.date) }}">preview</a>
+        <div class='spacer'></div>
+        <input type="text" name="title" value="{{ post.title }}"></input>
+        <div class='spacer'></div>
+        <div id="textbox">
+            <textarea id="postcontent" name="text" form="postform">{{ post.text }}</textarea>
+        </div>
+        <div class='spacer'></div>
+        <input type="text" name="date" value="{{ post.date }}"></input>
+        <div class='spacer'></div>
+        <input type="radio" name="live" value="true">live<br>
+        <input type="radio" name="live" value="false">not live
+        <div class='spacer'></div>
+        <input id="tags" name="tags" type="text" value="{{ tags|map(attribute='name')|join(',') }}"></input>
+        <div class='spacer'></div>
+        <input type="submit"></input>
+    </form>
+
+{% endblock %}
+

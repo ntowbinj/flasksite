@@ -1,0 +1,6 @@
+{% extends "admin/template.html" %}
+{% block content %}
+    {% for post in posts %}
+    <ul><a href="{{ url_for('admin.post', date=post.date) }}">{{ post.date ~": "~ post.text }}</a></ul>
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,16 @@
+#textbox {
+    overflow: hidden;
+}
+#postcontent {
+    width: 60%;
+    height: 400px;
+    overflow: scroll;
+}
+#tags {
+    width: 60%;
+}
+.spacer {
+    min-height: 10px;
+}
+
+

@@ -3,11 +3,17 @@ from . import main
 from flask import render_template, jsonify, request, abort
 from flask import redirect
 from flask import send_from_directory, url_for 
+from flask import current_app
 from hashlib import md5
 
+from .. import mojule
 import shortestpath
 import musichelp
 import os
+
+@main.route("/test")
+def test():
+    return mojule.garrison
 
 @main.route("/analytics")
 def soon():
