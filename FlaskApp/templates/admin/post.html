@@ -5,8 +5,14 @@
         <div class='spacer'></div>
         <input type="text" name="title" value="{{ post.title }}" id="title"></input>
         <div class='spacer'></div>
-        <div id="textbox">
+        <div class="textbox">
             <textarea id="postcontent" name="text" form="postform">{{ post.text }}</textarea>
+        </div>
+        <div class='spacer'></div>
+        <div class="textbox">
+            <textarea id="externals" name="external" form="postform">
+                {{ post.external if post.external}}
+            </textarea>
         </div>
         <div class='spacer'></div>
         <input type="text" name="date" value="{{ post.date }}"></input>

@@ -1,20 +1,37 @@
 from . import blog
-from .. import models
+from ..models import *
+from flask import redirect, url_for
 from flask import render_template, request, abort, session
 from jinja2 import TemplateNotFound
+import peewee
 
 @blog.route("/")
 def nullblog():
-    return blog(None)
+    latest = Post.select().where(Post.live == True).order_by(-1*Post.date).limit(1)[0]
+    return post(latest.date)
 
 @blog.route("/<date>")
 def post(date):
+    index = Post.select(Post.date, Post.title).where(Post.live == True).order_by(-1*Post.date)
     try:
-        if not date:
-            post = models.Post.get()[0]
-        else:
-            post = models.Post.get().where(models.Post.date == date)
-        return render_template('blog.html', content = post.text)
-    except TemplateNotFound:
+        post = Post.get(Post.date == date)
+        if post.live or 'logged_in' in session:
+            return render_template('/blogs/post.html', post=post, tags=post.tags(), index=index)
+    except peewee.DoesNotExist:
+        pass
+    return redirect(url_for('blog.nullblog'))
+
+@blog.route("/tag/<tagname>")
+def tag(tagname):
+    try:
+        tag = Tag.get(Tag.name == tagname)
+        taglist = Tag.select()
+        return render_template(
+                '/blogs/tag.html', 
+                tag=tag, 
+                posts=tag.posts(include_text=False).order_by(-1*Post.date), 
+                taglist=taglist
+                )
+    except peewee.DoesNotExist:
         abort(404)
 

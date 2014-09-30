@@ -9,10 +9,16 @@
     margin-left: 3%;
     width:18%;
 }
-#columnright a{
-    text-decoration: none;
+
+a.bloglink{
     color: #0066ee; 
+    text-decoration: none;
 }
+
+a.bloglink:hover{
+    text-decoration: underline;
+}
+
 #columnright li{
     margin: 10% 0;
 }
@@ -22,7 +28,32 @@
 #columnleft img{
     margin-bottom: 5%;
 }
-#columnright a:hover{
-    text-decoration: underline;
-    color: #3333ff; 
+
+.postlist{
+    margin-bottom: 2%;
 }
+
+#taglist {
+    display: inline-block;
+    margin-bottom: 3%;
+}
+
+span.tag a{
+    text-decoration: none;
+    padding: 2px;
+    color: white; 
+    font-size: 1.1vw;
+    font-weight: bold;
+}
+
+span.tag:hover{
+    background-color: rgb(75, 125, 210);
+}
+
+span.tag{
+    background-color: rgb(108, 153, 228);
+    height: 10px;
+    margin-right: 6px;
+    border: 1px solid rgb(0, 198, 255);
+}
+

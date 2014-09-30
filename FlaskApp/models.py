@@ -1,7 +1,8 @@
 from peewee import *
 import peewee
+import config as c
 
-database = MySQLDatabase('blog', **{'user': 'root', 'passwd': 'roont'})
+database = MySQLDatabase(c.BLOG_DB, **c.DB_KWARGS)
 
 class BaseModel(Model):
     class Meta:
@@ -9,6 +10,7 @@ class BaseModel(Model):
 
 class Post(BaseModel):
     text = TextField()
+    external = TextField()
     date = DateField()
     title = CharField()
     live = IntegerField()
@@ -17,17 +19,14 @@ class Post(BaseModel):
         order_by = ('date',)
 
     @classmethod
-    def create_or_update(cls, title, date, text, live, tags):
+    def create_or_update(cls, post_attrs, tags):
         try:
-            post = cls.create(title=title, date=date, text=text, live=live)
+            post = cls.create(**post_attrs)
         except peewee.IntegrityError:
-            post = cls.get(date=date)
-            newtext = text
-            post.title = title
-            post.live = live
-            post.text = text
-            post.date = date
+            post_attrs['id'] = cls.get(date=post_attrs['date']).id
+            post = Post(**post_attrs)
             post.save()
+        Tagging.delete().where(Tagging.post == post).execute()
         for tag_name in tags:
             try:
                 tag = Tag.get(Tag.name == tag_name)
@@ -45,8 +44,12 @@ class Post(BaseModel):
 class Tag(BaseModel):
     name = CharField()
     
-    def posts(self):
-        return Post.select().join(Tagging).join(Tag).where(Tag.id == self)
+    def posts(self, include_text=True):
+        if include_text:
+            cols = Post.select()
+        else:
+            cols = Post.select(Post.date, Post.title, Post.live)
+        return cols.join(Tagging).join(Tag).where(Tag.id == self).where(Post.live == True)
 
 class Tagging(BaseModel):
     post = ForeignKeyField(Post)

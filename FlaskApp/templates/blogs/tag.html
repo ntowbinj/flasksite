@@ -1,0 +1,27 @@
+{% extends "blog.html" %}
+{% block main_content %}
+<h2>tag: {{tag.name}}</h2>
+<ul>
+    {% for p in posts %}
+    <li class="postlist">
+        <a class="bloglink" href="{{url_for('blog.post', date=p.date)}}">{{p.date|blog_date~": "~p.title}}</a>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}
+
+{% block resource_list %}
+        <h3>Tags</h3>
+        <ul>
+            {% for t in taglist %}
+            <li>
+            <span class="tag">
+                <a  href="{{url_for('blog.tag', tagname=t.name)}}">{{t.name}}</a>
+            </span>
+            </li>
+            {% endfor %}
+        </ul>
+{% endblock %}
+
+
+

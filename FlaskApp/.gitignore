@@ -9,3 +9,4 @@ hide.sh
 /venv
 solarized*.css
 !solarized.css
+/dumps

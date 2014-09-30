@@ -1,6 +1,19 @@
 {% extends "admin/template.html" %}
 {% block content %}
     {% for post in posts %}
-    <ul><a href="{{ url_for('admin.post', date=post.date) }}">{{ post.date ~": "~ post.title }}</a></ul>
+    <table>
+        <col width="430">
+        <cold width="80">
+        <tr>
+            <td>
+                <a href="{{ url_for('admin.post', date=post.date) }}">{{ post.date ~": "~ post.title|truncate(30) }}</a>
+            </td>
+            <td>
+                {% if not post.title == "new" %}
+                <a href="{{ url_for('admin.deletepost', date=post.date) }}">delete</a>
+                {% endif %}
+            </td>
+        </tr>
+    </table>
     {% endfor %}
 {% endblock %}

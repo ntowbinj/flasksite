@@ -11,7 +11,7 @@ def login():
     if request.method == 'POST':
         if request.form['password'] == current_app.config['PASSWORD']:
             session['logged_in'] = True
-            return redirect(url_for('.test'))
+            return redirect(url_for('.posts'))
     return render_template('login.html')
 
 @admin.route("/goblout")
@@ -31,17 +31,26 @@ def posts():
 def post(date):
     form = request.form
     if request.method == 'POST':
-        tags = form['tags'].split(',')
-        args = map(lambda k: form[k], ['title', 'date', 'text', 'live']) + [tags]
-        post = Post.create_or_update(*args)
+        post_attrs = {k:form[k] for k in form.keys()}
+        tags = post_attrs.pop('tags').split(',')
+        Post.create_or_update(post_attrs, tags)
         return redirect(url_for('admin.posts'))
     else:
         try:
             post = Post.get(Post.date == date)
         except peewee.DoesNotExist:
-            post = Post()
-        tags = post.tags()
-        return render_template("admin/post.html", post=post, tags=tags)
+            post = Post.get()
+        return render_template("admin/post.html", post=post, tags=post.tags())
+
+@admin.route("/post/delete/<date>")
+@login_required
+def deletepost(date):
+    try:
+        post = Post.get(Post.date == date)
+        post.delete_instance(recursive=True)
+    except peewee.DoesNotExist:
+        pass
+    return redirect(url_for('admin.posts'))
 
 
 

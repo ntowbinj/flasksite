@@ -1,9 +1,15 @@
-#textbox {
+.textbox {
     overflow: hidden;
 }
 
 #title{
     width: 60%;
+}
+
+#externals {
+    width: 60%;
+    height: 100px;
+    overflow: scroll;
 }
 
 #postcontent {
@@ -18,4 +24,14 @@
     min-height: 10px;
 }
 
+a:visited{
+    color: blue;
+}
 
+table{
+    width: 50%;
+}
+
+td{
+    padding: 1.5%;
+}

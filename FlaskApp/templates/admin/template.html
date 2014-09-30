@@ -10,6 +10,7 @@
         {% endblock %}
     </head>
     <body>
+        <a style="float: right;" href="{{ url_for('admin.logout') }}">logout</a>
         {% block content %}
         {% endblock %}
     </body>
