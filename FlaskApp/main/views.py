@@ -6,14 +6,9 @@ from flask import send_from_directory, url_for
 from flask import current_app
 from hashlib import md5
 
-from .. import mojule
 import shortestpath
 import musichelp
 import os
-
-@main.route("/test")
-def test():
-    return mojule.garrison
 
 @main.route("/analytics")
 def soon():
