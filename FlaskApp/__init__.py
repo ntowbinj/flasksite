@@ -1,7 +1,6 @@
 from flask import Flask
 from inspect import getmembers, isfunction
 import config
-import mojule
 import jinja_filters
 
 app = Flask(__name__)
