@@ -50,5 +50,6 @@ def wordlist():
 @main.route("/synonyms/strongly_connected.txt")
 def strongly():
     here = os.path.dirname(__file__)
-    return send_from_directory(os.path.join(here, "static/files/"), "strongly_connected.txt")
+    print("here")
+    return send_from_directory(os.path.join(here, "../static/files/"), "strongly_connected.txt")
 
