@@ -1,6 +1,6 @@
 from . import blog
 from ..models import *
-from flask import redirect, url_for
+from flask import redirect, url_for, g
 from flask import render_template, request, abort, session
 from jinja2 import TemplateNotFound
 import peewee
@@ -35,3 +35,12 @@ def tag(tagname):
     except peewee.DoesNotExist:
         abort(404)
 
+@blog.before_request
+def open_db():
+    g.db = database
+    g.db.connect()
+
+@blog.after_request
+def close_db(response):
+    g.db.close()
+    return response

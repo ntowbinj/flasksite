@@ -2,7 +2,7 @@ from . import admin
 from ..models import*
 from auth import login_required
 
-from flask import render_template, redirect, request, url_for, current_app
+from flask import render_template, redirect, request, url_for, current_app, g
 from auth import *
 import peewee
 
@@ -51,6 +51,16 @@ def deletepost(date):
     except peewee.DoesNotExist:
         pass
     return redirect(url_for('admin.posts'))
+
+@admin.before_request
+def open_db():
+    g.db = database
+    g.db.connect()
+
+@admin.after_request
+def close_db(response):
+    g.db.close()
+    return response
 
 
 

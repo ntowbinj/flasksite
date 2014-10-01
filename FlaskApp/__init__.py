@@ -12,16 +12,6 @@ from admin import admin
 
 from models import database
 
-@app.before_request
-def before_request():
-    g.db = database
-    g.db.connect()
-
-@app.after_request
-def after_request(response):
-    g.db.close()
-    return response
-
 app.register_blueprint(main)
 app.register_blueprint(blog, url_prefix="/blog")
 app.register_blueprint(admin, url_prefix="/madmen")
@@ -30,6 +20,3 @@ filters = {name: function for name, function in getmembers(jinja_filters) if isf
 
 app.jinja_env.filters.update(filters)
 
-@app.route("/hello2")
-def hello2():
-    return g.hello
