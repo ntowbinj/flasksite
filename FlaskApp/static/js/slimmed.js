@@ -1,95 +1,12 @@
 
 
 function intvName(i){
-    switch(i)
-    {
-        case 0:
-           return 'unison';
-           break;
-        case 1:
-           return 'minor 2nd';
-           break;
-        case 2:
-           return 'major 2nd';
-           break;
-        case 3:
-           return 'minor 3rd';
-           break;
-        case 4:
-           return 'major 3rd';
-           break;
-        case 5:
-           return 'perfect 4th';
-           break;
-        case 6:
-           return 'tritone';
-           break;
-        case 7:
-           return 'perfect 5th';
-            break;
-        case 8:
-            return 'minor 6th';
-            break;
-        case 9:
-            return 'major 6th';
-            break;
-        case 10:
-            return 'minor 7th';
-            break;
-        case 11:
-            return 'major 7th';
-            break;
-        case 12:
-            return 'octave';
-            break;
-        default:
-            alert('interval too big');
-    }
+    return cons.intvNames[i];
 }
 
 function noteName(i){
     i = i%12;
-    var note;
-    switch(i)
-    {
-        case 0:
-            note =  'C';
-            break;
-        case 1:
-            note =  'C#';
-            break;
-        case 2:
-            note =  'D';
-            break;
-        case 3:
-            note =  'Eb';
-            break;
-        case 4:
-            note =  'E';
-            break;
-        case 5:
-            note =  'F';
-            break;
-        case 6:
-            note =  'F#';
-            break;
-        case 7:
-            note =  'G';
-            break;
-        case 8:
-            note =  'Ab';
-            break;
-        case 9:
-            note =  'A';
-            break;
-        case 10:
-            note =  'Bb';
-            break;
-        case 11:
-            note =  'B';
-            break;
-    }
-    return note;
+    return cons.noteNames[i];
 }
 
 var dom;
@@ -98,7 +15,9 @@ var cons = {
     all: Array.apply(null, Array(23)).map(function(_, i){return i - 11;}),
     labelRight: 40,
     barRate: 250,
-    tries: 3
+    tries: 3,
+    intvNames: ['unison', 'minor 2nd', 'major 2nd', 'minor 3rd', 'major 3rd', 'perfect 4th', 'tritone', 'perfect 5th', 'minor 6th', 'major 6th', 'minor 7th', 'major 7th', 'octave'],
+    noteNames: ['C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B']
 }
 
 var view = {
