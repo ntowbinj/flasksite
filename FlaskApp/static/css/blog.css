@@ -33,12 +33,12 @@ a.bloglink:hover{
     margin-bottom: 2%;
 }
 
-#taglist {
+#blogtaglist {
     display: inline-block;
     margin-bottom: 3%;
 }
 
-span.tag a{
+span.blogtag a{
     text-decoration: none;
     padding: 2px;
     color: white; 
@@ -46,11 +46,11 @@ span.tag a{
     font-weight: bold;
 }
 
-span.tag:hover{
+span.blogtag:hover{
     background-color: rgb(75, 125, 210);
 }
 
-span.tag{
+span.blogtag{
     background-color: rgb(108, 153, 228);
     height: 10px;
     margin-right: 6px;

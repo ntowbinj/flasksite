@@ -1,9 +1,9 @@
 {% extends "blog.html" %}
 {% block main_content %}
     <h2>{{ post.title }}</h2>
-    <div id="taglist">
+    <div id="blogtaglist">
         {% for tag in tags %}
-        <span class="tag">
+        <span class="blogtag">
             <a href="{{ url_for('blog.tag', tagname=tag.name) }}">
                 {{ tag.name }}
             </a>
