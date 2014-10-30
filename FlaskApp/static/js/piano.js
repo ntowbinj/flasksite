@@ -1,16 +1,25 @@
-function Piano(numOct, callback){
+function Piano(numOct, downHandler, upHandler){
     this.KEYS_IN_OCT = 12;
     this.WHITES_IN_OCT = 7;
     this.snap = Snap("#piano");
     this.snap.rect(500, 300, 50, 50);
-    this.callback = callback;
+    this.downHandler = downHandler;
+    this.upHandler = upHandler;
     this.numOct = numOct;
-    this.whiteW = 100/(numOct*7);
-    this.whiteH = 100;
-    this.blackH = .6*this.whiteH;
-    this.blackW = .6*this.whiteW;
+    this.white = {
+        w: 100/(numOct*7),
+        h: 100,
+        color: 'white',
+        downColor: 'rgb(150, 170, 150)'
+    }
+    this.black = {
+        w: .6*this.white.w,
+        h: .6*this.white.h,
+        color: 'rgb(30, 80, 120)',
+        downColor: 'gray'
+    }
     var bOffset = .7;
-    var whiteW = this.whiteW;
+    whiteW = this.white.w;
     this.relPositions = [
         0, 
         0 + bOffset,
@@ -36,26 +45,32 @@ Piano.prototype.drawKey = function(n){
     var height;
     var octaveless = n%this.KEYS_IN_OCT;
     var x = this.relPositions[octaveless]
-        + (Math.floor(n/this.KEYS_IN_OCT) * this.whiteW*this.WHITES_IN_OCT);
+        + (Math.floor(n/this.KEYS_IN_OCT) * this.white.w*this.WHITES_IN_OCT);
     switch(this.colors[octaveless]){
         case 'w':
-            color = 'white';
-            width = this.whiteW;
-            height = this.whiteH;
+            colorName = 'white';
             break;
         case 'b':
-            color = 'rgb(30, 80, 120)';
-            width = this.blackW;
-            height = this.blackH;
+            colorName = 'black';
     }
+    color = this[colorName].color;
+    width = this[colorName].w;
+    height = this[colorName].h;
     var keyImg = this.snap.rect(x + "%", 0, width + "%", height + "%");
     keyImg.attr({
         fill: color,
         stroke: "black",
         strokeWidth: 3,
     });
-    var callback = this.callback;
-    keyImg.click(function(){callback(n);});
+    var that = this;
+    keyImg.mousedown(function(){
+        that.downHandler(n);
+        keyImg.attr({fill: that[colorName].downColor});
+    });
+    keyImg.mouseup(function(){
+        that.upHandler(n);
+        keyImg.attr({fill: color});
+    });
 }
 
 Piano.prototype.drawLayered = function(){
@@ -71,26 +86,14 @@ Piano.prototype.drawLayered = function(){
     }
 }
 
-Piano.prototype.createNth = function(n){
-    var octaveless = n%this.KEYS_IN_OCT;
-    var cornerX = 
-        this.relPositions[octaveless]
-        + (Math.floor(n/this.KEYS_IN_OCT) * this.whiteW*this.WHITES_IN_OCT);
-    switch(this.colors[octaveless]){
-        case 'w':
-            return new Key(this.snap, n, cornerX, 'white', this.whiteW, this.whiteH, this.callback);
-        case 'b':
-            return new Key(this.snap, n, cornerX, 'black', this.blackW, this.blackH, this.callback);
-    }
-}
-
-
-
 function initPiano(){
-    var callback = function(noteNumber){
+    var downHandler = function(noteNumber){
         console.log(noteNumber);
     };
-    piano = new Piano(3, callback);
+    var upHandler = function(noteNumber){
+        console.log(noteNumber);
+    };
+    piano = new Piano(3, downHandler, function(){;});
     piano.drawLayered();
 }
 

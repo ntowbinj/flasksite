@@ -480,8 +480,29 @@ var player = {
     stopped: true,
 }
 
+var pianoManager = {
+
+    init: function(){
+        new Piano(3, this.down, this.up).drawLayered();
+    },
+
+    noteOffset: 36,
+
+    down : function(n){
+        console.log(n);
+        MIDI.setVolume(0, 127);
+        MIDI.noteOn(0, pianoManager.noteOffset + n, 127, 0);
+    },
+
+    up : function(n){
+        MIDI.noteOff(0, pianoManager.noteOffset + n, 0);
+    }
+};
+
+
+
 function midiSetup(){
-    initPiano();
+    pianoManager.init();
     dom = {};
     els = [
         "lower",
