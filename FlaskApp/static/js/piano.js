@@ -30,27 +30,43 @@ function Piano(numOct, callback){
     this.colors = "w b w b w w b w b w b w".split(" ");
 }
 
-function Key(snap, id, x, color, width, height, callback){
-    this.draw = function(){
-        var keyImg = snap.rect(x + "%", 0, width + "%", height + "%");
-        keyImg.attr({
-            fill: color,
-            stroke: "black",
-            strokeWidth: 3,
-        });
-        keyImg.click(function(){callback(id);});
+Piano.prototype.drawKey = function(n){
+    var color;
+    var width;
+    var height;
+    var octaveless = n%this.KEYS_IN_OCT;
+    var x = this.relPositions[octaveless]
+        + (Math.floor(n/this.KEYS_IN_OCT) * this.whiteW*this.WHITES_IN_OCT);
+    switch(this.colors[octaveless]){
+        case 'w':
+            color = 'white';
+            width = this.whiteW;
+            height = this.whiteH;
+            break;
+        case 'b':
+            color = 'rgb(30, 80, 120)';
+            width = this.blackW;
+            height = this.blackH;
     }
+    var keyImg = this.snap.rect(x + "%", 0, width + "%", height + "%");
+    keyImg.attr({
+        fill: color,
+        stroke: "black",
+        strokeWidth: 3,
+    });
+    var callback = this.callback;
+    keyImg.click(function(){callback(n);});
 }
 
 Piano.prototype.drawLayered = function(){
     for(var i = 0; i<this.numOct*12; i++){
         if(this.colors[i%12] == 'w'){
-            this.createNth(i).draw();
+            this.drawKey(i);
         }
     }
     for(var i = 0; i<this.numOct*12; i++){
         if(this.colors[i%12] == 'b'){
-            this.createNth(i).draw();
+            this.drawKey(i);
         }
     }
 }
