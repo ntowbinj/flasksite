@@ -1,27 +1,27 @@
-#instructions{
+#instructions {
     clear: both;
     margin-top: 8%;
 }
-#spacer{
+#spacer {
     clear:both;
 }
-#instructions p{
+#instructions p {
     margin-bottom: 1%;
 }
-#instructions h1{
+#instructions h1 {
     font-weight: bold;
     font-size: 200%;
     padding-bottom: 2%;
     margin-top: 4%;
 }
-b{font-weight: bold;}
-#cpanel{
+b {font-weight: bold;}
+#cpanel {
     margin: 4%;
 }
-#cpanel_wrapper{
+#cpanel_wrapper {
     margin-bottom: 10%;
 }
-#cpanel_background{
+#cpanel_background {
     float: left;
     height: 100%;
     width: 550px;
@@ -30,89 +30,89 @@ b{font-weight: bold;}
     border: 1px solid #BBBBBB; 
     margin-bottom 19%;
 }
-.col:last-child{
+.col:last-child {
     margin-right: 0;
     margin-left: 20px;
 }
-.col{
+.col {
     width: auto;
     margin-right: 11%;
     float: left;
 }
-#message
-{
+
+#pianoHolder {
+    height: 60px;
+    width: 550px;
+    margin-bottom: 5px;
+}
+
+#piano {
+    height: 100%;
+    width: 550px;
+}
+
+#message {
     color: red;
     padding: 1.2% 0;
     height: 10px;
 }
-#cpanel div
-{
+#cpanel div{
     float: left;
     margin-bottom: 2%;
 }
-#intvLists div:first-child
-{
+#intvLists div:first-child{
     margin-left: 0;
     margin-right: 4px;
 }
-#intvLists div
-{
+#intvLists div{
     float: left;
     margin-left: 8px;
     width: auto;
 }
-#maxNote, #minNote{font-size: 90%;}
-.noteName
-{
+#maxNote, #minNote {font-size: 90%;}
+.noteName{
     display: inline-block;
     min-width: 20px;
 }
-#intvLists p
-{
+#intvLists p{
     margin-top: 7px;
     margin-bottom: 7px;
     height: 20px;
 }
-p:first-child
-{
+p:first-child{
     margin-top: 0;
 }
-#time
-{
+#time{
     float: left;
 }
-#time input
-{
+#time input{
     display: block;
     margin-left: 0;
     margin-bottom:0;
 }
-#time button
-{
+#time button{
     margin-right: 10px;
 }
-#time div.slider{
+#time div.slider {
     clear: both;
     margin-bottom: 20px;
 }
-#time p.label
-{
+#time p.label{
     clear: both;
     margin-top: 35px;
     margin-bottom: 10px;
     width: auto;
 }
-#time p.rightLabel{
+#time p.rightLabel {
     clear:both;
     float: left;
 }
-#inARow{
+#inARow {
     position: relative;
     margin-left: 10px;
     top: -3px;
 }
-#duration, #between, #answerWait
-{
+#duration, #between, #answerWait{
     width: 120px;
     margin: 8px 0 20px 0;
     height: 4px;
@@ -120,8 +120,7 @@ p:first-child
     background-size: 100% 100%;
     border-color: #9999FF;
 }
-#duration a, #between a, #answerWait a
-{
+#duration a, #between a, #answerWait a{
     top: -7px;
     width: 10px;
     height: 16px;
@@ -129,11 +128,11 @@ p:first-child
     background-size: 100% 100%;
     border-color: #BBBBFF;
 }
-#wait{
+#wait {
     width: 300px;
     height: 20px;
 }
-#wait div{
+#wait div {
     background: none;
     background-color: #2040CD;
 }
@@ -146,21 +145,19 @@ p:first-child
     height: 60px;
     font-weight: bold;
 }
-.answerNote{
+.answerNote {
     display: inline-block;
     width: 40px;
 }
-#answer p{margin: 10px;}
-#pitch-range
-{
+#answer p {margin: 10px;}
+#pitch-range{
     width: 4px;
     height: 350px;
     background:url("../img/blueslidevert.png");
     background-size: 100% 100%;
     border-color: #9999FF;
 }
-#pitch-range a
-{
+#pitch-range a{
     left: -7px;
     width: 16px;
     height: 10px;
@@ -168,13 +165,11 @@ p:first-child
     background-size: 100% 100%;
     border-color: #BBBBFF;
 }
-#pitch-range a.ui-slider-handle.ui-state-hover
-{
+#pitch-range a.ui-slider-handle.ui-state-hover{
     background-image: url("../img/bluebvert-hover.png");
     border-color: #9999DD;
 }
-div.ui-slider-range.ui-widget-header
-{
+div.ui-slider-range.ui-widget-header{
     background: none;
     background-color: #CCCCFF;
 }

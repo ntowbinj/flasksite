@@ -13,10 +13,12 @@
         {% endfor %}
 
         {% for f in ['js/Window/DOMLoader.XMLHttp', 'js/Widgets/Loader', 'inc/Base64', 'inc/base64binary'] %}
+        <script src = "http://snapsvg.io/assets/js/snap.svg-min.js"></script>
         <script src="{{ url_for('static', filename='js/MIDI.js/' ~ f ~ '.js') }}"></script>
         {% endfor %}
 
         <script type="text/javascript" src="{{ url_for('static', filename='js/slimmed.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/piano.js') }}"></script>
     {% endblock %}
 
 {% block content %}
@@ -25,6 +27,7 @@
     <div id="answer"></div>
     <div id="wait"></div>
     <p id="message"></p>
+    <div id="pianoHolder"><svg id="piano"></svg></div>
     <div id='cpanel_background'>
         <div id='cpanel'>
             <div id='time' class='col'>
